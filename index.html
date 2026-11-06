@@ -33,11 +33,10 @@
 </head>
 <body class="bg-slate-100 font-sans text-slate-800 antialiased min-h-screen flex flex-col">
 
-    <!-- App Container -->
     <div id="app" class="flex-1 flex flex-col"></div>
 
     <script>
-        const DB_KEY = "GPS_DHOK_JHATT_DB_V4";
+        const DB_KEY = "GPS_DHOK_JHATT_DB_V5";
 
         function getDB() {
             let data = localStorage.getItem(DB_KEY);
@@ -59,9 +58,10 @@
                     reports: [],
                     homework: [],
                     meetings: [],
-                    notices: [],
                     chats: [],
-                    timetable: [],
+                    timetable: [
+                        { id: "tt_1", day: "Monday", className: "Class 3", subject: "Mathematics", time: "08:00 AM" }
+                    ],
                     currentUser: null
                 };
                 localStorage.setItem(DB_KEY, JSON.stringify(initialData));
@@ -81,90 +81,124 @@
             db = getDB();
 
             if (!db.currentUser) {
-                app.innerHTML = renderAuthPage();
+                app.innerHTML = renderLandingPage();
             } else {
                 app.innerHTML = renderDashboard();
             }
         }
 
-        let authMode = 'login';
+        let showAuthModal = false;
+        let authMode = 'login'; // 'login' or 'signup'
 
-        function renderAuthPage() {
-            return `
-                <div class="hero-bg flex-1 flex flex-col justify-between p-4 sm:p-8">
-                    <div class="text-center py-4">
-                        <div class="inline-flex items-center gap-2 bg-white/10 px-4 py-2 rounded-full backdrop-blur-md mb-2 border border-white/20">
-                            <svg class="w-6 h-6 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5m0 0h4m-4 0V11m0 0h4m-4 0H7m4 0v10"></path></svg>
-                            <span class="text-white font-bold text-sm tracking-wide">Official School Portal</span>
-                        </div>
-                        <h1 class="text-2xl sm:text-4xl font-extrabold text-white tracking-wide uppercase drop-shadow-md">Government Primary School Dhok Jhatt</h1>
-                    </div>
+        function openAuth(mode) {
+            authMode = mode;
+            showAuthModal = true;
+            render();
+        }
 
-                    <div class="max-w-md w-full mx-auto glass-card rounded-2xl shadow-2xl p-6 sm:p-8 my-auto border border-white/50">
-                        <div class="flex border-b border-slate-200 mb-6">
-                            <button onclick="setAuthMode('login')" class="flex-1 pb-3 text-center font-bold text-sm sm:text-base ${authMode === 'login' ? 'text-primary border-b-2 border-primary' : 'text-slate-400'}">Login</button>
-                            <button onclick="setAuthMode('signup')" class="flex-1 pb-3 text-center font-bold text-sm sm:text-base ${authMode === 'signup' ? 'text-primary border-b-2 border-primary' : 'text-slate-400'}">Sign Up</button>
-                        </div>
-
-                        ${authMode === 'login' ? `
-                            <form onsubmit="handleLogin(event)" class="space-y-4">
-                                <div>
-                                    <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Email Address</label>
-                                    <input type="email" id="loginEmail" required class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-primary text-sm" placeholder="Enter your official email">
-                                </div>
-                                <div>
-                                    <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Password</label>
-                                    <input type="password" id="loginPassword" required class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-primary text-sm" placeholder="••••••••">
-                                </div>
-                                <button type="submit" class="w-full bg-primary hover:bg-blue-800 text-white font-bold py-3 rounded-xl transition shadow-lg text-sm uppercase">Login to Portal</button>
-                            </form>
-                        ` : `
-                            <form onsubmit="handleSignup(event)" class="space-y-4">
-                                <div>
-                                    <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Full Name</label>
-                                    <input type="text" id="signupName" required class="w-full px-3 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-primary text-sm" placeholder="Your Name">
-                                </div>
-                                <div>
-                                    <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Email Address</label>
-                                    <input type="email" id="signupEmail" required class="w-full px-3 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-primary text-sm" placeholder="name@school.tm">
-                                </div>
-                                <div>
-                                    <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Subject / Designation</label>
-                                    <input type="text" id="signupSubject" required class="w-full px-3 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-primary text-sm" placeholder="e.g. Mathematics Teacher">
-                                </div>
-                                <div>
-                                    <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Password</label>
-                                    <input type="password" id="signupPassword" required class="w-full px-3 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-primary text-sm" placeholder="••••••••">
-                                </div>
-                                <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-xl transition shadow-lg text-sm uppercase">Register Account</button>
-                            </form>
-                        `}
-                    </div>
-
-                    <div class="max-w-4xl mx-auto bg-slate-900/90 border border-slate-700 text-white rounded-2xl p-4 sm:p-6 shadow-2xl backdrop-blur-md mt-6">
-                        <h3 class="text-amber-400 font-bold text-sm sm:text-base uppercase tracking-wider mb-2 text-center">📜 Teacher Rules & Code of Conduct</h3>
-                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs sm:text-sm text-slate-300">
-                            <div class="bg-slate-800/80 p-3 rounded-xl border border-slate-700">
-                                <strong class="text-white block mb-1">1. Attendance & Punctuality</strong>
-                                Daily attendance for assigned classes must be marked punctually.
-                            </div>
-                            <div class="bg-slate-800/80 p-3 rounded-xl border border-slate-700">
-                                <strong class="text-white block mb-1">2. Academic Reporting</strong>
-                                Submit accurate student progress reports and worksheets regularly.
-                            </div>
-                            <div class="bg-slate-800/80 p-3 rounded-xl border border-slate-700">
-                                <strong class="text-white block mb-1">3. Professional Discipline</strong>
-                                System rights are strictly role-based under Admin Haris Awan's supervision.
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
+        function closeAuth() {
+            showAuthModal = false;
+            render();
         }
 
         function setAuthMode(mode) {
             authMode = mode;
             render();
+        }
+
+        function renderLandingPage() {
+            return `
+                <div class="hero-bg flex-1 flex flex-col justify-between p-4 sm:p-8 relative">
+                    <!-- Top Navigation Bar -->
+                    <div class="max-w-7xl w-full mx-auto flex justify-between items-center py-4">
+                        <div class="flex items-center gap-2">
+                            <div class="bg-primary text-white p-2 rounded-xl shadow flex items-center justify-center">
+                                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5m0 0h4m-4 0V11m0 0h4m-4 0H7m4 0v10"></path></svg>
+                            </div>
+                            <span class="text-white font-bold text-sm sm:text-base tracking-wide uppercase">Govt. Primary School Dhok Jhatt</span>
+                        </div>
+                        <div>
+                            <button onclick="openAuth('login')" class="bg-primary hover:bg-blue-700 text-white font-bold px-5 py-2.5 rounded-xl shadow-lg text-sm transition">Sign In</button>
+                        </div>
+                    </div>
+
+                    <!-- Center Hero Intro -->
+                    <div class="text-center max-w-3xl mx-auto my-auto py-10">
+                        <h1 class="text-3xl sm:text-5xl font-extrabold text-white tracking-wide uppercase drop-shadow-lg mb-4">Government Primary School Dhok Jhatt</h1>
+                        <p class="text-slate-200 text-sm sm:text-base max-w-xl mx-auto">Official TeacherHub & Educational Portal for Streamlined Attendance, Academic Reporting, and Faculty Collaboration.</p>
+                    </div>
+
+                    <!-- Teacher Rules Footer -->
+                    <div class="max-w-4xl mx-auto bg-slate-900/90 border border-slate-700 text-white rounded-2xl p-4 sm:p-6 shadow-2xl backdrop-blur-md mb-6">
+                        <h3 class="text-amber-400 font-bold text-sm sm:text-base uppercase tracking-wider mb-2 text-center">📜 Teacher Rules & Code of Conduct</h3>
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs sm:text-sm text-slate-300">
+                            <div class="bg-slate-800/80 p-3 rounded-xl border border-slate-700">
+                                <strong class="text-white block mb-1">1. Attendance & Punctuality</strong>
+                                Daily class attendance must be recorded accurately on schedule.
+                            </div>
+                            <div class="bg-slate-800/80 p-3 rounded-xl border border-slate-700">
+                                <strong class="text-white block mb-1">2. Academic Reporting</strong>
+                                Submit progress reports for approval to Head Teachers and Admin.
+                            </div>
+                            <div class="bg-slate-800/80 p-3 rounded-xl border border-slate-700">
+                                <strong class="text-white block mb-1">3. System Security</strong>
+                                Role management and system controls are restricted to Admin Haris Awan.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Auth Modal Popup -->
+                    ${showAuthModal ? `
+                        <div class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+                            <div class="max-w-md w-full glass-card rounded-2xl shadow-2xl p-6 relative animate-fadeIn">
+                                <button onclick="closeAuth()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-700 font-bold text-lg">✕</button>
+                                
+                                <div class="flex border-b border-slate-200 mb-6 mt-2">
+                                    <button onclick="setAuthMode('login')" class="flex-1 pb-3 text-center font-bold text-sm sm:text-base ${authMode === 'login' ? 'text-primary border-b-2 border-primary' : 'text-slate-400'}">Login</button>
+                                    <button onclick="setAuthMode('signup')" class="flex-1 pb-3 text-center font-bold text-sm sm:text-base ${authMode === 'signup' ? 'text-primary border-b-2 border-primary' : 'text-slate-400'}">Sign Up</button>
+                                </div>
+
+                                ${authMode === 'login' ? `
+                                    <form onsubmit="handleLogin(event)" class="space-y-4">
+                                        <div>
+                                            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Email Address</label>
+                                            <input type="email" id="loginEmail" required class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-primary text-sm" placeholder="Enter your email">
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Password</label>
+                                            <input type="password" id="loginPassword" required class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-primary text-sm" placeholder="••••••••">
+                                        </div>
+                                        <button type="submit" class="w-full bg-primary hover:bg-blue-800 text-white font-bold py-3 rounded-xl transition shadow text-sm uppercase">Login</button>
+                                        <div class="text-center pt-2">
+                                            <a href="#" onclick="setAuthMode('signup'); return false;" class="text-xs text-primary font-semibold hover:underline">If you Don't Have Account Sign Up</a>
+                                        </div>
+                                    </form>
+                                ` : `
+                                    <form onsubmit="handleSignup(event)" class="space-y-4">
+                                        <div>
+                                            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Full Name</label>
+                                            <input type="text" id="signupName" required class="w-full px-3 py-2.5 rounded-xl border border-slate-300 text-sm" placeholder="Your Name">
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Email Address</label>
+                                            <input type="email" id="signupEmail" required class="w-full px-3 py-2.5 rounded-xl border border-slate-300 text-sm" placeholder="name@school.tm">
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Subject / Designation</label>
+                                            <input type="text" id="signupSubject" required class="w-full px-3 py-2.5 rounded-xl border border-slate-300 text-sm" placeholder="e.g. Science Teacher">
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Password</label>
+                                            <input type="password" id="signupPassword" required class="w-full px-3 py-2.5 rounded-xl border border-slate-300 text-sm" placeholder="••••••••">
+                                        </div>
+                                        <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-xl transition shadow text-sm uppercase">Register Account</button>
+                                    </form>
+                                `}
+                            </div>
+                        </div>
+                    ` : ''}
+                </div>
+            `;
         }
 
         function handleLogin(e) {
@@ -196,18 +230,18 @@
 
             const newUser = {
                 id: "usr_" + Date.now(),
-                name: name,
-                email: email,
-                password: password,
+                name,
+                email,
+                password,
                 role: "Teacher",
-                subject: subject,
+                subject,
                 phone: "+92 300 0000000"
             };
 
             db.users.push(newUser);
             db.currentUser = newUser;
             saveDB(db);
-            alert("Account created successfully as Teacher!");
+            alert("Account registered successfully!");
             render();
         }
 
@@ -259,7 +293,7 @@
                         </div>
                     </div>
 
-                    <main class="max-w-7xl w-full mx-auto p-4 sm:p-6 flex-1">
+                    <main class="max-w-7xl w-full mx-auto p-4 sm:p-6 flex-1 flex flex-col gap-6">
                         ${currentTab === 'overview' ? renderOverviewTab() : ''}
                         ${currentTab === 'attendance' ? renderAttendanceTab() : ''}
                         ${currentTab === 'reports' ? renderReportsTab() : ''}
@@ -272,7 +306,7 @@
                     </main>
 
                     <footer class="bg-white border-t border-slate-200 py-4 text-center text-xs text-slate-500">
-                        Government Primary School Dhok Jhatt • Portal Management
+                        Government Primary School Dhok Jhatt • Made By Haris Awan
                     </footer>
                 </div>
             `;
@@ -281,7 +315,7 @@
         function renderOverviewTab() {
             const user = db.currentUser;
             return `
-                <div class="space-y-6">
+                <div class="space-y-6 flex-1 flex flex-col">
                     <div class="bg-gradient-to-r from-blue-900 to-indigo-800 text-white rounded-2xl p-6 shadow-xl">
                         <h2 class="text-2xl font-extrabold">Welcome back, ${user.name}!</h2>
                         <p class="text-slate-200 text-sm mt-1">Role: <span class="bg-white/20 px-2 py-0.5 rounded font-bold">${user.role}</span> | Subject: ${user.subject}</p>
@@ -299,6 +333,16 @@
                         <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
                             <span class="text-xs font-bold text-slate-400 uppercase">Worksheets & HW</span>
                             <h3 class="text-2xl font-extrabold text-slate-800 mt-1">${db.homework.length}</h3>
+                        </div>
+                    </div>
+
+                    <!-- Bottom Full Frame School Graphic Card (Filling Empty Dashboard Space) -->
+                    <div class="relative rounded-2xl overflow-hidden shadow-2xl flex-1 min-h-[220px] flex items-center justify-center p-6 text-center text-white" style="background: linear-gradient(rgba(15, 23, 42, 0.75), rgba(15, 23, 42, 0.85)), url('https://images.unsplash.com/photo-1580582932707-520aed937b7b?auto=format&fit=crop&w=1920&q=80'); background-size: cover; background-position: center;">
+                        <div class="z-10 space-y-2">
+                            <div class="bg-blue-600 text-white text-xs font-bold px-3 py-1 rounded-full inline-block shadow">TeacherHub Portal</div>
+                            <h3 class="text-2xl sm:text-3xl font-extrabold tracking-wide uppercase">Government Primary School Dhok Jhatt</h3>
+                            <p class="text-slate-300 text-xs sm:text-sm">Excellence in Primary Education & Faculty Collaboration</p>
+                            <div class="pt-2 text-xs text-amber-400 font-semibold tracking-wider uppercase">Made By Haris Awan</div>
                         </div>
                     </div>
                 </div>
@@ -377,7 +421,7 @@
                     <div class="flex justify-between items-center flex-wrap gap-3">
                         <div>
                             <h3 class="font-bold text-slate-800 text-lg">Student Reports</h3>
-                            <p class="text-xs text-slate-500">Submit progress reports and generate printables.</p>
+                            <p class="text-xs text-slate-500">Submit progress reports for leadership approval.</p>
                         </div>
                         <button onclick="openAddReportModal()" class="bg-primary hover:bg-blue-800 text-white px-4 py-2 rounded-xl text-sm font-bold transition">+ Submit Report</button>
                     </div>
@@ -455,16 +499,51 @@
         function renderTimetableTab() {
             return `
                 <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm space-y-4">
-                    <h3 class="font-bold text-slate-800 text-lg">Weekly Class Timetable</h3>
-                    <div class="grid grid-cols-1 sm:grid-cols-5 gap-3 text-center text-xs">
-                        <div class="p-3 bg-slate-100 rounded-xl"><strong class="block text-slate-700">Monday</strong>Maths (Class 3)<br>08:00 AM</div>
-                        <div class="p-3 bg-slate-100 rounded-xl"><strong class="block text-slate-700">Tuesday</strong>English (Class 2)<br>09:00 AM</div>
-                        <div class="p-3 bg-slate-100 rounded-xl"><strong class="block text-slate-700">Wednesday</strong>Science (Class 4)<br>10:00 AM</div>
-                        <div class="p-3 bg-slate-100 rounded-xl"><strong class="block text-slate-700">Thursday</strong>Urdu (Class 1)<br>11:00 AM</div>
-                        <div class="p-3 bg-slate-100 rounded-xl"><strong class="block text-slate-700">Friday</strong>Islamiat (Class 5)<br>11:30 AM</div>
+                    <div class="flex justify-between items-center flex-wrap gap-3">
+                        <div>
+                            <h3 class="font-bold text-slate-800 text-lg">Manage Class Timetable</h3>
+                            <p class="text-xs text-slate-500">Teachers, Head Teachers and Admins can add and manage schedule slots.</p>
+                        </div>
+                        <button onclick="openAddTimetableModal()" class="bg-primary hover:bg-blue-800 text-white px-4 py-2 rounded-xl text-sm font-bold transition">+ Add Timetable Slot</button>
                     </div>
+
+                    ${db.timetable.length === 0 ? `<div class="text-center py-10 text-slate-400 text-sm">No timetable slots added yet.</div>` : `
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                            ${db.timetable.map(t => `
+                                <div class="p-4 border border-slate-200 rounded-xl bg-slate-50 flex justify-between items-start">
+                                    <div>
+                                        <span class="bg-blue-100 text-blue-700 text-[10px] font-bold px-2 py-0.5 rounded">${t.day}</span>
+                                        <h4 class="font-bold text-slate-800 mt-1">${t.subject}</h4>
+                                        <p class="text-xs text-slate-500 mt-0.5">Class: ${t.className} | Time: ${t.time}</p>
+                                    </div>
+                                    <button onclick="deleteTimetable('${t.id}')" class="text-red-500 hover:text-red-700 text-xs font-bold">Delete</button>
+                                </div>
+                            `).join('')}
+                        </div>
+                    `}
                 </div>
             `;
+        }
+
+        function openAddTimetableModal() {
+            const day = prompt("Enter Day (e.g. Monday, Tuesday):", "Monday");
+            if (!day) return;
+            const className = prompt("Enter Class Name:", "Class 3");
+            if (!className) return;
+            const subject = prompt("Enter Subject:", "Mathematics");
+            if (!subject) return;
+            const time = prompt("Enter Time:", "08:00 AM");
+            if (!time) return;
+
+            db.timetable.push({ id: "tt_" + Date.now(), day, className, subject, time });
+            saveDB(db);
+            render();
+        }
+
+        function deleteTimetable(id) {
+            db.timetable = db.timetable.filter(t => t.id !== id);
+            saveDB(db);
+            render();
         }
 
         function renderMeetingsTab() {
@@ -473,7 +552,7 @@
             return `
                 <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm space-y-4">
                     <div class="flex justify-between items-center">
-                        <h3 class="font-bold text-slate-800 text-lg">Meetings</h3>
+                        <h3 class="font-bold text-slate-800 text-lg">Staff Meetings</h3>
                         ${canCreate ? `<button onclick="openAddMeetingModal()" class="bg-primary text-white px-4 py-2 rounded-xl text-sm font-bold">+ Schedule Meeting</button>` : ''}
                     </div>
                     ${db.meetings.length === 0 ? `<div class="text-center py-10 text-slate-400 text-sm">No meetings scheduled.</div>` : `
