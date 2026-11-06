@@ -1,1394 +1,765 @@
-```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Government Primary School Dhok Jhatt - Management Portal</title>
-    <!-- Tailwind CSS -->
+    <title>Govt. Primary School Dhok Jhatt</title>
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        brand: {
-                            50: '#eef2ff',
-                            100: '#e0e7ff',
-                            400: '#818cf8',
-                            500: '#6366f1',
-                            600: '#4f46e5',
-                            700: '#4338ca',
-                            900: '#312e81',
-                        }
-                    },
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
+                        primary: '#1e40af',
+                        secondary: '#3b82f6',
+                        darkBg: '#0f172a'
                     }
                 }
             }
         }
     </script>
     <style>
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+        }
         .hero-bg {
-            background-image: linear-gradient(rgba(15, 23, 42, 0.8), rgba(30, 27, 75, 0.88)), 
-                              url('https://images.unsplash.com/photo-1580582932707-520aed937b7b?q=80&w=1920&auto=format&fit=crop');
+            background: linear-gradient(rgba(15, 23, 42, 0.85), rgba(15, 23, 42, 0.90)), url('https://images.unsplash.com/photo-1580582932707-520aed937b7b?auto=format&fit=crop&w=1920&q=80');
             background-size: cover;
             background-position: center;
         }
-        .custom-scrollbar::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
-            border-radius: 9999px;
-        }
     </style>
 </head>
-<body class="bg-slate-50 font-sans text-slate-800 min-h-screen flex flex-col">
+<body class="bg-slate-100 font-sans text-slate-800 antialiased min-h-screen flex flex-col">
 
-    <!-- Notification Toast Container -->
-    <div id="toast-container" class="fixed top-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
-
-    <!-- MAIN NAVBAR -->
-    <nav class="bg-white border-b border-slate-200 sticky top-0 z-40">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-16 items-center">
-                <div class="flex items-center space-x-3 cursor-pointer" onclick="showView('landing')">
-                    <div class="w-10 h-10 rounded-xl bg-brand-600 flex items-center justify-center text-white font-bold text-xl shadow-md">
-                        GPS
-                    </div>
-                    <div>
-                        <h1 class="text-base sm:text-lg font-bold text-slate-900 leading-tight">Govt. Primary School</h1>
-                        <p class="text-xs text-brand-600 font-semibold tracking-wide">DHOK JHATT</p>
-                    </div>
-                </div>
-
-                <!-- Nav Actions -->
-                <div id="nav-actions" class="flex items-center space-x-3">
-                    <button onclick="openAuthModal('login')" class="px-4 py-2 text-sm font-semibold text-brand-600 hover:text-brand-700 bg-brand-50 hover:bg-brand-100 rounded-lg transition">
-                        <i class="fa-solid fa-right-to-bracket mr-1"></i> Login
-                    </button>
-                    <button onclick="openAuthModal('signup')" class="px-4 py-2 text-sm font-semibold text-white bg-brand-600 hover:bg-brand-700 rounded-lg shadow-sm transition">
-                        Sign Up
-                    </button>
-                </div>
-
-                <!-- Logged In User Pill -->
-                <div id="nav-user" class="hidden flex items-center space-x-3">
-                    <span id="user-badge" class="px-2.5 py-1 text-xs font-semibold rounded-full"></span>
-                    <div class="text-right hidden sm:block">
-                        <div id="user-display-name" class="text-sm font-bold text-slate-800 leading-none"></div>
-                        <div id="user-display-email" class="text-xs text-slate-500 mt-0.5"></div>
-                    </div>
-                    <button onclick="logout()" class="p-2 text-slate-400 hover:text-rose-600 transition" title="Logout">
-                        <i class="fa-solid fa-power-off text-lg"></i>
-                    </button>
-                </div>
-            </div>
-        </div>
-    </nav>
-
-    <!-- VIEWS CONTAINER -->
-    <main class="flex-grow">
-        
-        <!-- ================= LANDING PAGE VIEW ================= -->
-        <section id="view-landing" class="block">
-            <!-- Hero Banner -->
-            <div class="hero-bg min-h-[500px] flex items-center justify-center px-4 py-16 text-center text-white relative">
-                <div class="max-w-4xl mx-auto space-y-6">
-                    <span class="inline-block px-4 py-1.5 rounded-full bg-brand-500/30 border border-brand-400/40 text-brand-200 text-xs font-semibold uppercase tracking-wider">
-                        Official Academic & Management Portal
-                    </span>
-                    <h1 class="text-3xl sm:text-5xl font-extrabold leading-tight tracking-tight">
-                        Government Primary School Dhok Jhatt
-                    </h1>
-                    <p class="text-slate-200 text-base sm:text-lg max-w-2xl mx-auto font-light">
-                        Integrated School Management System for Teachers, Head Teacher, and Administration.
-                    </p>
-                    <div class="flex flex-wrap justify-center gap-4 pt-4">
-                        <button onclick="openAuthModal('login')" class="px-8 py-3.5 bg-brand-600 hover:bg-brand-500 text-white font-bold rounded-xl shadow-lg transition duration-200">
-                            Access Dashboard
-                        </button>
-                        <a href="#rules-section" class="px-8 py-3.5 bg-white/10 hover:bg-white/20 backdrop-blur-sm border border-white/20 text-white font-bold rounded-xl transition">
-                            View Staff Rules
-                        </a>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Rules Section -->
-            <div id="rules-section" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-                <div class="text-center max-w-2xl mx-auto mb-12">
-                    <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900">Teacher Code of Conduct & Rules</h2>
-                    <p class="text-slate-500 text-sm mt-2">Official guidelines for teaching staff at GPS Dhok Jhatt</p>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    <div class="bg-white p-6 rounded-2xl border border-slate-200 hover:shadow-md transition">
-                        <div class="text-brand-600 font-bold text-2xl mb-2">01</div>
-                        <h4 class="font-bold text-slate-800 mb-2">Punctuality & Attendance</h4>
-                        <p class="text-sm text-slate-600">Teachers must log daily student attendance before 08:30 AM every morning.</p>
-                    </div>
-                    <div class="bg-white p-6 rounded-2xl border border-slate-200 hover:shadow-md transition">
-                        <div class="text-brand-600 font-bold text-2xl mb-2">02</div>
-                        <h4 class="font-bold text-slate-800 mb-2">Homework & Assignments</h4>
-                        <p class="text-sm text-slate-600">Homework instructions and learning material must be uploaded daily on the portal.</p>
-                    </div>
-                    <div class="bg-white p-6 rounded-2xl border border-slate-200 hover:shadow-md transition">
-                        <div class="text-brand-600 font-bold text-2xl mb-2">03</div>
-                        <h4 class="font-bold text-slate-800 mb-2">Monthly Student Reports</h4>
-                        <p class="text-sm text-slate-600">Progress reports must be completed and submitted for Head Teacher approval monthly.</p>
-                    </div>
-                    <div class="bg-white p-6 rounded-2xl border border-slate-200 hover:shadow-md transition">
-                        <div class="text-brand-600 font-bold text-2xl mb-2">04</div>
-                        <h4 class="font-bold text-slate-800 mb-2">Staff Meetings</h4>
-                        <p class="text-sm text-slate-600">Attendance is mandatory in all scheduled staff and coordination meetings.</p>
-                    </div>
-                    <div class="bg-white p-6 rounded-2xl border border-slate-200 hover:shadow-md transition">
-                        <div class="text-brand-600 font-bold text-2xl mb-2">05</div>
-                        <h4 class="font-bold text-slate-800 mb-2">Resource Sharing</h4>
-                        <p class="text-sm text-slate-600">Share verified worksheets, syllabus notes, and exam papers in the Shared Files repository.</p>
-                    </div>
-                    <div class="bg-white p-6 rounded-2xl border border-slate-200 hover:shadow-md transition">
-                        <div class="text-brand-600 font-bold text-2xl mb-2">06</div>
-                        <h4 class="font-bold text-slate-800 mb-2">Role Authority</h4>
-                        <p class="text-sm text-slate-600">System roles and permissions are exclusively controlled by School Admin (Haris).</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- ================= AUTH MODAL (SPLIT LAYOUT) ================= -->
-        <div id="auth-modal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
-            <div class="bg-white rounded-3xl shadow-2xl max-w-4xl w-full overflow-hidden flex flex-col md:flex-row relative">
-                <!-- Close Button -->
-                <button onclick="closeAuthModal()" class="absolute top-4 right-4 z-10 w-9 h-9 bg-slate-100 hover:bg-slate-200 rounded-full flex items-center justify-center text-slate-600 transition">
-                    <i class="fa-solid fa-xmark text-lg"></i>
-                </button>
-
-                <!-- Left Branding Panel -->
-                <div class="md:w-5/12 bg-brand-600 p-8 sm:p-10 text-white flex flex-col justify-between relative overflow-hidden">
-                    <div class="relative z-10">
-                        <div class="inline-block px-3 py-1 bg-white/20 rounded-full text-xs font-semibold mb-6">
-                            GPS Dhok Jhatt
-                        </div>
-                        <h2 class="text-2xl sm:text-3xl font-bold leading-tight">
-                            Welcome to Your Digital Classroom.
-                        </h2>
-                        <p class="text-brand-100 text-xs sm:text-sm mt-3 font-light">
-                            Log in to access your classes, track student progress, and keep growing every day.
-                        </p>
-                    </div>
-
-                    <div class="my-8 flex justify-center relative z-10">
-                        <div class="w-32 h-32 rounded-2xl bg-white/10 backdrop-blur-md flex items-center justify-center text-5xl text-brand-100">
-                            <i class="fa-solid fa-school"></i>
-                        </div>
-                    </div>
-
-                    <div class="text-xs text-brand-200 relative z-10">
-                        &copy; GPS Dhok Jhatt Management System
-                    </div>
-                </div>
-
-                <!-- Right Form Side -->
-                <div class="md:w-7/12 p-8 sm:p-10 bg-white flex flex-col justify-center">
-                    
-                    <!-- LOGIN FORM -->
-                    <div id="form-login-container">
-                        <div class="flex justify-between items-center mb-6">
-                            <div>
-                                <h3 class="text-2xl font-bold text-slate-900">Welcome Back</h3>
-                                <p class="text-xs text-slate-500 mt-1">Enter your credentials to access portal</p>
-                            </div>
-                            <button onclick="toggleAuthType('signup')" class="text-xs font-semibold text-brand-600 bg-brand-50 px-3 py-1.5 rounded-lg hover:bg-brand-100 transition">
-                                Sign up
-                            </button>
-                        </div>
-
-                        <form id="login-form" onsubmit="handleLogin(event)" class="space-y-4">
-                            <div>
-                                <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">Email Address</label>
-                                <input type="email" id="login-email" required placeholder="name@school.tm" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-500 text-sm">
-                            </div>
-                            <div>
-                                <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">Password</label>
-                                <input type="password" id="login-password" required placeholder="••••••••" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-500 text-sm">
-                            </div>
-
-                            <button type="submit" class="w-full py-3.5 bg-brand-600 hover:bg-brand-700 text-white font-bold rounded-xl shadow-md transition text-sm">
-                                Login
-                            </button>
-                        </form>
-
-                        <div class="mt-6 pt-6 border-t border-slate-100">
-                            <p class="text-xs text-slate-500 font-medium mb-2">Default School Admin Account:</p>
-                            <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-200 text-xs text-slate-700 flex justify-between items-center">
-                                <div>
-                                    <span class="font-bold">Admin:</span> harisawan.pk.@school.tm
-                                </div>
-                                <button onclick="fillAdminCredentials()" class="px-2.5 py-1 bg-brand-600 text-white font-semibold rounded text-[11px]">Auto Fill</button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- SIGNUP FORM -->
-                    <div id="form-signup-container" class="hidden">
-                        <div class="flex justify-between items-center mb-6">
-                            <div>
-                                <h3 class="text-2xl font-bold text-slate-900">Create Account</h3>
-                                <p class="text-xs text-slate-500 mt-1">Register as a new teacher</p>
-                            </div>
-                            <button onclick="toggleAuthType('login')" class="text-xs font-semibold text-brand-600 bg-brand-50 px-3 py-1.5 rounded-lg hover:bg-brand-100 transition">
-                                Log in
-                            </button>
-                        </div>
-
-                        <form id="signup-form" onsubmit="handleSignup(event)" class="space-y-3">
-                            <div>
-                                <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">Full Name</label>
-                                <input type="text" id="signup-name" required placeholder="e.g. Teacher Ahmad" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-500 text-sm">
-                            </div>
-                            <div>
-                                <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">Subject</label>
-                                <input type="text" id="signup-subject" required placeholder="e.g. Mathematics" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-500 text-sm">
-                            </div>
-                            <div>
-                                <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">Email</label>
-                                <input type="email" id="signup-email" required placeholder="teacher@school.tm" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-500 text-sm">
-                            </div>
-                            <div>
-                                <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">Password</label>
-                                <input type="password" id="signup-password" required placeholder="••••••••" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-500 text-sm">
-                            </div>
-
-                            <button type="submit" class="w-full py-3 bg-brand-600 hover:bg-brand-700 text-white font-bold rounded-xl shadow-md transition text-sm">
-                                Register Account
-                            </button>
-                        </form>
-                    </div>
-
-                </div>
-            </div>
-        </div>
-
-        <!-- ================= DASHBOARD CONTAINER ================= -->
-        <div id="view-dashboard" class="hidden max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            
-            <!-- Dashboard Sub Header -->
-            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
-                <div>
-                    <div class="flex items-center space-x-2">
-                        <span id="dashboard-role-badge" class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider"></span>
-                        <span class="text-xs text-slate-400">GPS Dhok Jhatt System</span>
-                    </div>
-                    <h1 id="dashboard-welcome" class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-1"></h1>
-                </div>
-
-                <!-- Navigation Tabs -->
-                <div class="flex flex-wrap gap-2" id="dashboard-tabs">
-                    <!-- Dynamic tabs rendered by JS -->
-                </div>
-            </div>
-
-            <!-- OVERVIEW TAB -->
-            <div id="tab-overview" class="tab-content space-y-6">
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5" id="stats-cards-container">
-                    <!-- Dynamic stats -->
-                </div>
-
-                <!-- Announcements -->
-                <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm">
-                    <div class="flex justify-between items-center mb-4">
-                        <h3 class="font-bold text-slate-800 text-lg flex items-center">
-                            <i class="fa-solid fa-bullhorn text-brand-600 mr-2"></i> Announcements
-                        </h3>
-                        <div id="add-announcement-btn-container"></div>
-                    </div>
-                    <div id="announcements-list" class="space-y-3"></div>
-                </div>
-
-                <!-- Meetings -->
-                <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm">
-                    <div class="flex justify-between items-center mb-4">
-                        <h3 class="font-bold text-slate-800 text-lg flex items-center">
-                            <i class="fa-solid fa-video text-emerald-600 mr-2"></i> Scheduled Meetings
-                        </h3>
-                        <div id="add-meeting-btn-container"></div>
-                    </div>
-                    <div id="meetings-list" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
-                </div>
-            </div>
-
-            <!-- ATTENDANCE TAB -->
-            <div id="tab-attendance" class="tab-content hidden space-y-6">
-                <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm">
-                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-                        <div>
-                            <h3 class="font-bold text-slate-800 text-xl">Daily Class Attendance</h3>
-                            <p class="text-slate-500 text-sm">Mark attendance for assigned class students.</p>
-                        </div>
-                        <div class="flex items-center space-x-3">
-                            <input type="date" id="attendance-date" class="px-3 py-2 border border-slate-200 rounded-lg text-sm">
-                            <select id="attendance-class-select" onchange="renderAttendanceTab()" class="px-3 py-2 border border-slate-200 rounded-lg text-sm bg-white font-medium">
-                                <option value="Class 1">Class 1</option>
-                                <option value="Class 2">Class 2</option>
-                                <option value="Class 3">Class 3</option>
-                                <option value="Class 4">Class 4</option>
-                                <option value="Class 5">Class 5</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left text-sm border-collapse">
-                            <thead>
-                                <tr class="bg-slate-50 border-b border-slate-200 text-slate-600 text-xs font-bold uppercase">
-                                    <th class="p-3">Roll No</th>
-                                    <th class="p-3">Student Name</th>
-                                    <th class="p-3">Class</th>
-                                    <th class="p-3">Mark Status</th>
-                                </tr>
-                            </thead>
-                            <tbody id="attendance-students-list"></tbody>
-                        </table>
-                    </div>
-
-                    <div class="mt-6 flex justify-end">
-                        <button onclick="saveAttendance()" class="px-6 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow transition text-sm">
-                            <i class="fa-solid fa-floppy-disk mr-2"></i> Save Class Attendance
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Attendance Logs -->
-                <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm">
-                    <h4 class="font-bold text-slate-800 mb-4">Saved Attendance Log History</h4>
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left text-sm">
-                            <thead>
-                                <tr class="border-b border-slate-200 text-xs text-slate-500 uppercase">
-                                    <th class="py-2">Date</th>
-                                    <th class="py-2">Class</th>
-                                    <th class="py-2">Logged By</th>
-                                    <th class="py-2">Status</th>
-                                </tr>
-                            </thead>
-                            <tbody id="attendance-logs-table"></tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            <!-- REPORTS TAB -->
-            <div id="tab-reports" class="tab-content hidden space-y-6">
-                <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm">
-                    <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-4 mb-6">
-                        <div>
-                            <h3 class="font-bold text-slate-800 text-xl">Student Academic Reports</h3>
-                            <p class="text-slate-500 text-sm">Submit and manage student evaluation reports.</p>
-                        </div>
-                        <button onclick="openModal('modal-report')" class="px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white font-bold rounded-xl text-sm transition">
-                            <i class="fa-solid fa-plus mr-1"></i> Submit New Report
-                        </button>
-                    </div>
-
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left text-sm border-collapse">
-                            <thead>
-                                <tr class="bg-slate-50 border-b border-slate-200 text-slate-600 text-xs font-bold uppercase">
-                                    <th class="p-3">Student Name</th>
-                                    <th class="p-3">Class</th>
-                                    <th class="p-3">Grade/Performance</th>
-                                    <th class="p-3">Submitted By</th>
-                                    <th class="p-3">Status</th>
-                                    <th class="p-3">Action</th>
-                                </tr>
-                            </thead>
-                            <tbody id="reports-list-table"></tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            <!-- HOMEWORK & ASSIGNMENTS TAB -->
-            <div id="tab-homework" class="tab-content hidden space-y-6">
-                <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm">
-                    <div class="flex justify-between items-center mb-6">
-                        <div>
-                            <h3 class="font-bold text-slate-800 text-xl">Daily Homework Portal</h3>
-                            <p class="text-slate-500 text-sm">Assign tasks to students and track completion.</p>
-                        </div>
-                        <button onclick="openModal('modal-homework')" class="px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white font-bold rounded-xl text-sm transition">
-                            <i class="fa-solid fa-plus mr-1"></i> Add Homework
-                        </button>
-                    </div>
-                    <div id="homework-list-container" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
-                </div>
-            </div>
-
-            <!-- FILES TAB -->
-            <div id="tab-files" class="tab-content hidden space-y-6">
-                <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm">
-                    <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-4 mb-6">
-                        <div>
-                            <h3 class="font-bold text-slate-800 text-xl">Shared Teaching Resources</h3>
-                            <p class="text-slate-500 text-sm">Download or upload class notes, papers, and worksheets.</p>
-                        </div>
-                        <button onclick="openModal('modal-file')" class="px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white font-bold rounded-xl text-sm transition">
-                            <i class="fa-solid fa-upload mr-1"></i> Upload File
-                        </button>
-                    </div>
-
-                    <div id="files-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4"></div>
-                </div>
-            </div>
-
-            <!-- DISCUSSION TAB -->
-            <div id="tab-chat" class="tab-content hidden space-y-6">
-                <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex flex-col h-[550px]">
-                    <div class="p-4 bg-slate-50 border-b border-slate-200 font-bold text-slate-800 flex items-center justify-between">
-                        <span><i class="fa-solid fa-comments text-brand-600 mr-2"></i> Faculty Internal Chat</span>
-                        <span class="text-xs text-slate-500 font-normal">GPS Dhok Jhatt</span>
-                    </div>
-
-                    <div id="chat-messages-container" class="flex-grow p-4 overflow-y-auto space-y-3 custom-scrollbar bg-slate-50/50"></div>
-
-                    <form onsubmit="sendChatMessage(event)" class="p-3 bg-white border-t border-slate-200 flex space-x-2">
-                        <input type="text" id="chat-input" required placeholder="Type your message here..." class="flex-grow px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
-                        <button type="submit" class="px-5 py-2.5 bg-brand-600 hover:bg-brand-700 text-white font-bold rounded-xl transition text-sm">
-                            <i class="fa-solid fa-paper-plane"></i>
-                        </button>
-                    </form>
-                </div>
-            </div>
-
-            <!-- ADMIN TAB (EXCLUSIVELY FOR HARIS ADMIN / HEAD TEACHER) -->
-            <div id="tab-admin" class="tab-content hidden space-y-6">
-                
-                <!-- Add New Staff Form (Only Admin) -->
-                <div id="admin-add-staff-box" class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm">
-                    <h3 class="font-bold text-slate-800 text-lg mb-1">Add New Staff Member</h3>
-                    <p class="text-xs text-slate-500 mb-4">Create account directly for a new Teacher or Head Teacher.</p>
-                    <form onsubmit="handleAdminAddStaff(event)" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                        <div>
-                            <label class="block text-xs font-bold text-slate-600 mb-1">Full Name</label>
-                            <input type="text" id="admin-staff-name" required placeholder="Teacher Name" class="w-full px-3 py-2 border rounded-xl text-sm">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold text-slate-600 mb-1">Email Address</label>
-                            <input type="email" id="admin-staff-email" required placeholder="teacher@school.tm" class="w-full px-3 py-2 border rounded-xl text-sm">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold text-slate-600 mb-1">Password</label>
-                            <input type="password" id="admin-staff-pass" required placeholder="••••••••" class="w-full px-3 py-2 border rounded-xl text-sm">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold text-slate-600 mb-1">Subject</label>
-                            <input type="text" id="admin-staff-subject" required placeholder="e.g. Science" class="w-full px-3 py-2 border rounded-xl text-sm">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold text-slate-600 mb-1">Assign Rank</label>
-                            <select id="admin-staff-role" class="w-full px-3 py-2 border rounded-xl text-sm bg-white font-medium">
-                                <option value="Teacher">Teacher</option>
-                                <option value="Head Teacher">Head Teacher</option>
-                            </select>
-                        </div>
-                        <div class="flex items-end">
-                            <button type="submit" class="w-full py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-sm transition">
-                                <i class="fa-solid fa-user-plus mr-1"></i> Register Staff
-                            </button>
-                        </div>
-                    </form>
-                </div>
-
-                <!-- Faculty Staff List -->
-                <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm">
-                    <h3 class="font-bold text-slate-800 text-xl mb-4">Faculty Ranks & Staff Directory</h3>
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left text-sm border-collapse">
-                            <thead>
-                                <tr class="bg-slate-50 border-b border-slate-200 text-slate-600 text-xs font-bold uppercase">
-                                    <th class="p-3">Staff Name</th>
-                                    <th class="p-3">Email</th>
-                                    <th class="p-3">Subject</th>
-                                    <th class="p-3">Current Rank</th>
-                                    <th class="p-3">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody id="admin-teachers-list"></tbody>
-                        </table>
-                    </div>
-                </div>
-
-            </div>
-
-            <!-- PROFILE TAB -->
-            <div id="tab-profile" class="tab-content hidden space-y-6">
-                <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm max-w-2xl mx-auto">
-                    <h3 class="font-bold text-slate-800 text-xl mb-6">Profile Settings</h3>
-                    <form onsubmit="updateProfile(event)" class="space-y-4">
-                        <div>
-                            <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Full Name</label>
-                            <input type="text" id="profile-name" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Subject</label>
-                            <input type="text" id="profile-subject" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Phone Number</label>
-                            <input type="text" id="profile-phone" placeholder="0300-1234567" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Current Assigned Rank</label>
-                            <input type="text" id="profile-rank" disabled class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm bg-slate-100 text-slate-500 font-bold">
-                        </div>
-                        <button type="submit" class="w-full py-3 bg-brand-600 hover:bg-brand-700 text-white font-bold rounded-xl transition text-sm">
-                            Save Changes
-                        </button>
-                    </form>
-                </div>
-            </div>
-
-        </div>
-    </main>
-
-    <!-- FOOTER -->
-    <footer class="bg-white border-t border-slate-200 py-6 mt-12">
-        <div class="max-w-7xl mx-auto px-4 text-center text-xs text-slate-500">
-            <p>&copy; Government Primary School Dhok Jhatt Management System.</p>
-        </div>
-    </footer>
-
-    <!-- MODAL: ANNOUNCEMENT -->
-    <div id="modal-announcement" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl p-6 max-w-md w-full">
-            <h3 class="font-bold text-slate-800 text-lg mb-4">Post Announcement</h3>
-            <form onsubmit="handlePostAnnouncement(event)" class="space-y-4">
-                <div>
-                    <label class="block text-xs font-bold text-slate-600 mb-1">Title</label>
-                    <input type="text" id="ann-title" required class="w-full px-3 py-2 border rounded-xl text-sm">
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-slate-600 mb-1">Notice Details</label>
-                    <textarea id="ann-content" required rows="3" class="w-full px-3 py-2 border rounded-xl text-sm"></textarea>
-                </div>
-                <div class="flex justify-end space-x-2">
-                    <button type="button" onclick="closeModal('modal-announcement')" class="px-4 py-2 text-sm text-slate-600">Cancel</button>
-                    <button type="submit" class="px-4 py-2 text-sm bg-brand-600 text-white font-bold rounded-xl">Publish</button>
-                </div>
-            </form>
-        </div>
+    <!-- App Container -->
+    <div id="app" class="flex-1 flex flex-col">
+        <!-- Dynamic Content Injected Here via JavaScript -->
     </div>
 
-    <!-- MODAL: MEETING -->
-    <div id="modal-meeting" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl p-6 max-w-md w-full">
-            <h3 class="font-bold text-slate-800 text-lg mb-4">Schedule Meeting</h3>
-            <form onsubmit="handleCreateMeeting(event)" class="space-y-4">
-                <div>
-                    <label class="block text-xs font-bold text-slate-600 mb-1">Topic</label>
-                    <input type="text" id="meet-topic" required class="w-full px-3 py-2 border rounded-xl text-sm">
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-slate-600 mb-1">Time</label>
-                    <input type="text" id="meet-time" placeholder="e.g. Tomorrow at 10:00 AM" required class="w-full px-3 py-2 border rounded-xl text-sm">
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-slate-600 mb-1">Venue / Online Link</label>
-                    <input type="text" id="meet-link" placeholder="Main Office / Online Link" required class="w-full px-3 py-2 border rounded-xl text-sm">
-                </div>
-                <div class="flex justify-end space-x-2">
-                    <button type="button" onclick="closeModal('modal-meeting')" class="px-4 py-2 text-sm text-slate-600">Cancel</button>
-                    <button type="submit" class="px-4 py-2 text-sm bg-brand-600 text-white font-bold rounded-xl">Schedule</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- MODAL: REPORT -->
-    <div id="modal-report" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl p-6 max-w-md w-full">
-            <h3 class="font-bold text-slate-800 text-lg mb-4">Student Evaluation Report</h3>
-            <form onsubmit="handleSaveReport(event)" class="space-y-4">
-                <div>
-                    <label class="block text-xs font-bold text-slate-600 mb-1">Student Name</label>
-                    <input type="text" id="rep-student" required class="w-full px-3 py-2 border rounded-xl text-sm">
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-slate-600 mb-1">Class</label>
-                    <select id="rep-class" class="w-full px-3 py-2 border rounded-xl text-sm">
-                        <option>Class 1</option>
-                        <option>Class 2</option>
-                        <option>Class 3</option>
-                        <option>Class 4</option>
-                        <option>Class 5</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-slate-600 mb-1">Grade / Progress Summary</label>
-                    <input type="text" id="rep-marks" placeholder="e.g. 90% - Excellent Conduct" required class="w-full px-3 py-2 border rounded-xl text-sm">
-                </div>
-                <div class="flex justify-end space-x-2">
-                    <button type="button" onclick="closeModal('modal-report')" class="px-4 py-2 text-sm text-slate-600">Cancel</button>
-                    <button type="submit" class="px-4 py-2 text-sm bg-brand-600 text-white font-bold rounded-xl">Submit Report</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- MODAL: HOMEWORK -->
-    <div id="modal-homework" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl p-6 max-w-md w-full">
-            <h3 class="font-bold text-slate-800 text-lg mb-4">Assign New Homework</h3>
-            <form onsubmit="handleSaveHomework(event)" class="space-y-4">
-                <div>
-                    <label class="block text-xs font-bold text-slate-600 mb-1">Target Class</label>
-                    <select id="hw-class" class="w-full px-3 py-2 border rounded-xl text-sm">
-                        <option>Class 1</option>
-                        <option>Class 2</option>
-                        <option>Class 3</option>
-                        <option>Class 4</option>
-                        <option>Class 5</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-slate-600 mb-1">Homework Topic</label>
-                    <input type="text" id="hw-title" required placeholder="Math Exercise 3B" class="w-full px-3 py-2 border rounded-xl text-sm">
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-slate-600 mb-1">Instructions / Description</label>
-                    <textarea id="hw-desc" required rows="3" placeholder="Complete Questions 1-5 in notebook." class="w-full px-3 py-2 border rounded-xl text-sm"></textarea>
-                </div>
-                <div class="flex justify-end space-x-2">
-                    <button type="button" onclick="closeModal('modal-homework')" class="px-4 py-2 text-sm text-slate-600">Cancel</button>
-                    <button type="submit" class="px-4 py-2 text-sm bg-brand-600 text-white font-bold rounded-xl">Assign Homework</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- MODAL: FILE UPLOAD -->
-    <div id="modal-file" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl p-6 max-w-md w-full">
-            <h3 class="font-bold text-slate-800 text-lg mb-4">Upload File Resource</h3>
-            <form onsubmit="handleUploadFile(event)" class="space-y-4">
-                <div>
-                    <label class="block text-xs font-bold text-slate-600 mb-1">Document Title</label>
-                    <input type="text" id="file-title" placeholder="Class 4 Urdu Notes.pdf" required class="w-full px-3 py-2 border rounded-xl text-sm">
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-slate-600 mb-1">Category</label>
-                    <select id="file-category" class="w-full px-3 py-2 border rounded-xl text-sm">
-                        <option>Worksheet</option>
-                        <option>Exam Paper</option>
-                        <option>Syllabus Notes</option>
-                    </select>
-                </div>
-                <div class="flex justify-end space-x-2">
-                    <button type="button" onclick="closeModal('modal-file')" class="px-4 py-2 text-sm text-slate-600">Cancel</button>
-                    <button type="submit" class="px-4 py-2 text-sm bg-brand-600 text-white font-bold rounded-xl">Upload Resource</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- LOGIC SCRIPT PERSISTENCE -->
+    <!-- JavaScript Application Logic -->
     <script>
-        // STRICT ONLY HARIS ADMIN ACCOUNT INITIALIZED (ZERO DEMO USERS)
-        const ADMIN_ACCOUNT = {
-            id: 'usr_admin_haris',
-            name: 'Haris (Admin)',
-            email: 'harisawan.pk.@school.tm',
-            password: 'haris.pk72829@',
-            role: 'Admin',
-            subject: 'Overall Administrator',
-            phone: '0300-0000000'
-        };
+        // LocalStorage DB Initialization
+        const DB_KEY = "GPS_DHOK_JHATT_DB_V3";
 
-        const STUDENT_ROSTER = {
-            "Class 1": [{id: 101, name: "Ali Ahmad"}, {id: 102, name: "Sara Khan"}],
-            "Class 2": [{id: 201, name: "Usman Raza"}, {id: 202, name: "Fatima Bibi"}],
-            "Class 3": [{id: 301, name: "Hamza Abbasi"}, {id: 302, name: "Zainab Malik"}],
-            "Class 4": [{id: 401, name: "Bilal Hassan"}, {id: 402, name: "Ayesha Omer"}],
-            "Class 5": [{id: 501, name: "Tariq Mahmood"}, {id: 502, name: "Mariam Jameel"}]
-        };
+        function getDB() {
+            let data = localStorage.getItem(DB_KEY);
+            if (!data) {
+                // Initial Clean State with ONLY Haris Awan Admin Account & Empty Tables
+                const initialData = {
+                    users: [
+                        {
+                            id: "usr_admin_1",
+                            name: "Haris Awan",
+                            email: "harisawan.pk.@school.tm",
+                            password: "haris.pk72829@",
+                            role: "Admin",
+                            subject: "Overall Administration & Management",
+                            phone: "+92 300 0000000"
+                        }
+                    ],
+                    students: [], // No dummy students
+                    attendance: [], // No dummy attendance
+                    reports: [], // No dummy reports
+                    homework: [], // No dummy homework
+                    meetings: [], // No dummy meetings
+                    notices: [], // No dummy notices
+                    chats: [], // No dummy chat
+                    currentUser: null
+                };
+                localStorage.setItem(DB_KEY, JSON.stringify(initialData));
+                return initialData;
+            }
+            return JSON.parse(data);
+        }
 
-        // Local Storage State Setup
-        let users = JSON.parse(localStorage.getItem('gps_users_v2')) || [ADMIN_ACCOUNT];
-        let announcements = JSON.parse(localStorage.getItem('gps_announcements_v2')) || [];
-        let meetings = JSON.parse(localStorage.getItem('gps_meetings_v2')) || [];
-        let reports = JSON.parse(localStorage.getItem('gps_reports_v2')) || [];
-        let homeworks = JSON.parse(localStorage.getItem('gps_homeworks_v2')) || [];
-        let files = JSON.parse(localStorage.getItem('gps_files_v2')) || [];
-        let chatMessages = JSON.parse(localStorage.getItem('gps_chats_v2')) || [];
-        let attendanceLogs = JSON.parse(localStorage.getItem('gps_attendance_logs_v2')) || [];
+        function saveDB(data) {
+            localStorage.setItem(DB_KEY, JSON.stringify(data));
+        }
 
-        let currentUser = JSON.parse(localStorage.getItem('gps_current_user_v2')) || null;
+        let db = getDB();
 
-        window.onload = function() {
-            document.getElementById('attendance-date').valueAsDate = new Date();
-            
-            if (currentUser) {
-                renderUserSession();
+        // Router & Render Engine
+        function render() {
+            const app = document.getElementById('app');
+            db = getDB();
+
+            if (!db.currentUser) {
+                app.innerHTML = renderAuthPage();
             } else {
-                showView('landing');
-            }
-        };
-
-        function saveData() {
-            localStorage.setItem('gps_users_v2', JSON.stringify(users));
-            localStorage.setItem('gps_announcements_v2', JSON.stringify(announcements));
-            localStorage.setItem('gps_meetings_v2', JSON.stringify(meetings));
-            localStorage.setItem('gps_reports_v2', JSON.stringify(reports));
-            localStorage.setItem('gps_homeworks_v2', JSON.stringify(homeworks));
-            localStorage.setItem('gps_files_v2', JSON.stringify(files));
-            localStorage.setItem('gps_chats_v2', JSON.stringify(chatMessages));
-            localStorage.setItem('gps_attendance_logs_v2', JSON.stringify(attendanceLogs));
-            if (currentUser) localStorage.setItem('gps_current_user_v2', JSON.stringify(currentUser));
-        }
-
-        function showView(viewName) {
-            document.getElementById('view-landing').classList.add('hidden');
-            document.getElementById('view-dashboard').classList.add('hidden');
-
-            if (viewName === 'landing') {
-                document.getElementById('view-landing').classList.remove('hidden');
-            } else if (viewName === 'dashboard') {
-                document.getElementById('view-dashboard').classList.remove('hidden');
-                renderDashboard();
+                app.innerHTML = renderDashboard();
             }
         }
 
-        // AUTH MODAL LOGIC
-        function openAuthModal(type) {
-            document.getElementById('auth-modal').classList.remove('hidden');
-            toggleAuthType(type);
+        // --- AUTHENTICATION & LANDING PAGE ---
+        let authMode = 'login'; // 'login' or 'signup'
+
+        function renderAuthPage() {
+            return `
+                <div class="hero-bg flex-1 flex flex-col justify-between p-4 sm:p-8">
+                    <!-- Top Branding Header -->
+                    <div class="text-center py-4">
+                        <h1 class="text-2xl sm:text-4xl font-extrabold text-white tracking-wide uppercase drop-shadow-md">Government Primary School Dhok Jhatt</h1>
+                        <p class="text-slate-300 text-xs sm:text-sm mt-1">Official Staff & Management Portal</p>
+                    </div>
+
+                    <!-- Center Box: Login / Signup -->
+                    <div class="max-w-md w-full mx-auto glass-card rounded-2xl shadow-2xl p-6 sm:p-8 my-auto">
+                        <div class="flex border-b border-slate-200 mb-6">
+                            <button onclick="setAuthMode('login')" class="flex-1 pb-3 text-center font-bold text-sm sm:text-base ${authMode === 'login' ? 'text-primary border-b-2 border-primary' : 'text-slate-400'}">Login</button>
+                            <button onclick="setAuthMode('signup')" class="flex-1 pb-3 text-center font-bold text-sm sm:text-base ${authMode === 'signup' ? 'text-primary border-b-2 border-primary' : 'text-slate-400'}">Sign Up</button>
+                        </div>
+
+                        ${authMode === 'login' ? `
+                            <form onsubmit="handleLogin(event)" class="space-y-4">
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Email Address</label>
+                                    <input type="email" id="loginEmail" required class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-primary text-sm" placeholder="Enter your official email">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Password</label>
+                                    <input type="password" id="loginPassword" required class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-primary text-sm" placeholder="••••••••">
+                                </div>
+                                <button type="submit" class="w-full bg-primary hover:bg-blue-800 text-white font-bold py-3 rounded-xl transition duration-200 shadow-lg text-sm uppercase tracking-wide">Login to Portal</button>
+                            </form>
+                        ` : `
+                            <form onsubmit="handleSignup(event)" class="space-y-4">
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Full Name</label>
+                                    <input type="text" id="signupName" required class="w-full px-3 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-primary text-sm" placeholder="Your Name">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Email Address</label>
+                                    <input type="email" id="signupEmail" required class="w-full px-3 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-primary text-sm" placeholder="name@school.tm">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Subject / Designation</label>
+                                    <input type="text" id="signupSubject" required class="w-full px-3 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-primary text-sm" placeholder="e.g. Mathematics Teacher">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Password</label>
+                                    <input type="password" id="signupPassword" required class="w-full px-3 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-primary text-sm" placeholder="••••••••">
+                                </div>
+                                <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-xl transition duration-200 shadow-lg text-sm uppercase tracking-wide">Register Account</button>
+                            </form>
+                        `}
+                    </div>
+
+                    <!-- Teacher Rules & Guidelines Footer Section -->
+                    <div class="max-w-4xl mx-auto bg-slate-900/90 border border-slate-700 text-white rounded-2xl p-4 sm:p-6 shadow-2xl backdrop-blur-md mt-6">
+                        <h3 class="text-amber-400 font-bold text-sm sm:text-base uppercase tracking-wider mb-2 text-center">📜 Teacher Rules & Code of Conduct</h3>
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs sm:text-sm text-slate-300">
+                            <div class="bg-slate-800/80 p-3 rounded-xl border border-slate-700">
+                                <strong class="text-white block mb-1">1. Attendance & Punctuality</strong>
+                                Daily attendance for assigned classes must be marked punctually. Self attendance is automatically logged on portal access.
+                            </div>
+                            <div class="bg-slate-800/80 p-3 rounded-xl border border-slate-700">
+                                <strong class="text-white block mb-1">2. Academic Reporting</strong>
+                                Submit accurate student progress reports and worksheets regularly. Head Teachers will review and approve submissions.
+                            </div>
+                            <div class="bg-slate-800/80 p-3 rounded-xl border border-slate-700">
+                                <strong class="text-white block mb-1">3. Professional Discipline</strong>
+                                Unauthorized role escalation or changing school-wide settings is strictly restricted to Admin (Haris Awan).
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
         }
 
-        function closeAuthModal() {
-            document.getElementById('auth-modal').classList.add('hidden');
-        }
-
-        function toggleAuthType(type) {
-            if (type === 'login') {
-                document.getElementById('form-login-container').classList.remove('hidden');
-                document.getElementById('form-signup-container').classList.add('hidden');
-            } else {
-                document.getElementById('form-login-container').classList.add('hidden');
-                document.getElementById('form-signup-container').classList.remove('hidden');
-            }
-        }
-
-        function fillAdminCredentials() {
-            document.getElementById('login-email').value = "harisawan.pk.@school.tm";
-            document.getElementById('login-password').value = "haris.pk72829@";
+        function setAuthMode(mode) {
+            authMode = mode;
+            render();
         }
 
         function handleLogin(e) {
             e.preventDefault();
-            const email = document.getElementById('login-email').value.trim();
-            const pass = document.getElementById('login-password').value.trim();
+            const email = document.getElementById('loginEmail').value.trim();
+            const password = document.getElementById('loginPassword').value;
 
-            const foundUser = users.find(u => u.email.toLowerCase() === email.toLowerCase() && u.password === pass);
-
-            if (foundUser) {
-                currentUser = foundUser;
-                saveData();
-                closeAuthModal();
-                renderUserSession();
-                showToast(`Welcome ${currentUser.name}!`, 'success');
+            const user = db.users.find(u => u.email === email && u.password === password);
+            if (user) {
+                db.currentUser = user;
+                saveDB(db);
+                render();
             } else {
-                showToast('Invalid Email or Password!', 'error');
+                alert("Invalid email or password! Please check your credentials.");
             }
         }
 
         function handleSignup(e) {
             e.preventDefault();
-            const name = document.getElementById('signup-name').value.trim();
-            const subject = document.getElementById('signup-subject').value.trim();
-            const email = document.getElementById('signup-email').value.trim();
-            const pass = document.getElementById('signup-password').value.trim();
+            const name = document.getElementById('signupName').value.trim();
+            const email = document.getElementById('signupEmail').value.trim();
+            const subject = document.getElementById('signupSubject').value.trim();
+            const password = document.getElementById('signupPassword').value;
 
-            if (users.some(u => u.email.toLowerCase() === email.toLowerCase())) {
-                showToast('Email already registered!', 'error');
+            if (db.users.some(u => u.email === email)) {
+                alert("An account with this email already exists!");
                 return;
             }
 
             const newUser = {
-                id: 'usr_' + Date.now(),
+                id: "usr_" + Date.now(),
                 name: name,
                 email: email,
-                password: pass,
-                role: 'Teacher',
+                password: password,
+                role: "Teacher", // Default new signups are Normal Teachers
                 subject: subject,
-                phone: 'Not Set'
+                phone: "+92 300 0000000"
             };
 
-            users.push(newUser);
-            currentUser = newUser;
-            saveData();
-            closeAuthModal();
-            renderUserSession();
-            showToast('Registered as Teacher successfully!', 'success');
+            db.users.push(newUser);
+            db.currentUser = newUser;
+            saveDB(db);
+            alert("Account created successfully as Teacher! Welcome to Government Primary School Dhok Jhatt portal.");
+            render();
         }
 
         function logout() {
-            currentUser = null;
-            localStorage.removeItem('gps_current_user_v2');
-            document.getElementById('nav-actions').classList.remove('hidden');
-            document.getElementById('nav-user').classList.add('hidden');
-            showView('landing');
-            showToast('Logged out.', 'info');
+            db.currentUser = null;
+            saveDB(db);
+            render();
         }
 
-        function renderUserSession() {
-            if (!currentUser) return;
+        // --- DASHBOARD NAVIGATION & STATE ---
+        let currentTab = 'overview'; // 'overview', 'attendance', 'reports', 'homework', 'meetings', 'chat', 'staff', 'profile'
 
-            document.getElementById('nav-actions').classList.add('hidden');
-            document.getElementById('nav-user').classList.remove('hidden');
-            
-            document.getElementById('user-display-name').innerText = currentUser.name;
-            document.getElementById('user-display-email').innerText = currentUser.email;
-
-            const badge = document.getElementById('user-badge');
-            badge.innerText = currentUser.role;
-
-            if (currentUser.role === 'Admin') {
-                badge.className = "px-2.5 py-1 text-xs font-bold rounded-full bg-rose-100 text-rose-700 border border-rose-200";
-            } else if (currentUser.role === 'Head Teacher') {
-                badge.className = "px-2.5 py-1 text-xs font-bold rounded-full bg-amber-100 text-amber-800 border border-amber-200";
-            } else {
-                badge.className = "px-2.5 py-1 text-xs font-bold rounded-full bg-brand-100 text-brand-700 border border-brand-200";
-            }
-
-            showView('dashboard');
+        function switchTab(tab) {
+            currentTab = tab;
+            render();
         }
 
-        // DASHBOARD CONTROL
         function renderDashboard() {
-            document.getElementById('dashboard-welcome').innerText = `Hello, ${currentUser.name}`;
-            const roleBadge = document.getElementById('dashboard-role-badge');
-            roleBadge.innerText = `${currentUser.role} Rank`;
-
-            const tabsContainer = document.getElementById('dashboard-tabs');
-            
-            let tabsHtml = `
-                <button onclick="switchTab('overview')" id="tab-btn-overview" class="tab-btn px-4 py-2 text-sm font-bold rounded-xl transition bg-brand-600 text-white">Overview</button>
-                <button onclick="switchTab('attendance')" id="tab-btn-attendance" class="tab-btn px-4 py-2 text-sm font-bold rounded-xl transition bg-slate-100 text-slate-700 hover:bg-slate-200">Attendance</button>
-                <button onclick="switchTab('reports')" id="tab-btn-reports" class="tab-btn px-4 py-2 text-sm font-bold rounded-xl transition bg-slate-100 text-slate-700 hover:bg-slate-200">Reports</button>
-                <button onclick="switchTab('homework')" id="tab-btn-homework" class="tab-btn px-4 py-2 text-sm font-bold rounded-xl transition bg-slate-100 text-slate-700 hover:bg-slate-200">Homework</button>
-                <button onclick="switchTab('files')" id="tab-btn-files" class="tab-btn px-4 py-2 text-sm font-bold rounded-xl transition bg-slate-100 text-slate-700 hover:bg-slate-200">Files</button>
-                <button onclick="switchTab('chat')" id="tab-btn-chat" class="tab-btn px-4 py-2 text-sm font-bold rounded-xl transition bg-slate-100 text-slate-700 hover:bg-slate-200">Discussion</button>
-            `;
-
-            if (currentUser.role === 'Admin' || currentUser.role === 'Head Teacher') {
-                tabsHtml += `
-                    <button onclick="switchTab('admin')" id="tab-btn-admin" class="tab-btn px-4 py-2 text-sm font-bold rounded-xl transition bg-rose-50 text-rose-700 hover:bg-rose-100 border border-rose-200">
-                        <i class="fa-solid fa-user-shield mr-1"></i> Staff Ranks
-                    </button>
-                `;
-            }
-
-            tabsHtml += `
-                <button onclick="switchTab('profile')" id="tab-btn-profile" class="tab-btn px-4 py-2 text-sm font-bold rounded-xl transition bg-slate-100 text-slate-700 hover:bg-slate-200"><i class="fa-solid fa-gear"></i></button>
-            `;
-
-            tabsContainer.innerHTML = tabsHtml;
-
-            renderOverviewTab();
-            renderAttendanceTab();
-            renderReportsTab();
-            renderHomeworkTab();
-            renderFilesTab();
-            renderChatTab();
-            if (currentUser.role === 'Admin' || currentUser.role === 'Head Teacher') renderAdminTab();
-            populateProfileForm();
-        }
-
-        function switchTab(tabId) {
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-            document.querySelectorAll('.tab-btn').forEach(btn => {
-                btn.classList.remove('bg-brand-600', 'text-white');
-                if(!btn.id.includes('admin')) {
-                    btn.classList.add('bg-slate-100', 'text-slate-700');
-                }
-            });
-
-            document.getElementById(`tab-${tabId}`).classList.remove('hidden');
-            const activeBtn = document.getElementById(`tab-btn-${tabId}`);
-            if (activeBtn) {
-                activeBtn.classList.remove('bg-slate-100', 'text-slate-700');
-                if(!tabId.includes('admin')) {
-                    activeBtn.classList.add('bg-brand-600', 'text-white');
-                }
-            }
-        }
-
-        // TAB RENDERS
-        function renderOverviewTab() {
-            const statsContainer = document.getElementById('stats-cards-container');
-            statsContainer.innerHTML = `
-                <div class="bg-white p-5 rounded-2xl border border-slate-200">
-                    <div class="text-xs text-slate-500 font-bold uppercase">Staff Count</div>
-                    <div class="text-2xl font-extrabold text-slate-800 mt-1">${users.length}</div>
-                </div>
-                <div class="bg-white p-5 rounded-2xl border border-slate-200">
-                    <div class="text-xs text-slate-500 font-bold uppercase">Pending Reports</div>
-                    <div class="text-2xl font-extrabold text-amber-600 mt-1">${reports.filter(r => r.status.includes('Pending')).length}</div>
-                </div>
-                <div class="bg-white p-5 rounded-2xl border border-slate-200">
-                    <div class="text-xs text-slate-500 font-bold uppercase">Shared Worksheets</div>
-                    <div class="text-2xl font-extrabold text-brand-600 mt-1">${files.length}</div>
-                </div>
-                <div class="bg-white p-5 rounded-2xl border border-slate-200">
-                    <div class="text-xs text-slate-500 font-bold uppercase">Active Homeworks</div>
-                    <div class="text-2xl font-extrabold text-emerald-600 mt-1">${homeworks.length}</div>
-                </div>
-            `;
-
-            const annBtn = document.getElementById('add-announcement-btn-container');
-            const meetBtn = document.getElementById('add-meeting-btn-container');
-
-            if (currentUser.role === 'Head Teacher' || currentUser.role === 'Admin') {
-                annBtn.innerHTML = `<button onclick="openModal('modal-announcement')" class="px-3 py-1.5 bg-brand-50 text-brand-700 font-bold rounded-lg text-xs hover:bg-brand-100">+ Post Notice</button>`;
-                meetBtn.innerHTML = `<button onclick="openModal('modal-meeting')" class="px-3 py-1.5 bg-emerald-50 text-emerald-700 font-bold rounded-lg text-xs hover:bg-emerald-100">+ Schedule Meeting</button>`;
-            } else {
-                annBtn.innerHTML = '';
-                meetBtn.innerHTML = '';
-            }
-
-            const annList = document.getElementById('announcements-list');
-            if (announcements.length === 0) {
-                annList.innerHTML = `<p class="text-xs text-slate-400 italic">No announcements posted yet.</p>`;
-            } else {
-                annList.innerHTML = announcements.map(a => `
-                    <div class="p-4 bg-slate-50 rounded-xl border border-slate-200">
-                        <div class="flex justify-between items-start">
-                            <h4 class="font-bold text-slate-800 text-sm">${a.title}</h4>
-                            <span class="text-[10px] text-slate-400 font-semibold">${a.date}</span>
+            const user = db.currentUser;
+            return `
+                <div class="min-h-screen flex flex-col bg-slate-50">
+                    <!-- Top Navigation Bar -->
+                    <header class="bg-white border-b border-slate-200 sticky top-0 z-50 shadow-sm">
+                        <div class="max-w-7xl mx-auto px-4 py-3 flex flex-col sm:flex-row justify-between items-center gap-3">
+                            <div class="flex items-center gap-3">
+                                <div class="bg-blue-900 text-white font-bold p-2.5 rounded-xl shadow">GPS</div>
+                                <div>
+                                    <h1 class="text-base sm:text-lg font-bold text-slate-900 leading-tight">Govt. Primary School Dhok Jhatt</h1>
+                                    <p class="text-xs text-slate-500">Portal Dashboard • Logged in as <span class="font-semibold text-primary">${user.name} (${user.role})</span></p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <button onclick="switchTab('profile')" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-1.5 rounded-lg text-xs font-bold transition">My Profile</button>
+                                <button onclick="logout()" class="bg-red-50 hover:bg-red-100 text-red-600 px-3 py-1.5 rounded-lg text-xs font-bold transition">Logout</button>
+                            </div>
                         </div>
-                        <p class="text-xs text-slate-600 mt-1">${a.content}</p>
-                        <div class="text-[11px] text-brand-600 font-medium mt-2">By: ${a.author}</div>
-                    </div>
-                `).join('');
-            }
+                    </header>
 
-            const meetList = document.getElementById('meetings-list');
-            if (meetings.length === 0) {
-                meetList.innerHTML = `<p class="text-xs text-slate-400 italic">No meetings scheduled.</p>`;
-            } else {
-                meetList.innerHTML = meetings.map(m => `
-                    <div class="p-4 bg-emerald-50/60 rounded-xl border border-emerald-100">
-                        <h4 class="font-bold text-slate-800 text-sm">${m.topic}</h4>
-                        <p class="text-xs text-slate-600 mt-1"><i class="fa-regular fa-clock mr-1"></i> ${m.time}</p>
-                        <p class="text-xs text-slate-600"><i class="fa-solid fa-location-dot mr-1"></i> ${m.link}</p>
+                    <!-- Main Navigation Tabs -->
+                    <div class="bg-white border-b border-slate-200 shadow-sm overflow-x-auto">
+                        <div class="max-w-7xl mx-auto px-4 flex gap-2 py-2">
+                            <button onclick="switchTab('overview')" class="px-4 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap ${currentTab === 'overview' ? 'bg-primary text-white shadow' : 'text-slate-600 hover:bg-slate-100'}">Overview</button>
+                            <button onclick="switchTab('attendance')" class="px-4 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap ${currentTab === 'attendance' ? 'bg-primary text-white shadow' : 'text-slate-600 hover:bg-slate-100'}">Attendance</button>
+                            <button onclick="switchTab('reports')" class="px-4 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap ${currentTab === 'reports' ? 'bg-primary text-white shadow' : 'text-slate-600 hover:bg-slate-100'}">Reports</button>
+                            <button onclick="switchTab('homework')" class="px-4 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap ${currentTab === 'homework' ? 'bg-primary text-white shadow' : 'text-slate-600 hover:bg-slate-100'}">Worksheets & HW</button>
+                            <button onclick="switchTab('meetings')" class="px-4 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap ${currentTab === 'meetings' ? 'bg-primary text-white shadow' : 'text-slate-600 hover:bg-slate-100'}">Meetings</button>
+                            <button onclick="switchTab('chat')" class="px-4 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap ${currentTab === 'chat' ? 'bg-primary text-white shadow' : 'text-slate-600 hover:bg-slate-100'}">Staff Chat</button>
+                            ${user.role === 'Admin' ? `<button onclick="switchTab('staff')" class="px-4 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap ${currentTab === 'staff' ? 'bg-indigo-600 text-white shadow' : 'text-indigo-600 hover:bg-indigo-50'}">Staff & Ranks (Admin)</button>` : ''}
+                        </div>
                     </div>
-                `).join('');
-            }
+
+                    <!-- Content Body -->
+                    <main class="max-w-7xl w-full mx-auto p-4 sm:p-6 flex-1">
+                        ${currentTab === 'overview' ? renderOverviewTab() : ''}
+                        ${currentTab === 'attendance' ? renderAttendanceTab() : ''}
+                        ${currentTab === 'reports' ? renderReportsTab() : ''}
+                        ${currentTab === 'homework' ? renderHomeworkTab() : ''}
+                        ${currentTab === 'meetings' ? renderMeetingsTab() : ''}
+                        ${currentTab === 'chat' ? renderChatTab() : ''}
+                        ${currentTab === 'staff' && user.role === 'Admin' ? renderStaffTab() : ''}
+                        ${currentTab === 'profile' ? renderProfileTab() : ''}
+                    </main>
+
+                    <!-- Footer -->
+                    <footer class="bg-white border-t border-slate-200 py-4 text-center text-xs text-slate-500">
+                        Government Primary School Dhok Jhatt • Secure Management Portal
+                    </footer>
+                </div>
+            `;
         }
 
+        // --- TAB 1: OVERVIEW ---
+        function renderOverviewTab() {
+            const user = db.currentUser;
+            return `
+                <div class="space-y-6">
+                    <div class="bg-gradient-to-r from-blue-900 to-indigo-800 text-white rounded-2xl p-6 shadow-xl">
+                        <h2 class="text-2xl font-extrabold">Welcome back, ${user.name}!</h2>
+                        <p class="text-slate-200 text-sm mt-1">Role: <span class="bg-white/20 px-2 py-0.5 rounded font-bold">${user.role}</span> | Subject: ${user.subject}</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+                            <span class="text-xs font-bold text-slate-400 uppercase">Registered Students</span>
+                            <h3 class="text-2xl font-extrabold text-slate-800 mt-1">${db.students.length}</h3>
+                        </div>
+                        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+                            <span class="text-xs font-bold text-slate-400 uppercase">Total Faculty Staff</span>
+                            <h3 class="text-2xl font-extrabold text-slate-800 mt-1">${db.users.length}</h3>
+                        </div>
+                        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+                            <span class="text-xs font-bold text-slate-400 uppercase">Active Homework / Files</span>
+                            <h3 class="text-2xl font-extrabold text-slate-800 mt-1">${db.homework.length}</h3>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
+                        <h3 class="font-bold text-slate-800 text-base mb-3">Quick System Actions</h3>
+                        <div class="flex flex-wrap gap-3">
+                            <button onclick="switchTab('attendance')" class="bg-blue-50 hover:bg-blue-100 text-blue-700 px-4 py-2.5 rounded-xl text-sm font-bold transition">Mark Class Attendance</button>
+                            <button onclick="switchTab('reports')" class="bg-emerald-50 hover:bg-emerald-100 text-emerald-700 px-4 py-2.5 rounded-xl text-sm font-bold transition">Submit Student Report</button>
+                            <button onclick="switchTab('homework')" class="bg-purple-50 hover:bg-purple-100 text-purple-700 px-4 py-2.5 rounded-xl text-sm font-bold transition">Upload Worksheet</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // --- TAB 2: ATTENDANCE ---
         function renderAttendanceTab() {
-            const selectedClass = document.getElementById('attendance-class-select').value;
-            const roster = STUDENT_ROSTER[selectedClass] || [];
+            const user = db.currentUser;
+            return `
+                <div class="space-y-6">
+                    <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
+                        <div class="flex justify-between items-center mb-4 flex-wrap gap-3">
+                            <div>
+                                <h3 class="font-bold text-slate-800 text-lg">Student Attendance Management</h3>
+                                <p class="text-xs text-slate-500">Register students and mark daily presence.</p>
+                            </div>
+                            <button onclick="openAddStudentModal()" class="bg-primary hover:bg-blue-800 text-white px-4 py-2 rounded-xl text-sm font-bold transition">+ Add New Student</button>
+                        </div>
 
-            const list = document.getElementById('attendance-students-list');
-            list.innerHTML = roster.map(s => `
-                <tr class="border-b border-slate-100">
-                    <td class="p-3 text-xs font-bold text-slate-500">${s.id}</td>
-                    <td class="p-3 font-semibold text-slate-800 text-sm">${s.name}</td>
-                    <td class="p-3 text-xs text-slate-600">${selectedClass}</td>
-                    <td class="p-3">
-                        <select id="status-student-${s.id}" class="px-3 py-1 rounded-lg text-xs font-bold border border-slate-200 bg-white">
-                            <option value="Present">Present</option>
-                            <option value="Absent">Absent</option>
-                            <option value="Late">Late</option>
-                        </select>
-                    </td>
-                </tr>
-            `).join('');
-
-            const logsTable = document.getElementById('attendance-logs-table');
-            if (attendanceLogs.length === 0) {
-                logsTable.innerHTML = `<tr><td colspan="4" class="py-3 text-xs text-slate-400 italic">No attendance saved yet.</td></tr>`;
-            } else {
-                logsTable.innerHTML = attendanceLogs.map(l => `
-                    <tr class="border-b border-slate-100">
-                        <td class="py-2 text-xs font-semibold">${l.date}</td>
-                        <td class="py-2 text-xs">${l.className}</td>
-                        <td class="py-2 text-xs text-slate-600">${l.teacher}</td>
-                        <td class="py-2 text-xs"><span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded text-[10px] font-bold">Saved</span></td>
-                    </tr>
-                `).join('');
-            }
+                        ${db.students.length === 0 ? `
+                            <div class="text-center py-10 text-slate-400 text-sm">
+                                No students registered in the system yet. Click "+ Add New Student" to begin.
+                            </div>
+                        ` : `
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-left text-sm">
+                                    <thead class="bg-slate-100 text-slate-700 uppercase text-xs">
+                                        <tr>
+                                            <th class="p-3">Roll No</th>
+                                            <th class="p-3">Student Name</th>
+                                            <th class="p-3">Class</th>
+                                            <th class="p-3">Today's Status</th>
+                                            <th class="p-3 text-right">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-slate-200">
+                                        ${db.students.map(st => `
+                                            <tr>
+                                                <td class="p-3 font-semibold">${st.rollNo}</td>
+                                                <td class="p-3">${st.name}</td>
+                                                <td class="p-3">${st.className}</td>
+                                                <td class="p-3">
+                                                    <span class="px-2.5 py-1 rounded-full text-xs font-bold ${st.status === 'Present' ? 'bg-emerald-100 text-emerald-700' : st.status === 'Absent' ? 'bg-red-100 text-red-700' : 'bg-slate-100 text-slate-600'}">
+                                                        ${st.status || 'Not Marked'}
+                                                    </span>
+                                                </td>
+                                                <td class="p-3 text-right space-x-2">
+                                                    <button onclick="updateStudentStatus('${st.id}', 'Present')" class="text-xs bg-emerald-50 hover:bg-emerald-100 text-emerald-700 px-2.5 py-1 rounded font-bold">Present</button>
+                                                    <button onclick="updateStudentStatus('${st.id}', 'Absent')" class="text-xs bg-red-50 hover:bg-red-100 text-red-700 px-2.5 py-1 rounded font-bold">Absent</button>
+                                                </td>
+                                            </tr>
+                                        `).join('')}
+                                    </tbody>
+                                </table>
+                            </div>
+                        `}
+                    </div>
+                </div>
+            `;
         }
 
-        function saveAttendance() {
-            const className = document.getElementById('attendance-class-select').value;
-            const date = document.getElementById('attendance-date').value;
+        function openAddStudentModal() {
+            const name = prompt("Enter Student Full Name:");
+            if (!name) return;
+            const rollNo = prompt("Enter Roll Number:", "101");
+            if (!rollNo) return;
+            const className = prompt("Enter Class (e.g. Class 1, Class 5):", "Class 3");
+            if (!className) return;
 
-            attendanceLogs.unshift({
-                date: date,
+            db.students.push({
+                id: "st_" + Date.now(),
+                name: name,
+                rollNo: rollNo,
                 className: className,
-                teacher: currentUser.name
+                status: "Present"
             });
-
-            saveData();
-            renderAttendanceTab();
-            showToast(`Attendance saved for ${className}!`, 'success');
+            saveDB(db);
+            render();
         }
 
-        function renderReportsTab() {
-            const table = document.getElementById('reports-list-table');
-            if (reports.length === 0) {
-                table.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-xs text-slate-400 italic">No student reports submitted yet.</td></tr>`;
-                return;
+        function updateStudentStatus(id, status) {
+            const st = db.students.find(s => s.id === id);
+            if (st) {
+                st.status = status;
+                saveDB(db);
+                render();
             }
+        }
 
-            table.innerHTML = reports.map(r => `
-                <tr class="border-b border-slate-100">
-                    <td class="p-3 font-bold text-slate-800">${r.student}</td>
-                    <td class="p-3 text-xs text-slate-600">${r.class}</td>
-                    <td class="p-3 text-xs font-bold text-brand-700">${r.marks}</td>
-                    <td class="p-3 text-xs text-slate-600">${r.teacher}</td>
-                    <td class="p-3">
-                        <span class="px-2.5 py-1 text-[11px] font-bold rounded-full ${r.status==='Approved'?'bg-emerald-100 text-emerald-800':'bg-amber-100 text-amber-800'}">
-                            ${r.status}
-                        </span>
-                    </td>
-                    <td class="p-3">
-                        ${(currentUser.role==='Head Teacher' || currentUser.role==='Admin') && r.status !== 'Approved' 
-                            ? `<button onclick="approveReport(${r.id})" class="px-3 py-1 bg-emerald-600 text-white rounded-lg text-xs font-bold hover:bg-emerald-700">Approve</button>` 
-                            : '<span class="text-xs text-slate-400">Finalized</span>'}
-                    </td>
-                </tr>
-            `).join('');
+        // --- TAB 3: REPORTS ---
+        function renderReportsTab() {
+            const user = db.currentUser;
+            const canApprove = user.role === 'Head Teacher' || user.role === 'Admin';
+
+            return `
+                <div class="space-y-6">
+                    <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
+                        <div class="flex justify-between items-center mb-4 flex-wrap gap-3">
+                            <div>
+                                <h3 class="font-bold text-slate-800 text-lg">Student Progress Reports</h3>
+                                <p class="text-xs text-slate-500">Submit and review class performance reports.</p>
+                            </div>
+                            <button onclick="openAddReportModal()" class="bg-primary hover:bg-blue-800 text-white px-4 py-2 rounded-xl text-sm font-bold transition">+ Submit New Report</button>
+                        </div>
+
+                        ${db.reports.length === 0 ? `
+                            <div class="text-center py-10 text-slate-400 text-sm">
+                                No reports submitted yet.
+                            </div>
+                        ` : `
+                            <div class="space-y-4">
+                                ${db.reports.map(rep => `
+                                    <div class="border border-slate-200 rounded-xl p-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-slate-50/50">
+                                        <div>
+                                            <div class="flex items-center gap-2">
+                                                <h4 class="font-bold text-slate-800">${rep.title}</h4>
+                                                <span class="text-xs px-2 py-0.5 rounded font-bold ${rep.status === 'Approved' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}">${rep.status}</span>
+                                            </div>
+                                            <p class="text-xs text-slate-600 mt-1">Class: ${rep.className} | Submitted by: ${rep.teacherName}</p>
+                                            <p class="text-xs text-slate-500 mt-2">${rep.details}</p>
+                                        </div>
+                                        ${canApprove && rep.status === 'Pending' ? `
+                                            <button onclick="approveReport('${rep.id}')" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-lg text-xs font-bold shrink-0">Approve Report</button>
+                                        ` : ''}
+                                    </div>
+                                `).join('')}
+                            </div>
+                        `}
+                    </div>
+                </div>
+            `;
+        }
+
+        function openAddReportModal() {
+            const title = prompt("Enter Report Title (e.g. Monthly Math Assessment):");
+            if (!title) return;
+            const className = prompt("Enter Class Name:", "Class 3");
+            if (!className) return;
+            const details = prompt("Enter Report Summary / Details:");
+            if (!details) return;
+
+            db.reports.push({
+                id: "rep_" + Date.now(),
+                title: title,
+                className: className,
+                details: details,
+                teacherName: db.currentUser.name,
+                status: "Pending"
+            });
+            saveDB(db);
+            render();
         }
 
         function approveReport(id) {
-            reports = reports.map(r => r.id === id ? {...r, status: 'Approved'} : r);
-            saveData();
-            renderReportsTab();
-            showToast('Report Approved!', 'success');
+            const rep = db.reports.find(r => r.id === id);
+            if (rep) {
+                rep.status = "Approved";
+                saveDB(db);
+                render();
+            }
         }
 
+        // --- TAB 4: HOMEWORK & WORKSHEETS ---
         function renderHomeworkTab() {
-            const container = document.getElementById('homework-list-container');
-            if (homeworks.length === 0) {
-                container.innerHTML = `<p class="text-xs text-slate-400 italic col-span-2">No homework assigned yet.</p>`;
-                return;
-            }
+            return `
+                <div class="space-y-6">
+                    <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
+                        <div class="flex justify-between items-center mb-4 flex-wrap gap-3">
+                            <div>
+                                <h3 class="font-bold text-slate-800 text-lg">Homework & Worksheets Portal</h3>
+                                <p class="text-xs text-slate-500">Share study materials and notes with classes.</p>
+                            </div>
+                            <button onclick="openAddHomeworkModal()" class="bg-primary hover:bg-blue-800 text-white px-4 py-2 rounded-xl text-sm font-bold transition">+ Upload Worksheet</button>
+                        </div>
 
-            container.innerHTML = homeworks.map(h => `
-                <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200">
-                    <span class="px-2.5 py-0.5 bg-brand-100 text-brand-700 font-bold rounded text-[10px]">${h.className}</span>
-                    <h4 class="font-bold text-slate-800 text-base mt-2">${h.title}</h4>
-                    <p class="text-xs text-slate-600 mt-1">${h.desc}</p>
-                    <div class="text-[11px] text-slate-400 mt-3 flex justify-between">
-                        <span>Assigned by: ${h.teacher}</span>
-                        <span>Date: ${h.date}</span>
+                        ${db.homework.length === 0 ? `
+                            <div class="text-center py-10 text-slate-400 text-sm">
+                                No worksheets or homework uploaded yet.
+                            </div>
+                        ` : `
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                ${db.homework.map(hw => `
+                                    <div class="border border-slate-200 rounded-xl p-4 bg-slate-50">
+                                        <h4 class="font-bold text-slate-800">${hw.title}</h4>
+                                        <p class="text-xs text-slate-500 mt-1">Class: ${hw.className} | By: ${hw.teacherName}</p>
+                                        <p class="text-xs text-slate-600 mt-2">${hw.description}</p>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        `}
                     </div>
                 </div>
-            `).join('');
+            `;
         }
 
-        function renderFilesTab() {
-            const grid = document.getElementById('files-grid');
-            if (files.length === 0) {
-                grid.innerHTML = `<p class="text-xs text-slate-400 italic col-span-3">No teaching files shared yet.</p>`;
-                return;
-            }
+        function openAddHomeworkModal() {
+            const title = prompt("Enter Worksheet/Homework Title:");
+            if (!title) return;
+            const className = prompt("Enter Target Class:", "Class 3");
+            if (!className) return;
+            const description = prompt("Enter Instructions or Notes:");
+            if (!description) return;
 
-            grid.innerHTML = files.map(f => `
-                <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200 flex flex-col justify-between">
-                    <div>
-                        <span class="px-2 py-0.5 bg-brand-100 text-brand-700 font-bold rounded text-[10px]">${f.category}</span>
-                        <h4 class="font-bold text-slate-800 text-sm mt-2">${f.title}</h4>
-                        <p class="text-xs text-slate-500 mt-1">Uploaded by: ${f.author}</p>
-                    </div>
-                    <div class="flex gap-2 mt-4">
-                        <button onclick="showToast('Downloading document file...', 'info')" class="flex-grow py-2 bg-white border border-slate-200 rounded-xl text-xs font-bold text-slate-700 hover:bg-slate-100">
-                            <i class="fa-solid fa-download mr-1"></i> Download
-                        </button>
-                        ${currentUser.role === 'Admin' || currentUser.role === 'Head Teacher' ? `
-                            <button onclick="deleteFile(${f.id})" class="px-3 py-2 bg-rose-50 text-rose-600 border border-rose-100 rounded-xl text-xs font-bold hover:bg-rose-100">
-                                <i class="fa-solid fa-trash"></i>
-                            </button>
-                        ` : ''}
+            db.homework.push({
+                id: "hw_" + Date.now(),
+                title: title,
+                className: className,
+                description: description,
+                teacherName: db.currentUser.name
+            });
+            saveDB(db);
+            render();
+        }
+
+        // --- TAB 5: MEETINGS ---
+        function renderMeetingsTab() {
+            const user = db.currentUser;
+            const canCreate = user.role === 'Head Teacher' || user.role === 'Admin';
+
+            return `
+                <div class="space-y-6">
+                    <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
+                        <div class="flex justify-between items-center mb-4 flex-wrap gap-3">
+                            <div>
+                                <h3 class="font-bold text-slate-800 text-lg">Staff Meetings & Briefings</h3>
+                                <p class="text-xs text-slate-500">Scheduled school meetings and discussions.</p>
+                            </div>
+                            ${canCreate ? `<button onclick="openAddMeetingModal()" class="bg-primary hover:bg-blue-800 text-white px-4 py-2 rounded-xl text-sm font-bold transition">+ Schedule Meeting</button>` : ''}
+                        </div>
+
+                        ${db.meetings.length === 0 ? `
+                            <div class="text-center py-10 text-slate-400 text-sm">
+                                No meetings scheduled right now.
+                            </div>
+                        ` : `
+                            <div class="space-y-4">
+                                ${db.meetings.map(m => `
+                                    <div class="border border-slate-200 rounded-xl p-4 bg-slate-50 flex justify-between items-center">
+                                        <div>
+                                            <h4 class="font-bold text-slate-800">${m.title}</h4>
+                                            <p class="text-xs text-slate-600 mt-1">Date & Time: ${m.dateTime}</p>
+                                            <p class="text-xs text-slate-500 mt-1">${m.agenda}</p>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        `}
                     </div>
                 </div>
-            `).join('');
+            `;
         }
 
-        function deleteFile(id) {
-            files = files.filter(f => f.id !== id);
-            saveData();
-            renderFilesTab();
-            showToast('File removed.', 'info');
+        function openAddMeetingModal() {
+            const title = prompt("Enter Meeting Title:");
+            if (!title) return;
+            const dateTime = prompt("Enter Date & Time (e.g. 15 Nov, 10:00 AM):");
+            if (!dateTime) return;
+            const agenda = prompt("Enter Meeting Agenda:");
+            if (!agenda) return;
+
+            db.meetings.push({
+                id: "meet_" + Date.now(),
+                title: title,
+                dateTime: dateTime,
+                agenda: agenda
+            });
+            saveDB(db);
+            render();
         }
 
+        // --- TAB 6: CHAT ---
         function renderChatTab() {
-            const container = document.getElementById('chat-messages-container');
-            if (chatMessages.length === 0) {
-                container.innerHTML = `<p class="text-xs text-slate-400 italic text-center py-4">No staff messages. Start the discussion!</p>`;
-                return;
-            }
+            return `
+                <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm flex flex-col h-[600px]">
+                    <h3 class="font-bold text-slate-800 text-lg mb-2">Staff Discussion & Chat</h3>
+                    <p class="text-xs text-slate-500 mb-4">Coordinate with fellow teachers and leadership.</p>
 
-            container.innerHTML = chatMessages.map(m => `
-                <div class="flex flex-col ${m.sender === currentUser.name ? 'items-end' : 'items-start'}">
-                    <span class="text-[10px] text-slate-400 font-semibold mb-0.5">${m.sender} (${m.role})</span>
-                    <div class="px-4 py-2.5 rounded-2xl text-xs max-w-xs sm:max-w-md ${m.sender === currentUser.name ? 'bg-brand-600 text-white rounded-br-none' : 'bg-white border border-slate-200 text-slate-800 rounded-bl-none'}">
-                        ${m.text}
+                    <div class="flex-1 overflow-y-auto space-y-3 p-4 bg-slate-50 rounded-xl border border-slate-200 mb-4">
+                        ${db.chats.length === 0 ? `
+                            <div class="text-center py-20 text-slate-400 text-sm">
+                                No messages in discussion yet. Start the conversation below!
+                            </div>
+                        ` : `
+                            ${db.chats.map(c => `
+                                <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm max-w-lg">
+                                    <div class="flex justify-between items-center mb-1">
+                                        <strong class="text-xs text-primary">${c.senderName}</strong>
+                                        <span class="text-[10px] text-slate-400">${c.time}</span>
+                                    </div>
+                                    <p class="text-xs text-slate-700">${c.message}</p>
+                                </div>
+                            `).join('')}
+                        `}
                     </div>
+
+                    <form onsubmit="sendChatMessage(event)" class="flex gap-2">
+                        <input type="text" id="chatInput" required placeholder="Type your message..." class="flex-1 px-4 py-3 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-primary">
+                        <button type="submit" class="bg-primary hover:bg-blue-800 text-white px-6 py-3 rounded-xl font-bold text-sm">Send</button>
+                    </form>
                 </div>
-            `).join('');
-            container.scrollTop = container.scrollHeight;
+            `;
         }
 
         function sendChatMessage(e) {
             e.preventDefault();
-            const input = document.getElementById('chat-input');
-            const text = input.value.trim();
-            if (!text) return;
+            const input = document.getElementById('chatInput');
+            const msg = input.value.trim();
+            if (!msg) return;
 
-            chatMessages.push({
-                sender: currentUser.name,
-                role: currentUser.role,
-                text: text
+            db.chats.push({
+                id: "chat_" + Date.now(),
+                senderName: db.currentUser.name + " (" + db.currentUser.role + ")",
+                message: msg,
+                time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
             });
-
-            saveData();
-            renderChatTab();
+            saveDB(db);
             input.value = '';
+            render();
         }
 
-        // ADMIN STAFF & PERMISSIONS CONTROL
-        function renderAdminTab() {
-            const list = document.getElementById('admin-teachers-list');
-            const addBox = document.getElementById('admin-add-staff-box');
-
-            if (currentUser.role !== 'Admin') {
-                addBox.classList.add('hidden');
-            } else {
-                addBox.classList.remove('hidden');
-            }
-
-            list.innerHTML = users.map(u => `
-                <tr class="border-b border-slate-100">
-                    <td class="p-3 font-bold text-slate-800">${u.name}</td>
-                    <td class="p-3 text-xs text-slate-600">${u.email}</td>
-                    <td class="p-3 text-xs text-slate-600">${u.subject || 'General'}</td>
-                    <td class="p-3">
-                        <span class="px-2.5 py-1 text-xs font-bold rounded-full ${u.role==='Admin'?'bg-rose-100 text-rose-800':u.role==='Head Teacher'?'bg-amber-100 text-amber-800':'bg-brand-100 text-brand-800'}">
-                            ${u.role}
-                        </span>
-                    </td>
-                    <td class="p-3">
-                        ${currentUser.role === 'Admin' && u.email !== currentUser.email ? `
-                            <div class="flex items-center space-x-2">
-                                <select onchange="changeUserRank('${u.id}', this.value)" class="px-2 py-1 border rounded-lg text-xs font-bold bg-white">
-                                    <option value="Teacher" ${u.role==='Teacher'?'selected':''}>Teacher</option>
-                                    <option value="Head Teacher" ${u.role==='Head Teacher'?'selected':''}>Head Teacher</option>
-                                    <option value="Admin" ${u.role==='Admin'?'selected':''}>Admin</option>
-                                </select>
-                                <button onclick="removeUser('${u.id}')" class="px-2 py-1 bg-rose-100 text-rose-700 hover:bg-rose-200 rounded-lg text-xs font-bold">
-                                    <i class="fa-solid fa-trash"></i>
-                                </button>
+        // --- TAB 7: STAFF & RANKS (ADMIN ONLY) ---
+        function renderStaffTab() {
+            return `
+                <div class="space-y-6">
+                    <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
+                        <div class="flex justify-between items-center mb-4 flex-wrap gap-3">
+                            <div>
+                                <h3 class="font-bold text-slate-800 text-lg">Staff & Rank Management</h3>
+                                <p class="text-xs text-slate-500">Promote teachers to Head Teacher or manage staff access.</p>
                             </div>
-                        ` : `<span class="text-xs text-slate-400">${u.email === currentUser.email ? 'Self (Admin)' : 'View Only'}</span>`}
-                    </td>
-                </tr>
-            `).join('');
+                        </div>
+
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left text-sm">
+                                <thead class="bg-slate-100 text-slate-700 uppercase text-xs">
+                                    <tr>
+                                        <th class="p-3">Name</th>
+                                        <th class="p-3">Email</th>
+                                        <th class="p-3">Subject</th>
+                                        <th class="p-3">Current Role</th>
+                                        <th class="p-3 text-right">Change Role</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-200">
+                                    ${db.users.map(u => `
+                                        <tr>
+                                            <td class="p-3 font-semibold">${u.name}</td>
+                                            <td class="p-3">${u.email}</td>
+                                            <td class="p-3">${u.subject}</td>
+                                            <td class="p-3">
+                                                <span class="px-2.5 py-1 rounded-full text-xs font-bold ${u.role === 'Admin' ? 'bg-purple-100 text-purple-700' : u.role === 'Head Teacher' ? 'bg-blue-100 text-blue-700' : 'bg-slate-100 text-slate-600'}">
+                                                    ${u.role}
+                                                </span>
+                                            </td>
+                                            <td class="p-3 text-right">
+                                                ${u.email === 'harisawan.pk.@school.tm' ? '<span class="text-xs text-slate-400 italic">System Owner</span>' : `
+                                                    <select onchange="changeUserRole('${u.id}', this.value)" class="text-xs border border-slate-300 rounded p-1 font-semibold">
+                                                        <option value="Teacher" ${u.role === 'Teacher' ? 'selected' : ''}>Teacher</option>
+                                                        <option value="Head Teacher" ${u.role === 'Head Teacher' ? 'selected' : ''}>Head Teacher</option>
+                                                        <option value="Admin" ${u.role === 'Admin' ? 'selected' : ''}>Admin</option>
+                                                    </select>
+                                                `}
+                                            </td>
+                                        </tr>
+                                    `).join('')}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            `;
         }
 
-        function handleAdminAddStaff(e) {
-            e.preventDefault();
-            if (currentUser.role !== 'Admin') return;
-
-            const name = document.getElementById('admin-staff-name').value.trim();
-            const email = document.getElementById('admin-staff-email').value.trim();
-            const pass = document.getElementById('admin-staff-pass').value.trim();
-            const subject = document.getElementById('admin-staff-subject').value.trim();
-            const role = document.getElementById('admin-staff-role').value;
-
-            if (users.some(u => u.email.toLowerCase() === email.toLowerCase())) {
-                showToast('Email already registered!', 'error');
-                return;
-            }
-
-            users.push({
-                id: 'usr_' + Date.now(),
-                name: name,
-                email: email,
-                password: pass,
-                role: role,
-                subject: subject,
-                phone: 'Not Set'
-            });
-
-            saveData();
-            renderAdminTab();
-            renderOverviewTab();
-            
-            document.getElementById('admin-staff-name').value = '';
-            document.getElementById('admin-staff-email').value = '';
-            document.getElementById('admin-staff-pass').value = '';
-            document.getElementById('admin-staff-subject').value = '';
-
-            showToast(`New ${role} added successfully!`, 'success');
-        }
-
-        function changeUserRank(userId, newRole) {
-            if (currentUser.role !== 'Admin') return;
-            users = users.map(u => u.id === userId ? {...u, role: newRole} : u);
-            saveData();
-            renderAdminTab();
-            showToast('Rank Updated!', 'success');
-        }
-
-        function removeUser(userId) {
-            if (currentUser.role !== 'Admin') return;
-            if (confirm('Remove staff account?')) {
-                users = users.filter(u => u.id !== userId);
-                saveData();
-                renderAdminTab();
-                renderOverviewTab();
-                showToast('Staff removed.', 'info');
+        function changeUserRole(userId, newRole) {
+            const user = db.users.find(u => u.id === userId);
+            if (user) {
+                user.role = newRole;
+                saveDB(db);
+                alert(`Staff rank updated successfully for ${user.name} to ${newRole}!`);
+                render();
             }
         }
 
-        // PROFILE EDIT
-        function populateProfileForm() {
-            document.getElementById('profile-name').value = currentUser.name || '';
-            document.getElementById('profile-subject').value = currentUser.subject || '';
-            document.getElementById('profile-phone').value = currentUser.phone || '';
-            document.getElementById('profile-rank').value = currentUser.role || '';
+        // --- TAB 8: PROFILE EDIT SYSTEM ---
+        function renderProfileTab() {
+            const user = db.currentUser;
+            return `
+                <div class="max-w-xl mx-auto bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
+                    <h3 class="font-bold text-slate-800 text-lg mb-1">Edit Your Profile</h3>
+                    <p class="text-xs text-slate-500 mb-6">Update your personal account credentials.</p>
+
+                    <form onsubmit="handleProfileUpdate(event)" class="space-y-4">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Full Name</label>
+                            <input type="text" id="profileName" value="${user.name}" required class="w-full px-4 py-3 rounded-xl border border-slate-300 text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Email Address (Read-only)</label>
+                            <input type="email" value="${user.email}" disabled class="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-100 text-slate-500 text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Subject / Designation</label>
+                            <input type="text" id="profileSubject" value="${user.subject}" required class="w-full px-4 py-3 rounded-xl border border-slate-300 text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Phone Number</label>
+                            <input type="text" id="profilePhone" value="${user.phone || ''}" class="w-full px-4 py-3 rounded-xl border border-slate-300 text-sm" placeholder="+92 300 ...">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">New Password</label>
+                            <input type="password" id="profilePassword" value="${user.password}" required class="w-full px-4 py-3 rounded-xl border border-slate-300 text-sm">
+                        </div>
+                        <button type="submit" class="w-full bg-primary hover:bg-blue-800 text-white font-bold py-3 rounded-xl transition shadow text-sm uppercase">Save Changes</button>
+                    </form>
+                </div>
+            `;
         }
 
-        function updateProfile(e) {
+        function handleProfileUpdate(e) {
             e.preventDefault();
-            currentUser.name = document.getElementById('profile-name').value;
-            currentUser.subject = document.getElementById('profile-subject').value;
-            currentUser.phone = document.getElementById('profile-phone').value;
+            const name = document.getElementById('profileName').value.trim();
+            const subject = document.getElementById('profileSubject').value.trim();
+            const phone = document.getElementById('profilePhone').value.trim();
+            const password = document.getElementById('profilePassword').value;
 
-            users = users.map(u => u.id === currentUser.id ? currentUser : u);
-            saveData();
-            renderUserSession();
-            showToast('Profile updated!', 'success');
+            db.currentUser.name = name;
+            db.currentUser.subject = subject;
+            db.currentUser.phone = phone;
+            db.currentUser.password = password;
+
+            // Update in users array as well
+            const idx = db.users.findIndex(u => u.id === db.currentUser.id);
+            if (idx !== -1) {
+                db.users[idx] = db.currentUser;
+            }
+
+            saveDB(db);
+            alert("Profile updated successfully!");
+            render();
         }
 
-        // MODAL HELPERS
-        function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
-        function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
-
-        function handlePostAnnouncement(e) {
-            e.preventDefault();
-            announcements.unshift({
-                id: Date.now(),
-                title: document.getElementById('ann-title').value,
-                content: document.getElementById('ann-content').value,
-                author: `${currentUser.name} (${currentUser.role})`,
-                date: 'Today'
-            });
-            saveData();
-            closeModal('modal-announcement');
-            renderOverviewTab();
-            showToast('Announcement posted!', 'success');
-        }
-
-        function handleCreateMeeting(e) {
-            e.preventDefault();
-            meetings.push({
-                id: Date.now(),
-                topic: document.getElementById('meet-topic').value,
-                time: document.getElementById('meet-time').value,
-                link: document.getElementById('meet-link').value
-            });
-            saveData();
-            closeModal('modal-meeting');
-            renderOverviewTab();
-            showToast('Meeting Scheduled!', 'success');
-        }
-
-        function handleSaveReport(e) {
-            e.preventDefault();
-            reports.push({
-                id: Date.now(),
-                student: document.getElementById('rep-student').value,
-                class: document.getElementById('rep-class').value,
-                marks: document.getElementById('rep-marks').value,
-                teacher: currentUser.name,
-                status: currentUser.role === 'Teacher' ? 'Pending Review' : 'Approved'
-            });
-            saveData();
-            closeModal('modal-report');
-            renderReportsTab();
-            renderOverviewTab();
-            showToast('Report submitted!', 'success');
-        }
-
-        function handleSaveHomework(e) {
-            e.preventDefault();
-            homeworks.unshift({
-                id: Date.now(),
-                className: document.getElementById('hw-class').value,
-                title: document.getElementById('hw-title').value,
-                desc: document.getElementById('hw-desc').value,
-                teacher: currentUser.name,
-                date: 'Today'
-            });
-            saveData();
-            closeModal('modal-homework');
-            renderHomeworkTab();
-            renderOverviewTab();
-            showToast('Homework assigned!', 'success');
-        }
-
-        function handleUploadFile(e) {
-            e.preventDefault();
-            files.push({
-                id: Date.now(),
-                title: document.getElementById('file-title').value,
-                category: document.getElementById('file-category').value,
-                author: currentUser.name
-            });
-            saveData();
-            closeModal('modal-file');
-            renderFilesTab();
-            renderOverviewTab();
-            showToast('Worksheet uploaded!', 'success');
-        }
-
-        function showToast(message, type = 'info') {
-            const container = document.getElementById('toast-container');
-            const toast = document.createElement('div');
-            
-            let bg = 'bg-slate-800';
-            if (type === 'success') bg = 'bg-emerald-600';
-            if (type === 'error') bg = 'bg-rose-600';
-
-            toast.className = `${bg} text-white text-xs font-bold px-4 py-3 rounded-xl shadow-xl pointer-events-auto flex items-center space-x-2 transition transform translate-y-2 opacity-0`;
-            toast.innerHTML = `<span>${message}</span>`;
-            
-            container.appendChild(toast);
-            
-            setTimeout(() => {
-                toast.classList.remove('translate-y-2', 'opacity-0');
-            }, 10);
-
-            setTimeout(() => {
-                toast.classList.add('opacity-0');
-                setTimeout(() => toast.remove(), 300);
-            }, 3000);
-        }
+        // Initialize App on Load
+        render();
     </script>
 </body>
 </html>
-```
