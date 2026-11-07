@@ -29,6 +29,11 @@
             background-size: cover;
             background-position: center;
         }
+        @media print {
+            body * { visibility: hidden; }
+            #printableCard, #printableCard * { visibility: visible; }
+            #printableCard { position: absolute; left: 0; top: 0; width: 100%; }
+        }
     </style>
 </head>
 <body class="bg-slate-100 font-sans text-slate-800 antialiased min-h-screen flex flex-col">
@@ -36,7 +41,7 @@
     <div id="app" class="flex-1 flex flex-col"></div>
 
     <script>
-        const DB_KEY = "GPS_DHOK_JHATT_DB_V5";
+        const DB_KEY = "GPS_DHOK_JHATT_DB_V6";
 
         function getDB() {
             let data = localStorage.getItem(DB_KEY);
@@ -59,9 +64,10 @@
                     homework: [],
                     meetings: [],
                     chats: [],
-                    timetable: [
-                        { id: "tt_1", day: "Monday", className: "Class 3", subject: "Mathematics", time: "08:00 AM" }
-                    ],
+                    timetable: [],
+                    exams: [],
+                    diaries: [],
+                    gallery: [],
                     currentUser: null
                 };
                 localStorage.setItem(DB_KEY, JSON.stringify(initialData));
@@ -88,7 +94,8 @@
         }
 
         let showAuthModal = false;
-        let authMode = 'login'; // 'login' or 'signup'
+        let authMode = 'login';
+        let activeIDCardStudent = null;
 
         function openAuth(mode) {
             authMode = mode;
@@ -109,7 +116,6 @@
         function renderLandingPage() {
             return `
                 <div class="hero-bg flex-1 flex flex-col justify-between p-4 sm:p-8 relative">
-                    <!-- Top Navigation Bar -->
                     <div class="max-w-7xl w-full mx-auto flex justify-between items-center py-4">
                         <div class="flex items-center gap-2">
                             <div class="bg-primary text-white p-2 rounded-xl shadow flex items-center justify-center">
@@ -122,53 +128,48 @@
                         </div>
                     </div>
 
-                    <!-- Center Hero Intro -->
                     <div class="text-center max-w-3xl mx-auto my-auto py-10">
                         <h1 class="text-3xl sm:text-5xl font-extrabold text-white tracking-wide uppercase drop-shadow-lg mb-4">Government Primary School Dhok Jhatt</h1>
-                        <p class="text-slate-200 text-sm sm:text-base max-w-xl mx-auto">Official TeacherHub & Educational Portal for Streamlined Attendance, Academic Reporting, and Faculty Collaboration.</p>
+                        <p class="text-slate-200 text-sm sm:text-base max-w-xl mx-auto">Official TeacherHub & Educational Portal for Streamlined Attendance, Academic Reporting, Exams & Faculty Collaboration.</p>
                     </div>
 
-                    <!-- Teacher Rules Footer -->
                     <div class="max-w-4xl mx-auto bg-slate-900/90 border border-slate-700 text-white rounded-2xl p-4 sm:p-6 shadow-2xl backdrop-blur-md mb-6">
                         <h3 class="text-amber-400 font-bold text-sm sm:text-base uppercase tracking-wider mb-2 text-center">📜 Teacher Rules & Code of Conduct</h3>
                         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs sm:text-sm text-slate-300">
                             <div class="bg-slate-800/80 p-3 rounded-xl border border-slate-700">
                                 <strong class="text-white block mb-1">1. Attendance & Punctuality</strong>
-                                Daily class attendance must be recorded accurately on schedule.
+                                Daily class attendance and diaries must be recorded accurately.
                             </div>
                             <div class="bg-slate-800/80 p-3 rounded-xl border border-slate-700">
                                 <strong class="text-white block mb-1">2. Academic Reporting</strong>
-                                Submit progress reports for approval to Head Teachers and Admin.
+                                Submit progress notes, exam grades, and diaries for leadership review.
                             </div>
                             <div class="bg-slate-800/80 p-3 rounded-xl border border-slate-700">
                                 <strong class="text-white block mb-1">3. System Security</strong>
-                                Role management and system controls are restricted to Admin Haris Awan.
+                                System roles are strictly supervised under Admin Haris Awan.
                             </div>
                         </div>
                     </div>
 
-                    <!-- Auth Modal Popup -->
                     ${showAuthModal ? `
                         <div class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-                            <div class="max-w-md w-full glass-card rounded-2xl shadow-2xl p-6 relative animate-fadeIn">
+                            <div class="max-w-md w-full glass-card rounded-2xl shadow-2xl p-6 relative">
                                 <button onclick="closeAuth()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-700 font-bold text-lg">✕</button>
-                                
                                 <div class="flex border-b border-slate-200 mb-6 mt-2">
-                                    <button onclick="setAuthMode('login')" class="flex-1 pb-3 text-center font-bold text-sm sm:text-base ${authMode === 'login' ? 'text-primary border-b-2 border-primary' : 'text-slate-400'}">Login</button>
-                                    <button onclick="setAuthMode('signup')" class="flex-1 pb-3 text-center font-bold text-sm sm:text-base ${authMode === 'signup' ? 'text-primary border-b-2 border-primary' : 'text-slate-400'}">Sign Up</button>
+                                    <button onclick="setAuthMode('login')" class="flex-1 pb-3 text-center font-bold text-sm ${authMode === 'login' ? 'text-primary border-b-2 border-primary' : 'text-slate-400'}">Login</button>
+                                    <button onclick="setAuthMode('signup')" class="flex-1 pb-3 text-center font-bold text-sm ${authMode === 'signup' ? 'text-primary border-b-2 border-primary' : 'text-slate-400'}">Sign Up</button>
                                 </div>
-
                                 ${authMode === 'login' ? `
                                     <form onsubmit="handleLogin(event)" class="space-y-4">
                                         <div>
                                             <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Email Address</label>
-                                            <input type="email" id="loginEmail" required class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-primary text-sm" placeholder="Enter your email">
+                                            <input type="email" id="loginEmail" required class="w-full px-4 py-3 rounded-xl border border-slate-300 text-sm" placeholder="Enter email">
                                         </div>
                                         <div>
                                             <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Password</label>
-                                            <input type="password" id="loginPassword" required class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-primary text-sm" placeholder="••••••••">
+                                            <input type="password" id="loginPassword" required class="w-full px-4 py-3 rounded-xl border border-slate-300 text-sm" placeholder="••••••••">
                                         </div>
-                                        <button type="submit" class="w-full bg-primary hover:bg-blue-800 text-white font-bold py-3 rounded-xl transition shadow text-sm uppercase">Login</button>
+                                        <button type="submit" class="w-full bg-primary text-white font-bold py-3 rounded-xl text-sm uppercase">Login</button>
                                         <div class="text-center pt-2">
                                             <a href="#" onclick="setAuthMode('signup'); return false;" class="text-xs text-primary font-semibold hover:underline">If you Don't Have Account Sign Up</a>
                                         </div>
@@ -191,7 +192,7 @@
                                             <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Password</label>
                                             <input type="password" id="signupPassword" required class="w-full px-3 py-2.5 rounded-xl border border-slate-300 text-sm" placeholder="••••••••">
                                         </div>
-                                        <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-xl transition shadow text-sm uppercase">Register Account</button>
+                                        <button type="submit" class="w-full bg-emerald-600 text-white font-bold py-3 rounded-xl text-sm uppercase">Register Account</button>
                                     </form>
                                 `}
                             </div>
@@ -205,7 +206,6 @@
             e.preventDefault();
             const email = document.getElementById('loginEmail').value.trim();
             const password = document.getElementById('loginPassword').value;
-
             const user = db.users.find(u => u.email === email && u.password === password);
             if (user) {
                 db.currentUser = user;
@@ -228,20 +228,11 @@
                 return;
             }
 
-            const newUser = {
-                id: "usr_" + Date.now(),
-                name,
-                email,
-                password,
-                role: "Teacher",
-                subject,
-                phone: "+92 300 0000000"
-            };
-
+            const newUser = { id: "usr_" + Date.now(), name, email, password, role: "Teacher", subject, phone: "+92 300 0000000" };
             db.users.push(newUser);
             db.currentUser = newUser;
             saveDB(db);
-            alert("Account registered successfully!");
+            alert("Account registered!");
             render();
         }
 
@@ -282,20 +273,26 @@
 
                     <div class="bg-white border-b border-slate-200 shadow-sm overflow-x-auto">
                         <div class="max-w-7xl mx-auto px-4 flex gap-2 py-2">
-                            <button onclick="switchTab('overview')" class="px-4 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap ${currentTab === 'overview' ? 'bg-primary text-white shadow' : 'text-slate-600 hover:bg-slate-100'}">Overview</button>
-                            <button onclick="switchTab('attendance')" class="px-4 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap ${currentTab === 'attendance' ? 'bg-primary text-white shadow' : 'text-slate-600 hover:bg-slate-100'}">Attendance</button>
-                            <button onclick="switchTab('reports')" class="px-4 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap ${currentTab === 'reports' ? 'bg-primary text-white shadow' : 'text-slate-600 hover:bg-slate-100'}">Reports</button>
-                            <button onclick="switchTab('homework')" class="px-4 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap ${currentTab === 'homework' ? 'bg-primary text-white shadow' : 'text-slate-600 hover:bg-slate-100'}">Worksheets & HW</button>
-                            <button onclick="switchTab('timetable')" class="px-4 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap ${currentTab === 'timetable' ? 'bg-primary text-white shadow' : 'text-slate-600 hover:bg-slate-100'}">Timetable</button>
-                            <button onclick="switchTab('meetings')" class="px-4 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap ${currentTab === 'meetings' ? 'bg-primary text-white shadow' : 'text-slate-600 hover:bg-slate-100'}">Meetings</button>
-                            <button onclick="switchTab('chat')" class="px-4 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap ${currentTab === 'chat' ? 'bg-primary text-white shadow' : 'text-slate-600 hover:bg-slate-100'}">Staff Chat</button>
-                            ${user.role === 'Admin' ? `<button onclick="switchTab('staff')" class="px-4 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap ${currentTab === 'staff' ? 'bg-indigo-600 text-white shadow' : 'text-indigo-600 hover:bg-indigo-50'}">Staff & Ranks (Admin)</button>` : ''}
+                            <button onclick="switchTab('overview')" class="px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap ${currentTab === 'overview' ? 'bg-primary text-white shadow' : 'text-slate-600 hover:bg-slate-100'}">Overview</button>
+                            <button onclick="switchTab('attendance')" class="px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap ${currentTab === 'attendance' ? 'bg-primary text-white shadow' : 'text-slate-600 hover:bg-slate-100'}">Attendance & ID</button>
+                            <button onclick="switchTab('exams')" class="px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap ${currentTab === 'exams' ? 'bg-primary text-white shadow' : 'text-slate-600 hover:bg-slate-100'}">Exams & Grades</button>
+                            <button onclick="switchTab('diary')" class="px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap ${currentTab === 'diary' ? 'bg-primary text-white shadow' : 'text-slate-600 hover:bg-slate-100'}">Daily Diary</button>
+                            <button onclick="switchTab('gallery')" class="px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap ${currentTab === 'gallery' ? 'bg-primary text-white shadow' : 'text-slate-600 hover:bg-slate-100'}">Photo Gallery</button>
+                            <button onclick="switchTab('reports')" class="px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap ${currentTab === 'reports' ? 'bg-primary text-white shadow' : 'text-slate-600 hover:bg-slate-100'}">Reports</button>
+                            <button onclick="switchTab('homework')" class="px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap ${currentTab === 'homework' ? 'bg-primary text-white shadow' : 'text-slate-600 hover:bg-slate-100'}">Worksheets & HW</button>
+                            <button onclick="switchTab('timetable')" class="px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap ${currentTab === 'timetable' ? 'bg-primary text-white shadow' : 'text-slate-600 hover:bg-slate-100'}">Timetable</button>
+                            <button onclick="switchTab('meetings')" class="px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap ${currentTab === 'meetings' ? 'bg-primary text-white shadow' : 'text-slate-600 hover:bg-slate-100'}">Meetings</button>
+                            <button onclick="switchTab('chat')" class="px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap ${currentTab === 'chat' ? 'bg-primary text-white shadow' : 'text-slate-600 hover:bg-slate-100'}">Staff Chat</button>
+                            ${user.role === 'Admin' ? `<button onclick="switchTab('staff')" class="px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap ${currentTab === 'staff' ? 'bg-indigo-600 text-white shadow' : 'text-indigo-600 hover:bg-indigo-50'}">Staff & Ranks (Admin)</button>` : ''}
                         </div>
                     </div>
 
                     <main class="max-w-7xl w-full mx-auto p-4 sm:p-6 flex-1 flex flex-col gap-6">
                         ${currentTab === 'overview' ? renderOverviewTab() : ''}
                         ${currentTab === 'attendance' ? renderAttendanceTab() : ''}
+                        ${currentTab === 'exams' ? renderExamsTab() : ''}
+                        ${currentTab === 'diary' ? renderDiaryTab() : ''}
+                        ${currentTab === 'gallery' ? renderGalleryTab() : ''}
                         ${currentTab === 'reports' ? renderReportsTab() : ''}
                         ${currentTab === 'homework' ? renderHomeworkTab() : ''}
                         ${currentTab === 'timetable' ? renderTimetableTab() : ''}
@@ -304,6 +301,8 @@
                         ${currentTab === 'staff' && user.role === 'Admin' ? renderStaffTab() : ''}
                         ${currentTab === 'profile' ? renderProfileTab() : ''}
                     </main>
+
+                    ${activeIDCardStudent ? renderIDCardModal() : ''}
 
                     <footer class="bg-white border-t border-slate-200 py-4 text-center text-xs text-slate-500">
                         Government Primary School Dhok Jhatt • Made By Haris Awan
@@ -321,22 +320,25 @@
                         <p class="text-slate-200 text-sm mt-1">Role: <span class="bg-white/20 px-2 py-0.5 rounded font-bold">${user.role}</span> | Subject: ${user.subject}</p>
                     </div>
 
-                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+                    <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
+                        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
                             <span class="text-xs font-bold text-slate-400 uppercase">Registered Students</span>
                             <h3 class="text-2xl font-extrabold text-slate-800 mt-1">${db.students.length}</h3>
                         </div>
-                        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+                        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
                             <span class="text-xs font-bold text-slate-400 uppercase">Faculty Staff</span>
                             <h3 class="text-2xl font-extrabold text-slate-800 mt-1">${db.users.length}</h3>
                         </div>
-                        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
-                            <span class="text-xs font-bold text-slate-400 uppercase">Worksheets & HW</span>
-                            <h3 class="text-2xl font-extrabold text-slate-800 mt-1">${db.homework.length}</h3>
+                        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+                            <span class="text-xs font-bold text-slate-400 uppercase">Exam Records</span>
+                            <h3 class="text-2xl font-extrabold text-slate-800 mt-1">${db.exams.length}</h3>
+                        </div>
+                        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+                            <span class="text-xs font-bold text-slate-400 uppercase">Event Photos</span>
+                            <h3 class="text-2xl font-extrabold text-slate-800 mt-1">${db.gallery.length}</h3>
                         </div>
                     </div>
 
-                    <!-- Bottom Full Frame School Graphic Card (Filling Empty Dashboard Space) -->
                     <div class="relative rounded-2xl overflow-hidden shadow-2xl flex-1 min-h-[220px] flex items-center justify-center p-6 text-center text-white" style="background: linear-gradient(rgba(15, 23, 42, 0.75), rgba(15, 23, 42, 0.85)), url('https://images.unsplash.com/photo-1580582932707-520aed937b7b?auto=format&fit=crop&w=1920&q=80'); background-size: cover; background-position: center;">
                         <div class="z-10 space-y-2">
                             <div class="bg-blue-600 text-white text-xs font-bold px-3 py-1 rounded-full inline-block shadow">TeacherHub Portal</div>
@@ -354,8 +356,8 @@
                 <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm space-y-4">
                     <div class="flex justify-between items-center flex-wrap gap-3">
                         <div>
-                            <h3 class="font-bold text-slate-800 text-lg">Student Attendance</h3>
-                            <p class="text-xs text-slate-500">Register students and mark daily presence.</p>
+                            <h3 class="font-bold text-slate-800 text-lg">Student Attendance & ID Cards</h3>
+                            <p class="text-xs text-slate-500">Register students, mark presence & print digital student ID cards.</p>
                         </div>
                         <button onclick="openAddStudentModal()" class="bg-primary hover:bg-blue-800 text-white px-4 py-2 rounded-xl text-sm font-bold transition">+ Add Student</button>
                     </div>
@@ -371,7 +373,7 @@
                                         <th class="p-3">Name</th>
                                         <th class="p-3">Class</th>
                                         <th class="p-3">Status</th>
-                                        <th class="p-3 text-right">Action</th>
+                                        <th class="p-3 text-right">Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody class="divide-y divide-slate-200">
@@ -384,6 +386,7 @@
                                             <td class="p-3 text-right space-x-2">
                                                 <button onclick="updateStudentStatus('${st.id}', 'Present')" class="text-xs bg-emerald-50 text-emerald-700 px-2 py-1 rounded font-bold">Present</button>
                                                 <button onclick="updateStudentStatus('${st.id}', 'Absent')" class="text-xs bg-red-50 text-red-700 px-2 py-1 rounded font-bold">Absent</button>
+                                                <button onclick="showIDCard('${st.id}')" class="text-xs bg-blue-50 text-blue-700 px-2.5 py-1 rounded font-bold">🪪 ID Card</button>
                                             </td>
                                         </tr>
                                     `).join('')}
@@ -413,6 +416,208 @@
             if (st) { st.status = status; saveDB(db); render(); }
         }
 
+        function showIDCard(id) {
+            activeIDCardStudent = db.students.find(s => s.id === id);
+            render();
+        }
+
+        function closeIDCard() {
+            activeIDCardStudent = null;
+            render();
+        }
+
+        function renderIDCardModal() {
+            const st = activeIDCardStudent;
+            return `
+                <div class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+                    <div class="bg-white rounded-2xl p-6 max-w-sm w-full relative shadow-2xl">
+                        <button onclick="closeIDCard()" class="absolute top-3 right-3 text-slate-400 hover:text-slate-700 font-bold">✕</button>
+                        
+                        <div id="printableCard" class="border-2 border-primary rounded-xl p-4 bg-gradient-to-b from-blue-50 to-white text-center space-y-3">
+                            <div class="bg-primary text-white p-2 rounded-t-lg -mx-4 -mt-4">
+                                <h4 class="font-extrabold text-xs uppercase tracking-wide">Government Primary School Dhok Jhatt</h4>
+                                <p class="text-[9px] text-blue-200">Official Student Identity Card</p>
+                            </div>
+                            <div class="w-20 h-20 bg-slate-200 rounded-full mx-auto flex items-center justify-center text-3xl font-bold text-slate-500 border-2 border-primary">
+                                ${st.name.charAt(0)}
+                            </div>
+                            <div>
+                                <h3 class="font-extrabold text-slate-800 text-lg">${st.name}</h3>
+                                <p class="text-xs text-primary font-bold">${st.className}</p>
+                            </div>
+                            <div class="bg-white border border-slate-200 rounded-lg p-2 text-xs space-y-1 text-left">
+                                <div><span class="text-slate-400">Roll Number:</span> <strong>${st.rollNo}</strong></div>
+                                <div><span class="text-slate-400">School ID:</span> <strong>GPS-${st.rollNo}</strong></div>
+                                <div><span class="text-slate-400">Issued By:</span> <strong>Admin Haris Awan</strong></div>
+                            </div>
+                            <p class="text-[9px] text-slate-400">Valid for Academic Session 2026-2027</p>
+                        </div>
+
+                        <button onclick="window.print()" class="w-full bg-primary text-white font-bold py-2.5 rounded-xl text-xs uppercase mt-4">🖨️ Print Student ID Card</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        // --- NEW MODULE 2: EXAMS & GRADING SYSTEM ---
+        function renderExamsTab() {
+            return `
+                <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm space-y-4">
+                    <div class="flex justify-between items-center flex-wrap gap-3">
+                        <div>
+                            <h3 class="font-bold text-slate-800 text-lg">Exam Marks & Student Grading</h3>
+                            <p class="text-xs text-slate-500">Record term examination marks and auto-calculate grades.</p>
+                        </div>
+                        <button onclick="openAddExamModal()" class="bg-primary text-white px-4 py-2 rounded-xl text-sm font-bold">+ Record Exam Marks</button>
+                    </div>
+
+                    ${db.exams.length === 0 ? `<div class="text-center py-10 text-slate-400 text-sm">No exam marks entered yet.</div>` : `
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left text-sm">
+                                <thead class="bg-slate-100 text-slate-700 uppercase text-xs">
+                                    <tr>
+                                        <th class="p-3">Student Name</th>
+                                        <th class="p-3">Class</th>
+                                        <th class="p-3">Subject</th>
+                                        <th class="p-3">Marks</th>
+                                        <th class="p-3">Percentage</th>
+                                        <th class="p-3">Grade</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-200">
+                                    ${db.exams.map(e => `
+                                        <tr>
+                                            <td class="p-3 font-semibold">${e.studentName}</td>
+                                            <td class="p-3">${e.className}</td>
+                                            <td class="p-3">${e.subject}</td>
+                                            <td class="p-3">${e.obtainedMarks} / ${e.totalMarks}</td>
+                                            <td class="p-3 font-bold">${e.percentage}%</td>
+                                            <td class="p-3"><span class="px-2 py-0.5 rounded text-xs font-bold ${e.percentage >= 60 ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-700'}">${e.grade}</span></td>
+                                        </tr>
+                                    `).join('')}
+                                </tbody>
+                            </table>
+                        </div>
+                    `}
+                </div>
+            `;
+        }
+
+        function openAddExamModal() {
+            const studentName = prompt("Student Full Name:");
+            if (!studentName) return;
+            const className = prompt("Class Name:", "Class 3");
+            if (!className) return;
+            const subject = prompt("Subject Name:", "Mathematics");
+            if (!subject) return;
+            const obtainedMarks = parseFloat(prompt("Obtained Marks:", "85"));
+            if (isNaN(obtainedMarks)) return;
+            const totalMarks = parseFloat(prompt("Total Marks:", "100"));
+            if (isNaN(totalMarks)) return;
+
+            const percentage = ((obtainedMarks / totalMarks) * 100).toFixed(1);
+            let grade = 'F';
+            if (percentage >= 80) grade = 'A+';
+            else if (percentage >= 70) grade = 'A';
+            else if (percentage >= 60) grade = 'B';
+            else if (percentage >= 50) grade = 'C';
+
+            db.exams.push({ id: "ex_" + Date.now(), studentName, className, subject, obtainedMarks, totalMarks, percentage, grade });
+            saveDB(db);
+            render();
+        }
+
+        // --- NEW MODULE 3: TEACHER DAILY DIARY ---
+        function renderDiaryTab() {
+            return `
+                <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm space-y-4">
+                    <div class="flex justify-between items-center flex-wrap gap-3">
+                        <div>
+                            <h3 class="font-bold text-slate-800 text-lg">Teacher Daily Lesson Diary</h3>
+                            <p class="text-xs text-slate-500">Record daily teaching history and class progress notes.</p>
+                        </div>
+                        <button onclick="openAddDiaryModal()" class="bg-primary text-white px-4 py-2 rounded-xl text-sm font-bold">+ Write Daily Diary</button>
+                    </div>
+
+                    ${db.diaries.length === 0 ? `<div class="text-center py-10 text-slate-400 text-sm">No daily diary entries recorded yet.</div>` : `
+                        <div class="space-y-3">
+                            ${db.diaries.map(d => `
+                                <div class="p-4 border border-slate-200 rounded-xl bg-slate-50">
+                                    <div class="flex justify-between items-center mb-1">
+                                        <strong class="text-xs text-primary font-bold">${d.teacherName} (${d.subject})</strong>
+                                        <span class="text-[10px] text-slate-400">${d.date}</span>
+                                    </div>
+                                    <h4 class="font-bold text-slate-800 text-sm">Class: ${d.className}</h4>
+                                    <p class="text-xs text-slate-600 mt-1">${d.lessonDetails}</p>
+                                </div>
+                            `).join('')}
+                        </div>
+                    `}
+                </div>
+            `;
+        }
+
+        function openAddDiaryModal() {
+            const className = prompt("Class Name:", "Class 3");
+            if (!className) return;
+            const subject = prompt("Subject Taught:", db.currentUser.subject);
+            if (!subject) return;
+            const lessonDetails = prompt("What did you teach today? (Lesson Summary):");
+            if (!lessonDetails) return;
+
+            db.diaries.push({
+                id: "diary_" + Date.now(),
+                teacherName: db.currentUser.name,
+                className,
+                subject,
+                lessonDetails,
+                date: new Date().toLocaleDateString()
+            });
+            saveDB(db);
+            render();
+        }
+
+        // --- NEW MODULE 4: SCHOOL PHOTO GALLERY ---
+        function renderGalleryTab() {
+            const canUpload = db.currentUser.role === 'Admin' || db.currentUser.role === 'Head Teacher';
+            return `
+                <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm space-y-4">
+                    <div class="flex justify-between items-center flex-wrap gap-3">
+                        <div>
+                            <h3 class="font-bold text-slate-800 text-lg">School Events & Photo Gallery</h3>
+                            <p class="text-xs text-slate-500">Record sports days, 14th August celebrations and school achievements.</p>
+                        </div>
+                        ${canUpload ? `<button onclick="openAddPhotoModal()" class="bg-primary text-white px-4 py-2 rounded-xl text-sm font-bold">+ Upload Event Photo</button>` : ''}
+                    </div>
+
+                    ${db.gallery.length === 0 ? `<div class="text-center py-10 text-slate-400 text-sm">No photo records uploaded yet.</div>` : `
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                            ${db.gallery.map(g => `
+                                <div class="border border-slate-200 rounded-xl overflow-hidden bg-slate-50">
+                                    <img src="${g.photoUrl}" class="w-full h-40 object-cover" alt="School Event" onError="this.src='https://images.unsplash.com/photo-1580582932707-520aed937b7b?auto=format&fit=crop&w=600&q=80'">
+                                    <div class="p-3">
+                                        <h4 class="font-bold text-slate-800 text-xs">${g.title}</h4>
+                                        <p class="text-[10px] text-slate-500 mt-0.5">${g.date}</p>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    `}
+                </div>
+            `;
+        }
+
+        function openAddPhotoModal() {
+            const title = prompt("Event Title (e.g. 14th August Celebration):");
+            if (!title) return;
+            const photoUrl = prompt("Enter Photo Image URL:", "https://images.unsplash.com/photo-1580582932707-520aed937b7b?auto=format&fit=crop&w=600&q=80");
+            if (!photoUrl) return;
+
+            db.gallery.push({ id: "gal_" + Date.now(), title, photoUrl, date: new Date().toLocaleDateString() });
+            saveDB(db);
+            render();
+        }
+
         function renderReportsTab() {
             const user = db.currentUser;
             const canApprove = user.role === 'Head Teacher' || user.role === 'Admin';
@@ -423,7 +628,7 @@
                             <h3 class="font-bold text-slate-800 text-lg">Student Reports</h3>
                             <p class="text-xs text-slate-500">Submit progress reports for leadership approval.</p>
                         </div>
-                        <button onclick="openAddReportModal()" class="bg-primary hover:bg-blue-800 text-white px-4 py-2 rounded-xl text-sm font-bold transition">+ Submit Report</button>
+                        <button onclick="openAddReportModal()" class="bg-primary text-white px-4 py-2 rounded-xl text-sm font-bold">+ Submit Report</button>
                     </div>
                     ${db.reports.length === 0 ? `<div class="text-center py-10 text-slate-400 text-sm">No reports submitted yet.</div>` : `
                         <div class="space-y-3">
@@ -504,7 +709,7 @@
                             <h3 class="font-bold text-slate-800 text-lg">Manage Class Timetable</h3>
                             <p class="text-xs text-slate-500">Teachers, Head Teachers and Admins can add and manage schedule slots.</p>
                         </div>
-                        <button onclick="openAddTimetableModal()" class="bg-primary hover:bg-blue-800 text-white px-4 py-2 rounded-xl text-sm font-bold transition">+ Add Timetable Slot</button>
+                        <button onclick="openAddTimetableModal()" class="bg-primary text-white px-4 py-2 rounded-xl text-sm font-bold">+ Add Timetable Slot</button>
                     </div>
 
                     ${db.timetable.length === 0 ? `<div class="text-center py-10 text-slate-400 text-sm">No timetable slots added yet.</div>` : `
@@ -516,7 +721,7 @@
                                         <h4 class="font-bold text-slate-800 mt-1">${t.subject}</h4>
                                         <p class="text-xs text-slate-500 mt-0.5">Class: ${t.className} | Time: ${t.time}</p>
                                     </div>
-                                    <button onclick="deleteTimetable('${t.id}')" class="text-red-500 hover:text-red-700 text-xs font-bold">Delete</button>
+                                    <button onclick="deleteTimetable('${t.id}')" class="text-red-500 font-bold text-xs">Delete</button>
                                 </div>
                             `).join('')}
                         </div>
@@ -526,7 +731,7 @@
         }
 
         function openAddTimetableModal() {
-            const day = prompt("Enter Day (e.g. Monday, Tuesday):", "Monday");
+            const day = prompt("Enter Day (e.g. Monday):", "Monday");
             if (!day) return;
             const className = prompt("Enter Class Name:", "Class 3");
             if (!className) return;
@@ -699,9 +904,13 @@
         function renderProfileTab() {
             const user = db.currentUser;
             return `
-                <div class="max-w-xl mx-auto bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
-                    <h3 class="font-bold text-slate-800 text-lg mb-1">Edit Your Profile</h3>
-                    <form onsubmit="handleProfileUpdate(event)" class="space-y-4 mt-4">
+                <div class="max-w-xl mx-auto bg-white rounded-2xl border border-slate-200 p-6 shadow-sm space-y-6">
+                    <div>
+                        <h3 class="font-bold text-slate-800 text-lg mb-1">Edit Profile & Data Backup</h3>
+                        <p class="text-xs text-slate-500">Update personal info or export/import database backups.</p>
+                    </div>
+
+                    <form onsubmit="handleProfileUpdate(event)" class="space-y-4">
                         <div>
                             <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Full Name</label>
                             <input type="text" id="profileName" value="${user.name}" required class="w-full px-4 py-3 rounded-xl border border-slate-300 text-sm">
@@ -716,6 +925,16 @@
                         </div>
                         <button type="submit" class="w-full bg-primary text-white font-bold py-3 rounded-xl text-sm uppercase">Save Profile</button>
                     </form>
+
+                    <hr class="border-slate-200">
+
+                    <div class="space-y-2">
+                        <h4 class="font-bold text-slate-800 text-xs uppercase">Database Protection Tools</h4>
+                        <div class="flex gap-2">
+                            <button onclick="exportJSONBackup()" class="flex-1 bg-slate-800 hover:bg-slate-900 text-white font-bold py-2.5 rounded-xl text-xs">📥 Export Backup (JSON)</button>
+                            <button onclick="importJSONBackup()" class="flex-1 bg-amber-600 hover:bg-amber-700 text-white font-bold py-2.5 rounded-xl text-xs">📤 Restore Backup (JSON)</button>
+                        </div>
+                    </div>
                 </div>
             `;
         }
@@ -732,6 +951,34 @@
             saveDB(db);
             alert("Profile saved!");
             render();
+        }
+
+        function exportJSONBackup() {
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(db));
+            const downloadAnchor = document.createElement('a');
+            downloadAnchor.setAttribute("href", dataStr);
+            downloadAnchor.setAttribute("download", `GPS_Backup_${Date.now()}.json`);
+            document.body.appendChild(downloadAnchor);
+            downloadAnchor.click();
+            downloadAnchor.remove();
+        }
+
+        function importJSONBackup() {
+            const inputJson = prompt("Paste your JSON backup code here:");
+            if (!inputJson) return;
+            try {
+                const parsed = JSON.parse(inputJson);
+                if (parsed.users) {
+                    db = parsed;
+                    saveDB(db);
+                    alert("Database backup restored successfully!");
+                    render();
+                } else {
+                    alert("Invalid backup format!");
+                }
+            } catch (err) {
+                alert("Error parsing JSON backup string!");
+            }
         }
 
         render();
