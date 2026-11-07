@@ -3,136 +3,796 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TeacherHub MEGA - Govt Primary School Dhok Jhatt</title>
+<title>
+TeacherHub MEGA - Govt Primary School Dhok Jhatt
+</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 <style>
-*{font-family:Inter,system-ui,sans-serif}body{background:#f1f5f9;color:#0f172a}
-.glass{background:rgba(255,255,255,.95)} .hero-bg{background:linear-gradient(rgba(15,23,42,.90),rgba(15,23,42,.82)),url('https://images.unsplash.com/photo-1580582932707-520aed937b7b?q=80&w=1600&auto=format&fit=crop');background-size:cover;background-position:center}
-.hero-bg2{background:linear-gradient(135deg,#2563eb,#1d4ed8 55%,#0f172a)}
-.tab-btn.active{background:#2563eb!important;color:#fff!important}
-input,select,textarea{outline:none}input:focus,select:focus,textarea:focus{border-color:#2563eb!important;box-shadow:0 0 0 3px rgba(37,99,235,.12)}
-.modal{display:none}.modal.open{display:flex}.badge{font-size:10px;padding:2px 8px;border-radius:999px;font-weight:700}
-.th{font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:#64748b;font-weight:700}
+*{
+font-family:Inter,system-ui,sans-serif
+}
+body{
+background:#f1f5f9;
+color:#0f172a
+}
+.glass{
+background:rgba(255,255,255,.95)
+}
+.hero-bg{
+background:linear-gradient(rgba(15,23,42,.90),rgba(15,23,42,.82)),url('https://images.unsplash.com/photo-1580582932707-520aed937b7b?q=80&w=1600&auto=format&fit=crop');
+background-size:cover;
+background-position:center
+}
+.hero-bg2{
+background:linear-gradient(135deg,#2563eb,#1d4ed8 55%,#0f172a)
+}
+.tab-btn.active{
+background:#2563eb!important;
+color:#fff!important
+}
+input,select,textarea{
+outline:none
+}
+input:focus,select:focus,textarea:focus{
+border-color:#2563eb!important;
+box-shadow:0 0 0 3px rgba(37,99,235,.12)
+}
+.modal{
+display:none
+}
+.modal.open{
+display:flex
+}
+.badge{
+font-size:10px;
+padding:2px 8px;
+border-radius:999px;
+font-weight:700
+}
+.th{
+font-size:11px;
+letter-spacing:.05em;
+text-transform:uppercase;
+color:#64748b;
+font-weight:700
+}
+.school-frame{
+background:linear-gradient(rgba(15,23,42,.92),rgba(15,23,42,.88)),url('https://images.unsplash.com/photo-1580582932707-520aed937b7b?q=80&w=1600&auto=format&fit=crop');
+background-size:cover;
+background-position:center;
+border-radius:24px;
+padding:28px 18px;
+text-align:center;
+color:#fff;
+margin-top:24px
+}
+.school-frame h3{
+font-size:22px;
+font-weight:800
+}
+.school-frame p{
+color:#cbd5e1;
+font-size:13px;
+margin-top:6px
+}
+.school-frame span{
+background:#2563eb;
+font-size:11px;
+padding:4px 10px;
+border-radius:999px;
+font-weight:700
+}
 </style>
 </head>
 <body>
+
+<!-- ================= LANDING ================= -->
 <div id="landing">
 <header class="hero-bg text-white">
 <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
-<div class="flex items-center gap-3"><div class="w-11 h-11 bg-blue-600 rounded-xl flex items-center justify-center text-xl"><i class="fa-solid fa-graduation-cap"></i></div><div><p class="font-bold">Government Primary School</p><p class="text-sm text-blue-200">Dhok Jhatt • Punjab, Pakistan</p></div></div>
-<button type="button" onclick="openAuth('login')" class="bg-blue-600 px-5 py-2.5 rounded-full font-semibold text-sm">Sign In →</button>
+<div class="flex items-center gap-3">
+<div class="w-11 h-11 bg-blue-600 rounded-xl flex items-center justify-center text-xl">
+<i class="fa-solid fa-graduation-cap"></i>
 </div>
+<div>
+<p class="font-bold">Government Primary School</p>
+<p class="text-sm text-blue-200">Dhok Jhatt • Punjab, Pakistan</p>
+</div>
+</div>
+<button type="button" onclick="openAuth('login')" class="bg-blue-600 px-5 py-2.5 rounded-full font-semibold text-sm">
+Sign In →
+</button>
+</div>
+
 <div class="max-w-5xl mx-auto px-4 pt-12 pb-8 text-center">
-<span class="bg-white/10 border border-white/20 text-[11px] px-3 py-1.5 rounded-full">MEGA ERP • LMS • 100% ADVANCE</span>
-<h1 class="text-3xl md:text-5xl font-extrabold leading-tight mt-5">TeacherHub Mega Portal<br><span class="text-blue-300">Government Primary School Dhok Jhatt</span></h1>
-<p class="text-slate-300 mt-4 max-w-2xl mx-auto">Students, Parents, Teachers, Head Teacher & Admin — all in one portal. Attendance, Fees, Results, Quiz, Salary, Transport, Library, Certificates and more.</p>
-<div class="flex flex-wrap justify-center gap-3 mt-7"><button type="button" onclick="openAuth('login')" class="bg-blue-600 px-7 py-3 rounded-full font-bold">Login to Portal</button><button type="button" onclick="openAuth('signup')" class="bg-white text-slate-900 px-7 py-3 rounded-full font-bold">Create Account</button></div>
-<div class="flex justify-center gap-8 mt-8"><div><p class="text-2xl font-bold" id="landStudents">0</p><p class="text-xs text-slate-300">Students</p></div><div><p class="text-2xl font-bold" id="landTeachers">1</p><p class="text-xs text-slate-300">Faculty</p></div><div><p class="text-2xl font-bold" id="landQuiz">0</p><p class="text-xs text-slate-300">Quizzes</p></div></div>
+<span class="bg-white/10 border border-white/20 text-[11px] px-3 py-1.5 rounded-full">
+MEGA ERP • LMS • 100% ADVANCE
+</span>
+<h1 class="text-3xl md:text-5xl font-extrabold leading-tight mt-5">
+TeacherHub Mega Portal<br>
+<span class="text-blue-300">Government Primary School Dhok Jhatt</span>
+</h1>
+<p class="text-slate-300 mt-4 max-w-2xl mx-auto">
+Students, Parents, Teachers, Head Teacher & Admin — all in one portal.
+Attendance, Fees, Results, Quiz, Salary, Transport, Library, Certificates and more.
+</p>
+<div class="flex flex-wrap justify-center gap-3 mt-7">
+<button type="button" onclick="openAuth('login')" class="bg-blue-600 px-7 py-3 rounded-full font-bold">
+Login to Portal
+</button>
+<button type="button" onclick="openAuth('signup')" class="bg-white text-slate-900 px-7 py-3 rounded-full font-bold">
+Create Account
+</button>
 </div>
+<div class="flex justify-center gap-8 mt-8">
+<div>
+<p class="text-2xl font-bold" id="landStudents">0</p>
+<p class="text-xs text-slate-300">Students</p>
+</div>
+<div>
+<p class="text-2xl font-bold" id="landTeachers">1</p>
+<p class="text-xs text-slate-300">Faculty</p>
+</div>
+<div>
+<p class="text-2xl font-bold" id="landQuiz">0</p>
+<p class="text-xs text-slate-300">Quizzes</p>
+</div>
+</div>
+</div>
+
 <div class="max-w-7xl mx-auto px-4 pb-8 grid md:grid-cols-3 gap-3">
-<div class="bg-white/10 rounded-2xl p-4"><p class="font-bold text-sm">1. Attendance & Punctuality</p><p class="text-xs text-slate-300">Daily marking of student logs.</p></div>
-<div class="bg-white/10 rounded-2xl p-4"><p class="font-bold text-sm">2. Academic Reporting</p><p class="text-xs text-slate-300">Timely reports to Head Teacher & Admin.</p></div>
-<div class="bg-white/10 rounded-2xl p-4"><p class="font-bold text-sm">3. System Security</p><p class="text-xs text-slate-300">Only Admin Haris Awan can assign roles. New users join as New User.</p></div>
+<div class="bg-white/10 rounded-2xl p-4">
+<p class="font-bold text-sm">1. Attendance & Punctuality</p>
+<p class="text-xs text-slate-300">Daily marking of student logs.</p>
 </div>
-<p class="text-center text-xs text-slate-400 pb-4">© 2026 Govt Primary School Dhok Jhatt • Made By Haris Awan</p>
+<div class="bg-white/10 rounded-2xl p-4">
+<p class="font-bold text-sm">2. Academic Reporting</p>
+<p class="text-xs text-slate-300">Timely reports to Head Teacher & Admin.</p>
+</div>
+<div class="bg-white/10 rounded-2xl p-4">
+<p class="font-bold text-sm">3. System Security</p>
+<p class="text-xs text-slate-300">Only Admin Haris Awan can assign roles. New users join as New User.</p>
+</div>
+</div>
+<p class="text-center text-xs text-slate-400 pb-4">
+© 2026 Govt Primary School Dhok Jhatt • Made By Haris Awan
+</p>
 </header>
 </div>
 
-<!-- AUTH - NO ROLE SELECT, NO AUTO FILL -->
+<!-- ================= AUTH - NO ROLE SELECT, NO AUTO FILL ================= -->
 <div id="authModal" class="modal fixed inset-0 z-50 items-center justify-center bg-black/60 p-4">
 <div class="glass w-full max-w-md rounded-3xl p-6 shadow-2xl">
-<div class="flex justify-between"><div><div class="w-12 h-12 bg-blue-600 text-white rounded-2xl flex items-center justify-center text-xl"><i class="fa-solid fa-graduation-cap"></i></div><h2 class="font-extrabold text-xl mt-3">Govt Primary School<br>Dhok Jhatt</h2><p class="text-xs text-slate-500">TeacherHub Login • Secure Portal</p></div><button type="button" onclick="closeAuth()" class="text-slate-400 text-xl">✕</button></div>
-<div class="flex bg-slate-100 rounded-full p-1 mt-4"><button type="button" id="tabLogin" onclick="setAuthMode('login')" class="flex-1 py-2 rounded-full bg-blue-600 text-white font-bold text-sm">Login</button><button type="button" id="tabSignup" onclick="setAuthMode('signup')" class="flex-1 py-2 rounded-full font-bold text-sm text-slate-500">Sign Up</button></div>
-<div id="signupNameWrap" class="hidden mt-4"><label class="text-xs font-bold">Full Name *</label><input id="authName" class="w-full border rounded-xl px-3 py-2.5 mt-1" placeholder="Enter full name"></div>
-<div class="mt-3"><label class="text-xs font-bold">Email *</label><input id="authEmail" class="w-full border rounded-xl px-3 py-2.5 mt-1" placeholder="name@example.com"></div>
-<div id="signupSubjectWrap" class="hidden mt-3"><label class="text-xs font-bold">Subject / Designation / Child Name</label><input id="authSubject" class="w-full border rounded-xl px-3 py-2.5 mt-1" placeholder="e.g. English / Your Child Name"></div>
-<div id="signupPhoneWrap" class="hidden mt-3"><label class="text-xs font-bold">Phone</label><input id="authPhone" class="w-full border rounded-xl px-3 py-2.5 mt-1" placeholder="+92 300 1234567"></div>
-<div class="mt-3"><label class="text-xs font-bold">Password *</label><input id="authPass" type="password" class="w-full border rounded-xl px-3 py-2.5 mt-1" placeholder="••••••••"></div>
-<p id="signupNote" class="hidden text-xs text-amber-700 bg-amber-50 rounded-xl p-3 mt-3">You will join as a <b>New User</b>. Admin Haris Awan will assign you Teacher / Head Teacher / Parent / Student role. Until then you will not get full access.</p>
+<div class="flex justify-between">
+<div>
+<div class="w-12 h-12 bg-blue-600 text-white rounded-2xl flex items-center justify-center text-xl">
+<i class="fa-solid fa-graduation-cap"></i>
+</div>
+<h2 class="font-extrabold text-xl mt-3">
+Govt Primary School<br>Dhok Jhatt
+</h2>
+<p class="text-xs text-slate-500">TeacherHub Login • Secure Portal</p>
+</div>
+<button type="button" onclick="closeAuth()" class="text-slate-400 text-xl">✕</button>
+</div>
+
+<div class="flex bg-slate-100 rounded-full p-1 mt-4">
+<button type="button" id="tabLogin" onclick="setAuthMode('login')" class="flex-1 py-2 rounded-full bg-blue-600 text-white font-bold text-sm">Login</button>
+<button type="button" id="tabSignup" onclick="setAuthMode('signup')" class="flex-1 py-2 rounded-full font-bold text-sm text-slate-500">Sign Up</button>
+</div>
+
+<div id="signupNameWrap" class="hidden mt-4">
+<label class="text-xs font-bold">Full Name *</label>
+<input id="authName" class="w-full border rounded-xl px-3 py-2.5 mt-1" placeholder="Enter full name">
+</div>
+
+<div class="mt-3">
+<label class="text-xs font-bold">Email *</label>
+<input id="authEmail" class="w-full border rounded-xl px-3 py-2.5 mt-1" placeholder="name@example.com">
+</div>
+
+<div id="signupSubjectWrap" class="hidden mt-3">
+<label class="text-xs font-bold">Subject / Designation / Child Name</label>
+<input id="authSubject" class="w-full border rounded-xl px-3 py-2.5 mt-1" placeholder="e.g. English / Your Child Name">
+</div>
+
+<div id="signupPhoneWrap" class="hidden mt-3">
+<label class="text-xs font-bold">Phone</label>
+<input id="authPhone" class="w-full border rounded-xl px-3 py-2.5 mt-1" placeholder="+92 300 1234567">
+</div>
+
+<div class="mt-3">
+<label class="text-xs font-bold">Password *</label>
+<input id="authPass" type="password" class="w-full border rounded-xl px-3 py-2.5 mt-1" placeholder="••••••••">
+</div>
+
+<p id="signupNote" class="hidden text-xs text-amber-700 bg-amber-50 rounded-xl p-3 mt-3">
+You will join as a <b>New User</b>. Admin Haris Awan will assign you Teacher / Head Teacher / Parent / Student role. Until then you will not get full access.
+</p>
+
 <button type="button" onclick="doAuth()" id="authSubmit" class="w-full bg-blue-600 text-white py-3 rounded-xl font-bold mt-5">Login</button>
-<p class="text-center text-sm mt-3"><button type="button" onclick="switchAuth()" id="authSwitchText" class="text-blue-600 font-semibold">If you Don't Have Account Sign Up</button></p>
+
+<p class="text-center text-sm mt-3">
+<button type="button" onclick="switchAuth()" id="authSwitchText" class="text-blue-600 font-semibold">If you Don't Have Account Sign Up</button>
+</p>
 <p class="text-center text-[11px] text-slate-400 mt-2">Secure Login • Only Admin can assign roles • No Role Select</p>
 <p id="authError" class="text-center text-xs text-red-600 mt-2 hidden"></p>
-</div></div>
+</div>
+</div>
 
+<!-- ================= DASHBOARD ================= -->
 <div id="dashboard" class="hidden">
-<header class="bg-white shadow-sm sticky top-0 z-40"><div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-2">
-<div class="flex items-center gap-2"><div class="w-9 h-9 bg-blue-600 text-white rounded-lg flex items-center justify-center"><i class="fa-solid fa-graduation-cap"></i></div><div><p class="font-bold text-sm">GPS Dhok Jhatt</p><p class="text-[11px] text-slate-500">Mega ERP • 100% Advance</p></div></div>
-<div class="flex items-center gap-2"><span id="userBadge" class="bg-blue-50 text-blue-700 text-xs font-bold px-3 py-1.5 rounded-full hidden sm:block"></span><button type="button" onclick="openProfile()" class="border px-3 py-1.5 rounded-full text-xs font-bold">My Profile</button><button type="button" onclick="logout()" class="bg-slate-900 text-white px-3 py-1.5 rounded-full text-xs font-bold">Logout</button></div>
-</div><div class="max-w-7xl mx-auto px-4 pb-3 flex gap-2 overflow-x-auto whitespace-nowrap" id="tabsBar"></div></header>
+<header class="bg-white shadow-sm sticky top-0 z-40">
+<div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-2">
+<div class="flex items-center gap-2">
+<div class="w-9 h-9 bg-blue-600 text-white rounded-lg flex items-center justify-center">
+<i class="fa-solid fa-graduation-cap"></i>
+</div>
+<div>
+<p class="font-bold text-sm">GPS Dhok Jhatt</p>
+<p class="text-[11px] text-slate-500">Mega ERP • 100% Advance</p>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<span id="userBadge" class="bg-blue-50 text-blue-700 text-xs font-bold px-3 py-1.5 rounded-full hidden sm:block"></span>
+<button type="button" onclick="openProfile()" class="border px-3 py-1.5 rounded-full text-xs font-bold">My Profile</button>
+<button type="button" onclick="logout()" class="bg-slate-900 text-white px-3 py-1.5 rounded-full text-xs font-bold">Logout</button>
+</div>
+</div>
+<div class="max-w-7xl mx-auto px-4 pb-3 flex gap-2 overflow-x-auto whitespace-nowrap" id="tabsBar"></div>
+</header>
+
 <main class="max-w-7xl mx-auto px-4 py-5">
-<div id="newUserBox" class="hidden bg-amber-50 border border-amber-200 rounded-3xl p-6 text-center mb-4"><p class="text-3xl">⏳</p><h2 class="font-bold text-lg mt-2">Waiting for Admin Approval</h2><p class="text-sm text-slate-600 mt-1">You are a <b>New User</b>. Admin Haris Awan will soon assign you a role — Teacher / Head Teacher / Parent / Student. Until then you can only see this page.</p><p class="text-xs text-slate-400 mt-2" id="newUserInfo"></p></div>
 
+<div id="newUserBox" class="hidden bg-amber-50 border border-amber-200 rounded-3xl p-6 text-center mb-4">
+<p class="text-3xl">⏳</p>
+<h2 class="font-bold text-lg mt-2">Waiting for Admin Approval</h2>
+<p class="text-sm text-slate-600 mt-1">You are a <b>New User</b>. Admin Haris Awan will soon assign you a role — Teacher / Head Teacher / Parent / Student. Until then you can only see this page.</p>
+<p class="text-xs text-slate-400 mt-2" id="newUserInfo"></p>
+</div>
+
+<!-- 1 OVERVIEW -->
 <div id="tab-overview" class="tabPage">
-<div class="hero-bg2 text-white rounded-3xl p-5 flex justify-between items-center"><div><h2 class="text-xl font-bold" id="welcomeText">Welcome back</h2><p class="text-blue-100 text-sm" id="welcomeSub"></p><p class="text-xs text-blue-200 mt-1" id="welcomeDate"></p><div class="flex gap-2 mt-3 flex-wrap"><button type="button" onclick="goTab('attendance')" class="bg-white text-blue-700 px-3 py-1.5 rounded-full text-xs font-bold">Mark Attendance</button><button type="button" onclick="goTab('quiz')" class="bg-white/20 px-3 py-1.5 rounded-full text-xs font-bold">Take Quiz</button><button type="button" onclick="goTab('parent')" class="bg-white/20 px-3 py-1.5 rounded-full text-xs font-bold">Parent View</button></div></div><div class="text-center"><div class="w-14 h-14 bg-white/20 rounded-full flex items-center justify-center font-bold text-xl mx-auto" id="avatarCircle">HA</div><p class="text-[11px] mt-1 bg-white/20 px-2 py-0.5 rounded-full" id="rolePill">Admin</p></div></div>
+<div class="hero-bg2 text-white rounded-3xl p-5 flex justify-between items-center">
+<div>
+<h2 class="text-xl font-bold" id="welcomeText">Welcome back</h2>
+<p class="text-blue-100 text-sm" id="welcomeSub"></p>
+<p class="text-xs text-blue-200 mt-1" id="welcomeDate"></p>
+<div class="flex gap-2 mt-3 flex-wrap">
+<button type="button" onclick="goTab('attendance')" class="bg-white text-blue-700 px-3 py-1.5 rounded-full text-xs font-bold">Mark Attendance</button>
+<button type="button" onclick="goTab('quiz')" class="bg-white/20 px-3 py-1.5 rounded-full text-xs font-bold">Take Quiz</button>
+<button type="button" onclick="goTab('parent')" class="bg-white/20 px-3 py-1.5 rounded-full text-xs font-bold">Parent View</button>
+</div>
+</div>
+<div class="text-center">
+<div class="w-14 h-14 bg-white/20 rounded-full flex items-center justify-center font-bold text-xl mx-auto" id="avatarCircle">HA</div>
+<p class="text-[11px] mt-1 bg-white/20 px-2 py-0.5 rounded-full" id="rolePill">Admin</p>
+</div>
+</div>
+
 <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mt-4">
-<div class="bg-white rounded-2xl p-4 text-center"><p class="text-xs text-slate-500">Students</p><p class="text-2xl font-extrabold" id="statStudents">0</p></div>
-<div class="bg-white rounded-2xl p-4 text-center"><p class="text-xs text-slate-500">Faculty</p><p class="text-2xl font-extrabold" id="statFaculty">0</p><p class="text-[11px] text-blue-600 font-bold" id="statNewUsers">0 New Users</p></div>
-<div class="bg-white rounded-2xl p-4 text-center"><p class="text-xs text-slate-500">Quizzes</p><p class="text-2xl font-extrabold" id="statQuiz">0</p><p class="text-[11px] text-amber-600 font-bold" id="statQuizSub">0 Attempts</p></div>
-<div class="bg-white rounded-2xl p-4 text-center"><p class="text-xs text-slate-500">Fees Collected</p><p class="text-2xl font-extrabold" id="statFees">Rs 0</p><p class="text-[11px] text-slate-500" id="statFeesSub">0 Paid</p></div>
+<div class="bg-white rounded-2xl p-4 text-center">
+<p class="text-xs text-slate-500">Students</p>
+<p class="text-2xl font-extrabold" id="statStudents">0</p>
 </div>
-<div class="grid md:grid-cols-3 gap-4 mt-4"><div class="md:col-span-2 bg-white rounded-3xl p-4"><div class="flex justify-between"><h3 class="font-bold">Attendance Overview</h3><span class="text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded-full font-bold" id="attRateTop">0%</span></div><canvas id="attChart" width="600" height="180" class="w-full mt-3 border rounded-xl bg-slate-50"></canvas></div><div class="bg-white rounded-3xl p-4"><h3 class="font-bold">Quick Actions</h3><div class="space-y-2 mt-3"><button type="button" onclick="goTab('attendance')" class="w-full text-left bg-blue-50 rounded-xl p-3 font-bold text-sm">📅 Mark Attendance</button><button type="button" onclick="goTab('quiz')" class="w-full text-left bg-purple-50 rounded-xl p-3 font-bold text-sm">📝 Create / Take Quiz</button><button type="button" onclick="goTab('fees')" class="w-full text-left bg-emerald-50 rounded-xl p-3 font-bold text-sm">💰 Fees</button><button type="button" onclick="goTab('certificates')" class="w-full text-left bg-amber-50 rounded-xl p-3 font-bold text-sm">📜 Certificates & ID Card</button></div></div></div>
-<div class="grid md:grid-cols-2 gap-4 mt-4"><div class="bg-white rounded-3xl p-4"><h3 class="font-bold">Recent Notices</h3><div id="recentNotices" class="space-y-2 mt-3"></div><p id="emptyRecentNotices" class="text-sm text-slate-400">No notices yet.</p></div><div class="bg-white rounded-3xl p-4"><h3 class="font-bold">Upcoming Events</h3><div id="recentEvents" class="space-y-2 mt-3"></div><p id="emptyRecentEvents" class="text-sm text-slate-400">No events yet.</p></div></div>
-<div class="bg-slate-900 rounded-3xl mt-6 p-8 text-white text-center"><h3 class="text-2xl font-extrabold">Government Primary School Dhok Jhatt</h3><p class="text-slate-300 mt-2">Excellence in Primary Education & Faculty Collaboration</p><p class="text-xs mt-4 text-slate-400">Made By Haris Awan • Mega Project • 2026 • Admin: Haris Awan</p></div>
+<div class="bg-white rounded-2xl p-4 text-center">
+<p class="text-xs text-slate-500">Faculty</p>
+<p class="text-2xl font-extrabold" id="statFaculty">0</p>
+<p class="text-[11px] text-blue-600 font-bold" id="statNewUsers">0 New Users</p>
+</div>
+<div class="bg-white rounded-2xl p-4 text-center">
+<p class="text-xs text-slate-500">Quizzes</p>
+<p class="text-2xl font-extrabold" id="statQuiz">0</p>
+<p class="text-[11px] text-amber-600 font-bold" id="statQuizSub">0 Attempts</p>
+</div>
+<div class="bg-white rounded-2xl p-4 text-center">
+<p class="text-xs text-slate-500">Fees Collected</p>
+<p class="text-2xl font-extrabold" id="statFees">Rs 0</p>
+<p class="text-[11px] text-slate-500" id="statFeesSub">0 Paid</p>
+</div>
 </div>
 
-<div id="tab-parent" class="tabPage hidden"><h2 class="font-bold text-lg">Parent Portal</h2><p class="text-sm text-slate-500">Select your child to see Attendance, Fees, Result.</p><select id="parentStudent" onchange="renderAll()" class="border rounded-full px-3 py-2 text-sm mt-3"><option value="">Select Student</option></select><div id="parentView" class="grid md:grid-cols-3 gap-3 mt-4"></div><p id="emptyParent" class="text-sm text-slate-400 mt-4">Select student to view parent dashboard.</p></div>
-<div id="tab-studentportal" class="tabPage hidden"><h2 class="font-bold text-lg">My Student Portal</h2><div class="grid md:grid-cols-3 gap-3 mt-4"><div class="bg-white rounded-2xl p-4"><p class="font-bold">My Homework</p><div id="myHW"></div></div><div class="bg-white rounded-2xl p-4"><p class="font-bold">My Results</p><div id="myResults"></div></div><div class="bg-white rounded-2xl p-4"><p class="font-bold">My Timetable</p><div id="myTT"></div></div></div><button type="button" onclick="goTab('quiz')" class="bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-bold mt-4">Go To Quiz →</button></div>
-<div id="tab-students" class="tabPage hidden"><div class="flex flex-wrap gap-2 justify-between"><h2 class="font-bold text-lg">Students</h2><div class="flex gap-2"><input id="studentSearch" oninput="renderAll()" class="border rounded-full px-4 py-2 text-sm" placeholder="Search..."><select id="studentClassFilter" onchange="renderAll()" class="border rounded-full px-3 py-2 text-sm"><option value="">All Classes</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select><button type="button" onclick="exportStudentsCSV()" class="bg-emerald-600 text-white px-4 py-2 rounded-full text-sm font-bold">Export CSV</button><button type="button" onclick="openStudentModal()" class="bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-bold">+ Add Student</button></div></div><div class="bg-white rounded-2xl mt-4 overflow-hidden"><table class="w-full text-sm"><thead class="bg-slate-50"><tr><th class="text-left p-3 th">Student</th><th class="text-left p-3 th">Roll / Class</th><th class="text-left p-3 th">Father / Phone</th><th class="text-left p-3 th">Fees</th><th class="text-left p-3 th">Actions</th></tr></thead><tbody id="studentsTable"></tbody></table><p id="emptyStudents2" class="p-5 text-center text-slate-400 text-sm">No students yet.</p></div></div>
-<div id="tab-attendance" class="tabPage hidden"><div class="flex flex-wrap gap-2 justify-between"><h2 class="font-bold text-lg">Attendance</h2><div class="flex gap-2"><input type="date" id="attDate" class="border rounded-full px-3 py-2 text-sm" onchange="renderAll()"><button type="button" onclick="markAllPresent()" class="bg-emerald-600 text-white px-3 py-2 rounded-full text-xs font-bold">Mark All Present</button><button type="button" onclick="exportAttendanceCSV()" class="border px-3 py-2 rounded-full text-xs font-bold">Export CSV</button></div></div><div class="grid grid-cols-4 gap-3 mt-4"><div class="bg-white rounded-2xl p-3 text-center"><p class="text-xs text-slate-500">Present</p><p class="text-xl font-bold text-emerald-600" id="attPresent">0</p></div><div class="bg-white rounded-2xl p-3 text-center"><p class="text-xs text-slate-500">Absent</p><p class="text-xl font-bold text-red-600" id="attAbsent">0</p></div><div class="bg-white rounded-2xl p-3 text-center"><p class="text-xs text-slate-500">Late</p><p class="text-xl font-bold text-amber-600" id="attLate">0</p></div><div class="bg-white rounded-2xl p-3 text-center"><p class="text-xs text-slate-500">Rate</p><p class="text-xl font-bold text-blue-600" id="attRate">0%</p></div></div><div class="bg-white rounded-2xl mt-4 overflow-hidden"><table class="w-full text-sm"><thead class="bg-slate-50"><tr><th class="text-left p-3 th">Roll</th><th class="text-left p-3 th">Name</th><th class="text-left p-3 th">Class</th><th class="text-left p-3 th">Status</th><th class="text-left p-3 th">Action</th></tr></thead><tbody id="studentTable"></tbody></table><p id="emptyStudents" class="p-5 text-center text-slate-400 text-sm">No students yet.</p></div></div>
-<div id="tab-reports" class="tabPage hidden"><div class="flex justify-between"><h2 class="font-bold text-lg">Reports</h2><button type="button" onclick="openReportModal()" class="bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-bold">+ New Report</button></div><div id="reportsList" class="grid md:grid-cols-2 gap-3 mt-4"></div><p id="emptyReports" class="text-center text-slate-400 text-sm mt-6">No reports yet.</p></div>
-<div id="tab-homework" class="tabPage hidden"><div class="flex justify-between"><h2 class="font-bold text-lg">Worksheets & Homework</h2><button type="button" onclick="openHWModal()" class="bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-bold">+ Publish</button></div><div id="hwList" class="grid md:grid-cols-2 gap-3 mt-4"></div><p id="emptyHW" class="text-center text-slate-400 text-sm mt-6">No worksheets yet.</p><h3 class="font-bold mt-6">Submissions</h3><div id="hwSubList" class="grid md:grid-cols-2 gap-3 mt-3"></div></div>
-<div id="tab-quiz" class="tabPage hidden"><div class="flex justify-between"><h2 class="font-bold text-lg">Online Quiz / Test</h2><button type="button" onclick="openQuizModal()" class="bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-bold">+ Create Quiz</button></div><p class="text-xs text-slate-500 mt-1">Teacher creates quiz • Student attempts • Auto Marks + Grade</p><div id="quizList" class="grid md:grid-cols-2 gap-3 mt-4"></div><p id="emptyQuiz" class="text-center text-slate-400 text-sm mt-6">No quizzes yet.</p><h3 class="font-bold mt-6">My Attempts</h3><div id="quizAttempts" class="grid md:grid-cols-2 gap-3 mt-3"></div></div>
-<div id="tab-fees" class="tabPage hidden"><div class="flex justify-between"><h2 class="font-bold text-lg">Fees</h2><button type="button" onclick="openFeeModal()" class="bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-bold">+ Add Fee</button></div><div class="grid grid-cols-3 gap-3 mt-4"><div class="bg-white rounded-2xl p-4 text-center"><p class="text-xs text-slate-500">Total Due</p><p class="font-bold" id="feeDue">Rs 0</p></div><div class="bg-white rounded-2xl p-4 text-center"><p class="text-xs text-slate-500">Collected</p><p class="font-bold text-emerald-600" id="feePaid">Rs 0</p></div><div class="bg-white rounded-2xl p-4 text-center"><p class="text-xs text-slate-500">Pending</p><p class="font-bold text-red-600" id="feePending">Rs 0</p></div></div><div id="feesList" class="grid md:grid-cols-2 gap-3 mt-4"></div><p id="emptyFees" class="text-center text-slate-400 text-sm mt-6">No fee records.</p></div>
-<div id="tab-results" class="tabPage hidden"><div class="flex justify-between"><h2 class="font-bold text-lg">Results & Grades</h2><button type="button" onclick="openResultModal()" class="bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-bold">+ Add Result</button></div><div id="resultsList" class="grid md:grid-cols-2 gap-3 mt-4"></div><p id="emptyResults" class="text-center text-slate-400 text-sm mt-6">No results yet.</p></div>
-<div id="tab-salary" class="tabPage hidden"><div class="flex justify-between"><h2 class="font-bold text-lg">Teacher Salary</h2><button type="button" onclick="openSalaryModal()" class="bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-bold">+ Add Salary</button></div><div id="salaryList" class="grid md:grid-cols-2 gap-3 mt-4"></div><p id="emptySalary" class="text-center text-slate-400 text-sm mt-6">No salary records.</p></div>
-<div id="tab-timetable" class="tabPage hidden"><div class="flex justify-between"><h2 class="font-bold text-lg">Timetable</h2><button type="button" onclick="openTimetableModal()" class="bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-bold">+ Add Slot</button></div><div id="ttList" class="grid md:grid-cols-3 gap-3 mt-4"></div><p id="emptyTT" class="text-center text-slate-400 text-sm mt-6">No slots yet.</p></div>
-<div id="tab-leave" class="tabPage hidden"><div class="flex justify-between"><h2 class="font-bold text-lg">Leave</h2><button type="button" onclick="openLeaveModal()" class="bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-bold">+ Request Leave</button></div><div id="leaveList" class="grid md:grid-cols-2 gap-3 mt-4"></div><p id="emptyLeave" class="text-center text-slate-400 text-sm mt-6">No leave yet.</p></div>
-<div id="tab-meetings" class="tabPage hidden"><div class="flex justify-between"><h2 class="font-bold text-lg">Meetings</h2><button type="button" id="addMeetingBtn" onclick="openMeetingModal()" class="bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-bold">+ Schedule</button></div><div id="meetingsList" class="grid md:grid-cols-2 gap-3 mt-4"></div><p id="emptyMeetings" class="text-center text-slate-400 text-sm mt-6">No meetings.</p></div>
-<div id="tab-notices" class="tabPage hidden"><div class="flex justify-between"><h2 class="font-bold text-lg">Notices</h2><button type="button" onclick="openNoticeModal()" class="bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-bold">+ New Notice</button></div><div id="noticesList" class="grid md:grid-cols-2 gap-3 mt-4"></div><p id="emptyNotices" class="text-center text-slate-400 text-sm mt-6">No notices.</p></div>
-<div id="tab-events" class="tabPage hidden"><div class="flex justify-between"><h2 class="font-bold text-lg">Events & Calendar</h2><button type="button" onclick="openEventModal()" class="bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-bold">+ Add Event</button></div><div id="eventsList" class="grid md:grid-cols-2 gap-3 mt-4"></div><p id="emptyEvents" class="text-center text-slate-400 text-sm mt-6">No events.</p></div>
-<div id="tab-library" class="tabPage hidden"><div class="flex justify-between"><h2 class="font-bold text-lg">Library</h2><button type="button" onclick="openBookModal()" class="bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-bold">+ Add Book</button></div><div id="booksList" class="grid md:grid-cols-3 gap-3 mt-4"></div><p id="emptyBooks" class="text-center text-slate-400 text-sm mt-6">No books.</p></div>
-<div id="tab-inventory" class="tabPage hidden"><div class="flex justify-between"><h2 class="font-bold text-lg">Inventory / Stock</h2><button type="button" onclick="openInventoryModal()" class="bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-bold">+ Add Item</button></div><div id="inventoryList" class="grid md:grid-cols-3 gap-3 mt-4"></div><p id="emptyInventory" class="text-center text-slate-400 text-sm mt-6">No inventory.</p></div>
-<div id="tab-transport" class="tabPage hidden"><div class="flex justify-between"><h2 class="font-bold text-lg">Transport</h2><button type="button" onclick="openTransportModal()" class="bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-bold">+ Add Route</button></div><div id="transportList" class="grid md:grid-cols-2 gap-3 mt-4"></div><p id="emptyTransport" class="text-center text-slate-400 text-sm mt-6">No routes.</p></div>
-<div id="tab-certificates" class="tabPage hidden"><h2 class="font-bold text-lg">Certificates & ID Card</h2><div class="grid md:grid-cols-2 gap-3 mt-4"><div class="bg-white rounded-2xl p-4"><p class="font-bold">Generate Certificate</p><select id="certStudent" class="w-full border rounded-xl px-3 py-2.5 mt-2"><option value="">Select Student</option></select><select id="certType" class="w-full border rounded-xl px-3 py-2.5 mt-2"><option>Character Certificate</option><option>Bonafide Certificate</option><option>School Leaving Certificate</option></select><button type="button" onclick="printCertificate()" class="w-full bg-blue-600 text-white py-3 rounded-xl font-bold mt-3">Print Certificate</button></div><div class="bg-white rounded-2xl p-4"><p class="font-bold">Student ID Card</p><select id="idStudent" class="w-full border rounded-xl px-3 py-2.5 mt-2"><option value="">Select Student</option></select><button type="button" onclick="printIDCard()" class="w-full bg-emerald-600 text-white py-3 rounded-xl font-bold mt-3">Print ID Card</button></div></div></div>
-<div id="tab-complaints" class="tabPage hidden"><div class="flex justify-between"><h2 class="font-bold text-lg">Complaints / Suggestions</h2><button type="button" onclick="openComplaintModal()" class="bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-bold">+ New Complaint</button></div><div id="complaintsList" class="grid md:grid-cols-2 gap-3 mt-4"></div><p id="emptyComplaints" class="text-center text-slate-400 text-sm mt-6">No complaints.</p></div>
-<div id="tab-chat" class="tabPage hidden"><h2 class="font-bold text-lg">Staff Chat</h2><div class="bg-white rounded-2xl mt-3 p-4"><div id="chatBox" class="space-y-3 max-h-[380px] overflow-y-auto"></div><p id="emptyChat" class="text-center text-slate-400 text-sm py-4">No messages.</p><div class="flex gap-2 mt-4"><input id="chatInput" class="flex-1 border rounded-full px-4 py-2.5" placeholder="Type message..."><button type="button" onclick="sendChat()" class="bg-blue-600 text-white px-5 rounded-full font-bold">Send</button></div></div></div>
-<div id="tab-admissions" class="tabPage hidden"><div class="flex justify-between"><h2 class="font-bold text-lg">Online Admissions - NEW</h2><button type="button" onclick="openAdmissionModal()" class="bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-bold">+ New Admission</button></div><div id="admissionsList" class="grid md:grid-cols-2 gap-3 mt-4"></div><p id="emptyAdmissions" class="text-center text-slate-400 text-sm mt-6">No admission requests.</p></div>
-<div id="tab-discipline" class="tabPage hidden"><div class="flex justify-between"><h2 class="font-bold text-lg">Discipline Records - NEW</h2><button type="button" onclick="openDisciplineModal()" class="bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-bold">+ Add Record</button></div><div id="disciplineList" class="grid md:grid-cols-2 gap-3 mt-4"></div><p id="emptyDiscipline" class="text-center text-slate-400 text-sm mt-6">No discipline records.</p></div>
-<div id="tab-health" class="tabPage hidden"><div class="flex justify-between"><h2 class="font-bold text-lg">Health Records - NEW</h2><button type="button" onclick="openHealthModal()" class="bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-bold">+ Add Health Record</button></div><div id="healthList" class="grid md:grid-cols-2 gap-3 mt-4"></div><p id="emptyHealth" class="text-center text-slate-400 text-sm mt-6">No health records.</p></div>
-<div id="tab-alumni" class="tabPage hidden"><div class="flex justify-between"><h2 class="font-bold text-lg">Alumni - NEW</h2><button type="button" onclick="openAlumniModal()" class="bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-bold">+ Add Alumni</button></div><div id="alumniList" class="grid md:grid-cols-2 gap-3 mt-4"></div><p id="emptyAlumni" class="text-center text-slate-400 text-sm mt-6">No alumni yet.</p></div>
-<div id="tab-examschedule" class="tabPage hidden"><div class="flex justify-between"><h2 class="font-bold text-lg">Exam Schedule - NEW</h2><button type="button" onclick="openExamScheduleModal()" class="bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-bold">+ Add Exam Schedule</button></div><div id="examScheduleList" class="grid md:grid-cols-2 gap-3 mt-4"></div><p id="emptyExamSchedule" class="text-center text-slate-400 text-sm mt-6">No exam schedule yet.</p></div>
-<div id="tab-staff" class="tabPage hidden"><div class="flex justify-between"><h2 class="font-bold text-lg">Staff & Ranks (Admin Only) • Assign Role From Here</h2><button type="button" onclick="openAddStaffModal()" class="bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-bold">+ Add Staff Manually</button></div><div class="bg-amber-50 border border-amber-200 rounded-2xl p-3 mt-3 text-sm"><b>⚠️ Admin Rule:</b> Only <b>Haris Awan is Admin</b>. New user joins as <b>New User</b>. Change dropdown here — Teacher / <b>Head Teacher</b> / Parent / Student — as you wish. Head Teacher has full approve permissions like Admin (except Staff & Settings). Until you assign a role, user will not get full access.</div><div class="flex gap-2 mt-3 flex-wrap"><input id="staffSearch" oninput="renderAll()" class="border rounded-full px-3 py-2 text-sm" placeholder="Search staff..."><select id="staffRoleFilter" onchange="renderAll()" class="border rounded-full px-3 py-2 text-sm"><option value="">All Roles</option><option>New User</option><option>Teacher</option><option>Head Teacher</option><option>Parent</option><option>Student</option><option>Admin</option></select></div><div id="staffList" class="grid md:grid-cols-2 gap-3 mt-4"></div></div>
-<div id="tab-settings" class="tabPage hidden"><h2 class="font-bold text-lg">Settings & Data</h2><div class="bg-white rounded-3xl p-5 mt-4"><p class="font-bold">Backup & Restore + Firebase Sync</p><p class="text-xs text-slate-500 mt-1">Paste your Firebase config in script to enable cloud sync. Currently data saves in browser.</p><div class="flex flex-wrap gap-2 mt-3"><button type="button" onclick="exportDB()" class="bg-emerald-600 text-white px-4 py-2 rounded-full text-sm font-bold">Export JSON</button><label class="bg-amber-500 text-white px-4 py-2 rounded-full text-sm font-bold cursor-pointer">Import JSON<input type="file" accept=".json" onchange="importDB(event)" class="hidden"></label><button type="button" onclick="syncToFirebase()" class="bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-bold">Sync To Firebase</button><button type="button" onclick="hardReset()" class="bg-red-600 text-white px-4 py-2 rounded-full text-sm font-bold">Hard Reset</button></div><p class="text-xs text-slate-400 mt-4">DB: GPS_DHOK_JHATT_DB_V6 • Only Admin: Haris Awan • Head Teacher Enabled (Internal) • No Role Select on Login</p></div></div>
-</main></div>
+<div class="grid md:grid-cols-3 gap-4 mt-4">
+<div class="md:col-span-2 bg-white rounded-3xl p-4">
+<div class="flex justify-between">
+<h3 class="font-bold">Attendance Overview</h3>
+<span class="text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded-full font-bold" id="attRateTop">0%</span>
+</div>
+<canvas id="attChart" width="600" height="180" class="w-full mt-3 border rounded-xl bg-slate-50"></canvas>
+</div>
+<div class="bg-white rounded-3xl p-4">
+<h3 class="font-bold">Quick Actions</h3>
+<div class="space-y-2 mt-3">
+<button type="button" onclick="goTab('attendance')" class="w-full text-left bg-blue-50 rounded-xl p-3 font-bold text-sm">📅 Mark Attendance</button>
+<button type="button" onclick="goTab('quiz')" class="w-full text-left bg-purple-50 rounded-xl p-3 font-bold text-sm">📝 Create / Take Quiz</button>
+<button type="button" onclick="goTab('fees')" class="w-full text-left bg-emerald-50 rounded-xl p-3 font-bold text-sm">💰 Fees</button>
+<button type="button" onclick="goTab('certificates')" class="w-full text-left bg-amber-50 rounded-xl p-3 font-bold text-sm">📜 Certificates & ID Card</button>
+</div>
+</div>
+</div>
 
-<div id="genericModal" class="modal fixed inset-0 z-50 items-center justify-center bg-black/60 p-4"><div class="glass w-full max-w-lg rounded-3xl p-6 max-h-[92vh] overflow-y-auto"><div class="flex justify-between"><h3 id="genericTitle" class="font-bold text-lg">Modal</h3><button type="button" onclick="closeGeneric()" class="text-slate-400 text-xl">✕</button></div><div id="genericBody" class="mt-4"></div></div></div>
-<div id="profileModal" class="modal fixed inset-0 z-50 items-center justify-center bg-black/60 p-4"><div class="glass w-full max-w-md rounded-3xl p-6"><div class="flex justify-between"><h3 class="font-bold text-lg">My Profile</h3><button type="button" onclick="closeProfile()" class="text-slate-400 text-xl">✕</button></div><div class="space-y-3 mt-4"><div><label class="text-xs font-bold">Full Name</label><input id="pName" class="w-full border rounded-xl px-3 py-2.5 mt-1"></div><div><label class="text-xs font-bold">Subject</label><input id="pSubject" class="w-full border rounded-xl px-3 py-2.5 mt-1"></div><div><label class="text-xs font-bold">Phone</label><input id="pPhone" class="w-full border rounded-xl px-3 py-2.5 mt-1"></div><div><label class="text-xs font-bold">Password</label><input id="pPass" class="w-full border rounded-xl px-3 py-2.5 mt-1"></div><div><label class="text-xs font-bold">Email</label><input id="pEmail" disabled class="w-full border rounded-xl px-3 py-2.5 mt-1 bg-slate-50"></div><div><label class="text-xs font-bold">My Role (Only Admin Can Change)</label><input id="pRole" disabled class="w-full border rounded-xl px-3 py-2.5 mt-1 bg-slate-50 font-bold"></div></div><button type="button" onclick="saveProfile()" class="w-full bg-blue-600 text-white py-3 rounded-xl font-bold mt-4">Save Profile</button></div></div>
+<div class="grid md:grid-cols-2 gap-4 mt-4">
+<div class="bg-white rounded-3xl p-4">
+<h3 class="font-bold">Recent Notices</h3>
+<div id="recentNotices" class="space-y-2 mt-3"></div>
+<p id="emptyRecentNotices" class="text-sm text-slate-400">No notices yet.</p>
+</div>
+<div class="bg-white rounded-3xl p-4">
+<h3 class="font-bold">Upcoming Events</h3>
+<div id="recentEvents" class="space-y-2 mt-3"></div>
+<p id="emptyRecentEvents" class="text-sm text-slate-400">No events yet.</p>
+</div>
+</div>
+
+<div class="school-frame">
+<span>TEACHERHUB MEGA</span>
+<h3>Government Primary School Dhok Jhatt</h3>
+<p>Excellence in Primary Education & Faculty Collaboration • Made By Haris Awan • Mega Project • 2026</p>
+</div>
+</div>
+
+<!-- 2 PARENT -->
+<div id="tab-parent" class="tabPage hidden">
+<h2 class="font-bold text-lg">Parent Portal</h2>
+<p class="text-sm text-slate-500">Select your child to see Attendance, Fees, Result.</p>
+<select id="parentStudent" onchange="renderAll()" class="border rounded-full px-3 py-2 text-sm mt-3">
+<option value="">Select Student</option>
+</select>
+<div id="parentView" class="grid md:grid-cols-3 gap-3 mt-4"></div>
+<p id="emptyParent" class="text-sm text-slate-400 mt-4">Select student to view parent dashboard.</p>
+<div class="school-frame"><span>PARENT PORTAL</span><h3>Government Primary School Dhok Jhatt</h3><p>Apne Bachay Ka Record Dekhen • Attendance • Fees • Result</p></div>
+</div>
+
+<!-- 3 STUDENT PORTAL -->
+<div id="tab-studentportal" class="tabPage hidden">
+<h2 class="font-bold text-lg">My Student Portal</h2>
+<div class="grid md:grid-cols-3 gap-3 mt-4">
+<div class="bg-white rounded-2xl p-4"><p class="font-bold">My Homework</p><div id="myHW"></div></div>
+<div class="bg-white rounded-2xl p-4"><p class="font-bold">My Results</p><div id="myResults"></div></div>
+<div class="bg-white rounded-2xl p-4"><p class="font-bold">My Timetable</p><div id="myTT"></div></div>
+</div>
+<button type="button" onclick="goTab('quiz')" class="bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-bold mt-4">Go To Quiz →</button>
+<div class="school-frame"><span>STUDENT PORTAL</span><h3>Government Primary School Dhok Jhatt</h3><p>Homework • Quiz • Timetable • Result — Sab Ek Jagah</p></div>
+</div>
+
+<!-- 4 STUDENTS -->
+<div id="tab-students" class="tabPage hidden">
+<div class="flex flex-wrap gap-2 justify-between">
+<h2 class="font-bold text-lg">Students</h2>
+<div class="flex gap-2 flex-wrap">
+<input id="studentSearch" oninput="renderAll()" class="border rounded-full px-4 py-2 text-sm" placeholder="Search...">
+<select id="studentClassFilter" onchange="renderAll()" class="border rounded-full px-3 py-2 text-sm"><option value="">All Classes</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select>
+<button type="button" onclick="exportStudentsCSV()" class="bg-emerald-600 text-white px-4 py-2 rounded-full text-sm font-bold">Export CSV</button>
+<button type="button" onclick="openStudentModal()" class="bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-bold">+ Add Student</button>
+</div>
+</div>
+<div class="bg-white rounded-2xl mt-4 overflow-hidden">
+<table class="w-full text-sm">
+<thead class="bg-slate-50"><tr><th class="text-left p-3 th">Student</th><th class="text-left p-3 th">Roll / Class</th><th class="text-left p-3 th">Father / Phone</th><th class="text-left p-3 th">Fees</th><th class="text-left p-3 th">Actions</th></tr></thead>
+<tbody id="studentsTable"></tbody>
+</table>
+<p id="emptyStudents2" class="p-5 text-center text-slate-400 text-sm">No students yet.</p>
+</div>
+<div class="school-frame"><span>STUDENTS</span><h3>Government Primary School Dhok Jhatt</h3><p>Har Bachay Ka Mukammal Record • Roll • Class • Father Info</p></div>
+</div>
+
+<!-- 5 ATTENDANCE -->
+<div id="tab-attendance" class="tabPage hidden">
+<div class="flex flex-wrap gap-2 justify-between">
+<h2 class="font-bold text-lg">Attendance</h2>
+<div class="flex gap-2">
+<input type="date" id="attDate" class="border rounded-full px-3 py-2 text-sm" onchange="renderAll()">
+<button type="button" onclick="markAllPresent()" class="bg-emerald-600 text-white px-3 py-2 rounded-full text-xs font-bold">Mark All Present</button>
+<button type="button" onclick="exportAttendanceCSV()" class="border px-3 py-2 rounded-full text-xs font-bold">Export CSV</button>
+</div>
+</div>
+<div class="grid grid-cols-4 gap-3 mt-4">
+<div class="bg-white rounded-2xl p-3 text-center"><p class="text-xs text-slate-500">Present</p><p class="text-xl font-bold text-emerald-600" id="attPresent">0</p></div>
+<div class="bg-white rounded-2xl p-3 text-center"><p class="text-xs text-slate-500">Absent</p><p class="text-xl font-bold text-red-600" id="attAbsent">0</p></div>
+<div class="bg-white rounded-2xl p-3 text-center"><p class="text-xs text-slate-500">Late</p><p class="text-xl font-bold text-amber-600" id="attLate">0</p></div>
+<div class="bg-white rounded-2xl p-3 text-center"><p class="text-xs text-slate-500">Rate</p><p class="text-xl font-bold text-blue-600" id="attRate">0%</p></div>
+</div>
+<div class="bg-white rounded-2xl mt-4 overflow-hidden">
+<table class="w-full text-sm">
+<thead class="bg-slate-50"><tr><th class="text-left p-3 th">Roll</th><th class="text-left p-3 th">Name</th><th class="text-left p-3 th">Class</th><th class="text-left p-3 th">Status</th><th class="text-left p-3 th">Action</th></tr></thead>
+<tbody id="studentTable"></tbody>
+</table>
+<p id="emptyStudents" class="p-5 text-center text-slate-400 text-sm">No students yet.</p>
+</div>
+<div class="school-frame"><span>ATTENDANCE</span><h3>Government Primary School Dhok Jhatt</h3><p>Rozana Hazri • Present • Absent • Late • Live Rate</p></div>
+</div>
+
+<!-- 6 REPORTS -->
+<div id="tab-reports" class="tabPage hidden">
+<div class="flex justify-between">
+<h2 class="font-bold text-lg">Reports</h2>
+<button type="button" onclick="openReportModal()" class="bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-bold">+ New Report</button>
+</div>
+<div id="reportsList" class="grid md:grid-cols-2 gap-3 mt-4"></div>
+<p id="emptyReports" class="text-center text-slate-400 text-sm mt-6">No reports yet.</p>
+<div class="school-frame"><span>REPORTS</span><h3>Government Primary School Dhok Jhatt</h3><p>Teacher Report → Head Teacher / Admin Approve → Print</p></div>
+</div>
+
+<!-- 7 HOMEWORK -->
+<div id="tab-homework" class="tabPage hidden">
+<div class="flex justify-between">
+<h2 class="font-bold text-lg">Worksheets & Homework</h2>
+<button type="button" onclick="openHWModal()" class="bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-bold">+ Publish</button>
+</div>
+<div id="hwList" class="grid md:grid-cols-2 gap-3 mt-4"></div>
+<p id="emptyHW" class="text-center text-slate-400 text-sm mt-6">No worksheets yet.</p>
+<h3 class="font-bold mt-6">Submissions</h3>
+<div id="hwSubList" class="grid md:grid-cols-2 gap-3 mt-3"></div>
+<div class="school-frame"><span>HOMEWORK</span><h3>Government Primary School Dhok Jhatt</h3><p>Worksheet Publish • Student Submit • Head Teacher Checked</p></div>
+</div>
+
+<!-- 8 QUIZ -->
+<div id="tab-quiz" class="tabPage hidden">
+<div class="flex justify-between">
+<h2 class="font-bold text-lg">Online Quiz / Test</h2>
+<button type="button" onclick="openQuizModal()" class="bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-bold">+ Create Quiz</button>
+</div>
+<p class="text-xs text-slate-500 mt-1">Teacher creates quiz • Student attempts • Auto Marks + Grade</p>
+<div id="quizList" class="grid md:grid-cols-2 gap-3 mt-4"></div>
+<p id="emptyQuiz" class="text-center text-slate-400 text-sm mt-6">No quizzes yet.</p>
+<h3 class="font-bold mt-6">My Attempts</h3>
+<div id="quizAttempts" class="grid md:grid-cols-2 gap-3 mt-3"></div>
+<div class="school-frame"><span>QUIZ</span><h3>Government Primary School Dhok Jhatt</h3><p>Online Test • Auto Checking • Score + Grade</p></div>
+</div>
+
+<!-- 9 FEES -->
+<div id="tab-fees" class="tabPage hidden">
+<div class="flex justify-between">
+<h2 class="font-bold text-lg">Fees</h2>
+<button type="button" onclick="openFeeModal()" class="bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-bold">+ Add Fee</button>
+</div>
+<div class="grid grid-cols-3 gap-3 mt-4">
+<div class="bg-white rounded-2xl p-4 text-center"><p class="text-xs text-slate-500">Total Due</p><p class="font-bold" id="feeDue">Rs 0</p></div>
+<div class="bg-white rounded-2xl p-4 text-center"><p class="text-xs text-slate-500">Collected</p><p class="font-bold text-emerald-600" id="feePaid">Rs 0</p></div>
+<div class="bg-white rounded-2xl p-4 text-center"><p class="text-xs text-slate-500">Pending</p><p class="font-bold text-red-600" id="feePending">Rs 0</p></div>
+</div>
+<div id="feesList" class="grid md:grid-cols-2 gap-3 mt-4"></div>
+<p id="emptyFees" class="text-center text-slate-400 text-sm mt-6">No fee records.</p>
+<div class="school-frame"><span>FEES</span><h3>Government Primary School Dhok Jhatt</h3><p>Fee Record • Paid / Unpaid • Receipt Print</p></div>
+</div>
+
+<!-- 10 RESULTS -->
+<div id="tab-results" class="tabPage hidden">
+<div class="flex justify-between">
+<h2 class="font-bold text-lg">Results & Grades</h2>
+<button type="button" onclick="openResultModal()" class="bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-bold">+ Add Result</button>
+</div>
+<div id="resultsList" class="grid md:grid-cols-2 gap-3 mt-4"></div>
+<p id="emptyResults" class="text-center text-slate-400 text-sm mt-6">No results yet.</p>
+<div class="school-frame"><span>RESULTS</span><h3>Government Primary School Dhok Jhatt</h3><p>Marks • Grade A+ to F • Report Card Print</p></div>
+</div>
+
+<!-- 11 SALARY -->
+<div id="tab-salary" class="tabPage hidden">
+<div class="flex justify-between">
+<h2 class="font-bold text-lg">Teacher Salary</h2>
+<button type="button" onclick="openSalaryModal()" class="bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-bold">+ Add Salary</button>
+</div>
+<div id="salaryList" class="grid md:grid-cols-2 gap-3 mt-4"></div>
+<p id="emptySalary" class="text-center text-slate-400 text-sm mt-6">No salary records.</p>
+<div class="school-frame"><span>SALARY</span><h3>Government Primary School Dhok Jhatt</h3><p>Teacher Salary • Paid / Pending • Month Wise</p></div>
+</div>
+
+<!-- 12 TIMETABLE -->
+<div id="tab-timetable" class="tabPage hidden">
+<div class="flex justify-between">
+<h2 class="font-bold text-lg">Timetable</h2>
+<button type="button" onclick="openTimetableModal()" class="bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-bold">+ Add Slot</button>
+</div>
+<div id="ttList" class="grid md:grid-cols-3 gap-3 mt-4"></div>
+<p id="emptyTT" class="text-center text-slate-400 text-sm mt-6">No slots yet.</p>
+<div class="school-frame"><span>TIMETABLE</span><h3>Government Primary School Dhok Jhatt</h3><p>Class Wise Timetable • Day • Time • Subject</p></div>
+</div>
+
+<!-- 13 LEAVE -->
+<div id="tab-leave" class="tabPage hidden">
+<div class="flex justify-between">
+<h2 class="font-bold text-lg">Leave</h2>
+<button type="button" onclick="openLeaveModal()" class="bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-bold">+ Request Leave</button>
+</div>
+<div id="leaveList" class="grid md:grid-cols-2 gap-3 mt-4"></div>
+<p id="emptyLeave" class="text-center text-slate-400 text-sm mt-6">No leave yet.</p>
+<div class="school-frame"><span>LEAVE</span><h3>Government Primary School Dhok Jhatt</h3><p>Leave Request → Head Teacher / Admin Approve / Reject</p></div>
+</div>
+
+<!-- 14 MEETINGS -->
+<div id="tab-meetings" class="tabPage hidden">
+<div class="flex justify-between">
+<h2 class="font-bold text-lg">Meetings</h2>
+<button type="button" id="addMeetingBtn" onclick="openMeetingModal()" class="bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-bold">+ Schedule</button>
+</div>
+<div id="meetingsList" class="grid md:grid-cols-2 gap-3 mt-4"></div>
+<p id="emptyMeetings" class="text-center text-slate-400 text-sm mt-6">No meetings.</p>
+<div class="school-frame"><span>MEETINGS</span><h3>Government Primary School Dhok Jhatt</h3><p>Staff Meeting • PTM • Agenda • Date & Time</p></div>
+</div>
+
+<!-- 15 NOTICES -->
+<div id="tab-notices" class="tabPage hidden">
+<div class="flex justify-between">
+<h2 class="font-bold text-lg">Notices</h2>
+<button type="button" onclick="openNoticeModal()" class="bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-bold">+ New Notice</button>
+</div>
+<div id="noticesList" class="grid md:grid-cols-2 gap-3 mt-4"></div>
+<p id="emptyNotices" class="text-center text-slate-400 text-sm mt-6">No notices.</p>
+<div class="school-frame"><span>NOTICES</span><h3>Government Primary School Dhok Jhatt</h3><p>School Notices • Normal / High Priority • Sab Ko Show</p></div>
+</div>
+
+<!-- 16 EVENTS -->
+<div id="tab-events" class="tabPage hidden">
+<div class="flex justify-between">
+<h2 class="font-bold text-lg">Events & Calendar</h2>
+<button type="button" onclick="openEventModal()" class="bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-bold">+ Add Event</button>
+</div>
+<div id="eventsList" class="grid md:grid-cols-2 gap-3 mt-4"></div>
+<p id="emptyEvents" class="text-center text-slate-400 text-sm mt-6">No events.</p>
+<div class="school-frame"><span>EVENTS</span><h3>Government Primary School Dhok Jhatt</h3><p>School Events • Functions • Holidays • Calendar</p></div>
+</div>
+
+<!-- 17 LIBRARY -->
+<div id="tab-library" class="tabPage hidden">
+<div class="flex justify-between">
+<h2 class="font-bold text-lg">Library</h2>
+<button type="button" onclick="openBookModal()" class="bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-bold">+ Add Book</button>
+</div>
+<div id="booksList" class="grid md:grid-cols-3 gap-3 mt-4"></div>
+<p id="emptyBooks" class="text-center text-slate-400 text-sm mt-6">No books.</p>
+<div class="school-frame"><span>LIBRARY</span><h3>Government Primary School Dhok Jhatt</h3><p>Books • Issue / Return • Student Wise Record</p></div>
+</div>
+
+<!-- 18 INVENTORY -->
+<div id="tab-inventory" class="tabPage hidden">
+<div class="flex justify-between">
+<h2 class="font-bold text-lg">Inventory / Stock</h2>
+<button type="button" onclick="openInventoryModal()" class="bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-bold">+ Add Item</button>
+</div>
+<div id="inventoryList" class="grid md:grid-cols-3 gap-3 mt-4"></div>
+<p id="emptyInventory" class="text-center text-slate-400 text-sm mt-6">No inventory.</p>
+<div class="school-frame"><span>INVENTORY</span><h3>Government Primary School Dhok Jhatt</h3><p>School Saman • Stock • Qty + / - • Price</p></div>
+</div>
+
+<!-- 19 TRANSPORT -->
+<div id="tab-transport" class="tabPage hidden">
+<div class="flex justify-between">
+<h2 class="font-bold text-lg">Transport</h2>
+<button type="button" onclick="openTransportModal()" class="bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-bold">+ Add Route</button>
+</div>
+<div id="transportList" class="grid md:grid-cols-2 gap-3 mt-4"></div>
+<p id="emptyTransport" class="text-center text-slate-400 text-sm mt-6">No routes.</p>
+<div class="school-frame"><span>TRANSPORT</span><h3>Government Primary School Dhok Jhatt</h3><p>Van Routes • Driver • Fee • Time</p></div>
+</div>
+
+<!-- 20 CERTIFICATES -->
+<div id="tab-certificates" class="tabPage hidden">
+<h2 class="font-bold text-lg">Certificates & ID Card</h2>
+<div class="grid md:grid-cols-2 gap-3 mt-4">
+<div class="bg-white rounded-2xl p-4">
+<p class="font-bold">Generate Certificate</p>
+<select id="certStudent" class="w-full border rounded-xl px-3 py-2.5 mt-2"><option value="">Select Student</option></select>
+<select id="certType" class="w-full border rounded-xl px-3 py-2.5 mt-2"><option>Character Certificate</option><option>Bonafide Certificate</option><option>School Leaving Certificate</option></select>
+<button type="button" onclick="printCertificate()" class="w-full bg-blue-600 text-white py-3 rounded-xl font-bold mt-3">Print Certificate</button>
+</div>
+<div class="bg-white rounded-2xl p-4">
+<p class="font-bold">Student ID Card</p>
+<select id="idStudent" class="w-full border rounded-xl px-3 py-2.5 mt-2"><option value="">Select Student</option></select>
+<button type="button" onclick="printIDCard()" class="w-full bg-emerald-600 text-white py-3 rounded-xl font-bold mt-3">Print ID Card</button>
+</div>
+</div>
+<div class="school-frame"><span>CERTIFICATES</span><h3>Government Primary School Dhok Jhatt</h3><p>Character • Bonafide • Leaving Certificate • ID Card Print</p></div>
+</div>
+
+<!-- 21 COMPLAINTS -->
+<div id="tab-complaints" class="tabPage hidden">
+<div class="flex justify-between">
+<h2 class="font-bold text-lg">Complaints / Suggestions</h2>
+<button type="button" onclick="openComplaintModal()" class="bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-bold">+ New Complaint</button>
+</div>
+<div id="complaintsList" class="grid md:grid-cols-2 gap-3 mt-4"></div>
+<p id="emptyComplaints" class="text-center text-slate-400 text-sm mt-6">No complaints.</p>
+<div class="school-frame"><span>COMPLAINTS</span><h3>Government Primary School Dhok Jhatt</h3><p>Shikayat Likhen • Head Teacher / Admin Solve Karenge</p></div>
+</div>
+
+<!-- 22 CHAT -->
+<div id="tab-chat" class="tabPage hidden">
+<h2 class="font-bold text-lg">Staff Chat</h2>
+<div class="bg-white rounded-2xl mt-3 p-4">
+<div id="chatBox" class="space-y-3 max-h-[380px] overflow-y-auto"></div>
+<p id="emptyChat" class="text-center text-slate-400 text-sm py-4">No messages.</p>
+<div class="flex gap-2 mt-4">
+<input id="chatInput" class="flex-1 border rounded-full px-4 py-2.5" placeholder="Type message...">
+<button type="button" onclick="sendChat()" class="bg-blue-600 text-white px-5 rounded-full font-bold">Send</button>
+</div>
+</div>
+<div class="school-frame"><span>STAFF CHAT</span><h3>Government Primary School Dhok Jhatt</h3><p>Teachers Chat • Head Teacher • Admin — Sab Yahan Baat Karenge</p></div>
+</div>
+
+<!-- 23 ADMISSIONS -->
+<div id="tab-admissions" class="tabPage hidden">
+<div class="flex justify-between">
+<h2 class="font-bold text-lg">Online Admissions - NEW</h2>
+<button type="button" onclick="openAdmissionModal()" class="bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-bold">+ New Admission</button>
+</div>
+<div id="admissionsList" class="grid md:grid-cols-2 gap-3 mt-4"></div>
+<p id="emptyAdmissions" class="text-center text-slate-400 text-sm mt-6">No admission requests.</p>
+<div class="school-frame"><span>ADMISSIONS</span><h3>Government Primary School Dhok Jhatt</h3><p>Naya Dakhla • Approve Hote Hi Student List Me Aa Jayega</p></div>
+</div>
+
+<!-- 24 DISCIPLINE -->
+<div id="tab-discipline" class="tabPage hidden">
+<div class="flex justify-between">
+<h2 class="font-bold text-lg">Discipline Records - NEW</h2>
+<button type="button" onclick="openDisciplineModal()" class="bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-bold">+ Add Record</button>
+</div>
+<div id="disciplineList" class="grid md:grid-cols-2 gap-3 mt-4"></div>
+<p id="emptyDiscipline" class="text-center text-slate-400 text-sm mt-6">No discipline records.</p>
+<div class="school-frame"><span>DISCIPLINE</span><h3>Government Primary School Dhok Jhatt</h3><p>Good Behaviour • Warning • Incident Record</p></div>
+</div>
+
+<!-- 25 HEALTH -->
+<div id="tab-health" class="tabPage hidden">
+<div class="flex justify-between">
+<h2 class="font-bold text-lg">Health Records - NEW</h2>
+<button type="button" onclick="openHealthModal()" class="bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-bold">+ Add Health Record</button>
+</div>
+<div id="healthList" class="grid md:grid-cols-2 gap-3 mt-4"></div>
+<p id="emptyHealth" class="text-center text-slate-400 text-sm mt-6">No health records.</p>
+<div class="school-frame"><span>HEALTH</span><h3>Government Primary School Dhok Jhatt</h3><p>Height • Weight • Vaccination • Medical Note</p></div>
+</div>
+
+<!-- 26 ALUMNI -->
+<div id="tab-alumni" class="tabPage hidden">
+<div class="flex justify-between">
+<h2 class="font-bold text-lg">Alumni - NEW</h2>
+<button type="button" onclick="openAlumniModal()" class="bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-bold">+ Add Alumni</button>
+</div>
+<div id="alumniList" class="grid md:grid-cols-2 gap-3 mt-4"></div>
+<p id="emptyAlumni" class="text-center text-slate-400 text-sm mt-6">No alumni yet.</p>
+<div class="school-frame"><span>ALUMNI</span><h3>Government Primary School Dhok Jhatt</h3><p>Purane Students • Kahan Parhte / Kaam Karte Hain</p></div>
+</div>
+
+<!-- 27 EXAM SCHEDULE -->
+<div id="tab-examschedule" class="tabPage hidden">
+<div class="flex justify-between">
+<h2 class="font-bold text-lg">Exam Schedule - NEW</h2>
+<button type="button" onclick="openExamScheduleModal()" class="bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-bold">+ Add Exam Schedule</button>
+</div>
+<div id="examScheduleList" class="grid md:grid-cols-2 gap-3 mt-4"></div>
+<p id="emptyExamSchedule" class="text-center text-slate-400 text-sm mt-6">No exam schedule yet.</p>
+<div class="school-frame"><span>EXAM SCHEDULE</span><h3>Government Primary School Dhok Jhatt</h3><p>Paper Date • Time • Room • Subject</p></div>
+</div>
+
+<!-- 28 STAFF -->
+<div id="tab-staff" class="tabPage hidden">
+<div class="flex justify-between">
+<h2 class="font-bold text-lg">Staff & Ranks (Admin Only)</h2>
+<button type="button" onclick="openAddStaffModal()" class="bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-bold">+ Add Staff Manually</button>
+</div>
+<div class="bg-amber-50 border border-amber-200 rounded-2xl p-3 mt-3 text-sm">
+<b>⚠️ Admin Rule:</b> Only <b>Haris Awan is Admin</b>. New user joins as <b>New User</b>. Change dropdown here — Teacher / <b>Head Teacher</b> / Parent / Student — as you wish. Head Teacher has full approve permissions like Admin (except Staff & Settings). Until you assign a role, user will not get full access.
+</div>
+<div class="flex gap-2 mt-3 flex-wrap">
+<input id="staffSearch" oninput="renderAll()" class="border rounded-full px-3 py-2 text-sm" placeholder="Search staff...">
+<select id="staffRoleFilter" onchange="renderAll()" class="border rounded-full px-3 py-2 text-sm">
+<option value="">All Roles</option>
+<option>New User</option>
+<option>Teacher</option>
+<option>Head Teacher</option>
+<option>Parent</option>
+<option>Student</option>
+<option>Admin</option>
+</select>
+</div>
+<div id="staffList" class="grid md:grid-cols-2 gap-3 mt-4"></div>
+<div class="school-frame"><span>STAFF & RANKS</span><h3>Government Primary School Dhok Jhatt</h3><p>Admin Haris Awan • Head Teacher • Teacher • Sab Ka Role Yahan Se</p></div>
+</div>
+
+<!-- 29 SETTINGS -->
+<div id="tab-settings" class="tabPage hidden">
+<h2 class="font-bold text-lg">Settings & Data</h2>
+<div class="bg-white rounded-3xl p-5 mt-4">
+<p class="font-bold">Backup & Restore + Firebase Sync</p>
+<p class="text-xs text-slate-500 mt-1">Paste your Firebase config in script to enable cloud sync. Currently data saves in browser.</p>
+<div class="flex flex-wrap gap-2 mt-3">
+<button type="button" onclick="exportDB()" class="bg-emerald-600 text-white px-4 py-2 rounded-full text-sm font-bold">Export JSON</button>
+<label class="bg-amber-500 text-white px-4 py-2 rounded-full text-sm font-bold cursor-pointer">Import JSON<input type="file" accept=".json" onchange="importDB(event)" class="hidden"></label>
+<button type="button" onclick="syncToFirebase()" class="bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-bold">Sync To Firebase</button>
+<button type="button" onclick="hardReset()" class="bg-red-600 text-white px-4 py-2 rounded-full text-sm font-bold">Hard Reset</button>
+</div>
+<p class="text-xs text-slate-400 mt-4">DB: GPS_DHOK_JHATT_DB_V6 • Only Admin: Haris Awan • Head Teacher Enabled (Internal) • No Role Select on Login</p>
+</div>
+<div class="school-frame"><span>SETTINGS</span><h3>Government Primary School Dhok Jhatt</h3><p>Backup • Restore • Firebase Sync • Full Control Admin Ke Paas</p></div>
+</div>
+
+</main>
+</div>
+
+<!-- GENERIC MODAL -->
+<div id="genericModal" class="modal fixed inset-0 z-50 items-center justify-center bg-black/60 p-4">
+<div class="glass w-full max-w-lg rounded-3xl p-6 max-h-[92vh] overflow-y-auto">
+<div class="flex justify-between">
+<h3 id="genericTitle" class="font-bold text-lg">Modal</h3>
+<button type="button" onclick="closeGeneric()" class="text-slate-400 text-xl">✕</button>
+</div>
+<div id="genericBody" class="mt-4"></div>
+</div>
+</div>
+
+<!-- PROFILE -->
+<div id="profileModal" class="modal fixed inset-0 z-50 items-center justify-center bg-black/60 p-4">
+<div class="glass w-full max-w-md rounded-3xl p-6">
+<div class="flex justify-between">
+<h3 class="font-bold text-lg">My Profile</h3>
+<button type="button" onclick="closeProfile()" class="text-slate-400 text-xl">✕</button>
+</div>
+<div class="space-y-3 mt-4">
+<div><label class="text-xs font-bold">Full Name</label><input id="pName" class="w-full border rounded-xl px-3 py-2.5 mt-1"></div>
+<div><label class="text-xs font-bold">Subject</label><input id="pSubject" class="w-full border rounded-xl px-3 py-2.5 mt-1"></div>
+<div><label class="text-xs font-bold">Phone</label><input id="pPhone" class="w-full border rounded-xl px-3 py-2.5 mt-1"></div>
+<div><label class="text-xs font-bold">Password</label><input id="pPass" class="w-full border rounded-xl px-3 py-2.5 mt-1"></div>
+<div><label class="text-xs font-bold">Email</label><input id="pEmail" disabled class="w-full border rounded-xl px-3 py-2.5 mt-1 bg-slate-50"></div>
+<div><label class="text-xs font-bold">My Role (Only Admin Can Change)</label><input id="pRole" disabled class="w-full border rounded-xl px-3 py-2.5 mt-1 bg-slate-50 font-bold"></div>
+</div>
+<button type="button" onclick="saveProfile()" class="w-full bg-blue-600 text-white py-3 rounded-xl font-bold mt-4">Save Profile</button>
+</div>
+</div>
 
 <script>
 const firebaseConfig = null;
-function syncToFirebase(){ if(!firebaseConfig){ alert('Firebase config not added yet. Paste your Firebase config in script to enable cloud sync. Data is currently saved in browser.'); return; } alert('Syncing to Firebase...'); }
+function syncToFirebase(){
+if(!firebaseConfig){ alert('Firebase config not added yet. Paste your Firebase config in script to enable cloud sync. Data is currently saved in browser.'); return; }
+alert('Syncing to Firebase...');
+}
 const KEY='GPS_DHOK_JHATT_DB_V6';
 let DB=null, authMode='login', currentTab='overview';
 const ADMIN_EMAIL='harisawan.pk.@school.tm';
 const ADMIN_PASS='haris786786786';
-function seed(){ return {users:[{id:'usr_admin_1',name:'Haris Awan',email:ADMIN_EMAIL,password:ADMIN_PASS,role:'Admin',subject:'Overall Administration & Management',phone:'+92 300 0000000'}],students:[],attendance:[],reports:[],homework:[],hwSubs:[],meetings:[],chats:[],timetable:[],fees:[],results:[],leaves:[],notices:[],books:[],quizzes:[],quizAttempts:[],salary:[],inventory:[],transport:[],events:[],complaints:[],admissions:[],discipline:[],health:[],alumni:[],examSchedule:[],currentUser:null}; }
-function load(){ try{ let raw=localStorage.getItem(KEY); if(!raw){ DB=seed(); save(); return; } DB=JSON.parse(raw); let s=seed(); Object.keys(s).forEach(k=>{ if(DB[k]===undefined) DB[k]=s[k]; }); let a=DB.users.find(u=>u.email===ADMIN_EMAIL); if(!a){ DB.users.unshift(s.users[0]); } else { a.password=ADMIN_PASS; a.name='Haris Awan'; a.role='Admin'; } DB.users.forEach(u=>{ if(u.email!==ADMIN_EMAIL && u.role==='Admin'){ u.role='Head Teacher'; } if(!u.role) u.role='New User'; }); save(); }catch(e){ DB=seed(); save(); } }
+function seed(){
+return {
+users:[{id:'usr_admin_1',name:'Haris Awan',email:ADMIN_EMAIL,password:ADMIN_PASS,role:'Admin',subject:'Overall Administration & Management',phone:'+92 300 0000000'}],
+students:[],attendance:[],reports:[],homework:[],hwSubs:[],meetings:[],chats:[],timetable:[],fees:[],results:[],leaves:[],notices:[],books:[],quizzes:[],quizAttempts:[],salary:[],inventory:[],transport:[],events:[],complaints:[],admissions:[],discipline:[],health:[],alumni:[],examSchedule:[],
+currentUser:null
+};
+}
+function load(){
+try{
+let raw=localStorage.getItem(KEY);
+if(!raw){ DB=seed(); save(); return; }
+DB=JSON.parse(raw);
+let s=seed();
+Object.keys(s).forEach(k=>{ if(DB[k]===undefined) DB[k]=s[k]; });
+let a=DB.users.find(u=>u.email===ADMIN_EMAIL);
+if(!a){ DB.users.unshift(s.users[0]); }
+else{ a.password=ADMIN_PASS; a.name='Haris Awan'; a.role='Admin'; }
+DB.users.forEach(u=>{ if(u.email!==ADMIN_EMAIL && u.role==='Admin'){ u.role='Head Teacher'; } if(!u.role) u.role='New User'; });
+save();
+}catch(e){ DB=seed(); save(); }
+}
 function save(){ localStorage.setItem(KEY,JSON.stringify(DB)); }
 function uid(p){ return p+'_'+Date.now()+'_'+Math.floor(Math.random()*999); }
 function esc(v){ return String(v||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 function me(){ return DB.users.find(u=>u.id===DB.currentUser)||null; }
-// HEAD TEACHER HAS FULL APPROVE PERMISSIONS LIKE ADMIN (except Staff & Settings which is Admin Only)
 function canApprove(){ let u=me(); return u&&(u.role==='Admin'||u.role==='Head Teacher'); }
 function isAdmin(){ let u=me(); return u&&u.role==='Admin'; }
-function isHeadTeacher(){ let u=me(); return u&&u.role==='Head Teacher'; }
 function isNewUser(){ let u=me(); return u&&u.role==='New User'; }
 function todayStr(){ return new Date().toISOString().slice(0,10); }
 function gradeFromMarks(m){ m=Number(m); if(m>=90)return 'A+'; if(m>=80)return 'A'; if(m>=70)return 'B'; if(m>=60)return 'C'; if(m>=50)return 'D'; return 'F'; }
 function openAuth(m){ setAuthMode(m); document.getElementById('authModal').classList.add('open'); }
 function closeAuth(){ document.getElementById('authModal').classList.remove('open'); }
-function setAuthMode(m){ authMode=m; document.getElementById('tabLogin').className=m==='login'?'flex-1 py-2 rounded-full bg-blue-600 text-white font-bold text-sm':'flex-1 py-2 rounded-full font-bold text-sm text-slate-500'; document.getElementById('tabSignup').className=m==='signup'?'flex-1 py-2 rounded-full bg-blue-600 text-white font-bold text-sm':'flex-1 py-2 rounded-full font-bold text-sm text-slate-500'; ['signupNameWrap','signupSubjectWrap','signupPhoneWrap'].forEach(id=>document.getElementById(id).classList.toggle('hidden',m!=='signup')); document.getElementById('signupNote').classList.toggle('hidden',m!=='signup'); document.getElementById('authSubmit').innerText=m==='login'?'Login':'Create Account'; document.getElementById('authSwitchText').innerText=m==='login'?"If you Don't Have Account Sign Up":"Already have an account? Login"; document.getElementById('authError').classList.add('hidden'); }
+function setAuthMode(m){
+authMode=m;
+document.getElementById('tabLogin').className=m==='login'?'flex-1 py-2 rounded-full bg-blue-600 text-white font-bold text-sm':'flex-1 py-2 rounded-full font-bold text-sm text-slate-500';
+document.getElementById('tabSignup').className=m==='signup'?'flex-1 py-2 rounded-full bg-blue-600 text-white font-bold text-sm':'flex-1 py-2 rounded-full font-bold text-sm text-slate-500';
+['signupNameWrap','signupSubjectWrap','signupPhoneWrap'].forEach(id=>document.getElementById(id).classList.toggle('hidden',m!=='signup'));
+document.getElementById('signupNote').classList.toggle('hidden',m!=='signup');
+document.getElementById('authSubmit').innerText=m==='login'?'Login':'Create Account';
+document.getElementById('authSwitchText').innerText=m==='login'?"If you Don't Have Account Sign Up":"Already have an account? Login";
+document.getElementById('authError').classList.add('hidden');
+}
 function switchAuth(){ setAuthMode(authMode==='login'?'signup':'login'); }
 function showErr(t){ let e=document.getElementById('authError'); e.innerText=t; e.classList.remove('hidden'); }
 function doAuth(){
@@ -155,7 +815,15 @@ alert('Account created as New User! Admin Haris Awan will assign your role soon 
 }
 }
 function logout(){ DB.currentUser=null; save(); document.getElementById('dashboard').classList.add('hidden'); document.getElementById('landing').classList.remove('hidden'); window.scrollTo(0,0); }
-function goTab(t){ if(isNewUser() && t!=='overview' && t!=='settings'){ alert('You are a New User. You can access this tab after Admin assigns you a role.'); return; } if(t==='staff' && !isAdmin()){ alert('Only Admin can access Staff & Ranks'); return; } currentTab=t; document.querySelectorAll('.tabPage').forEach(p=>p.classList.add('hidden')); let el=document.getElementById('tab-'+t); if(el) el.classList.remove('hidden'); document.querySelectorAll('.tab-btn').forEach(b=>b.classList.toggle('active',b.dataset.tab===t)); renderAll(); }
+function goTab(t){
+if(isNewUser() && t!=='overview' && t!=='settings'){ alert('You are a New User. You can access this tab after Admin assigns you a role.'); return; }
+if(t==='staff' && !isAdmin()){ alert('Only Admin can access Staff & Ranks'); return; }
+currentTab=t;
+document.querySelectorAll('.tabPage').forEach(p=>p.classList.add('hidden'));
+let el=document.getElementById('tab-'+t); if(el) el.classList.remove('hidden');
+document.querySelectorAll('.tab-btn').forEach(b=>b.classList.toggle('active',b.dataset.tab===t));
+renderAll();
+}
 function renderTabs(){
 if(isNewUser()){ document.getElementById('tabsBar').innerHTML='<span class="bg-amber-100 text-amber-800 px-4 py-2 rounded-full text-sm font-bold">New User • Waiting for Admin • Please Wait For Role Assignment</span>'; return; }
 let tabs=[['overview','Overview'],['parent','Parent'],['studentportal','Student Portal'],['students','Students'],['attendance','Attendance'],['reports','Reports'],['homework','HW'],['quiz','Quiz'],['fees','Fees'],['results','Results'],['salary','Salary'],['timetable','Timetable'],['leave','Leave'],['meetings','Meetings'],['notices','Notices'],['events','Events'],['library','Library'],['inventory','Inventory'],['transport','Transport'],['certificates','Certificates'],['complaints','Complaints'],['chat','Chat'],['admissions','Admissions'],['discipline','Discipline'],['health','Health'],['alumni','Alumni'],['examschedule','Exam Schedule']];
@@ -164,8 +832,30 @@ tabs.push(['settings','Settings']);
 document.getElementById('tabsBar').innerHTML=tabs.map(([k,l])=>'<button type="button" data-tab="'+k+'" onclick="goTab(\''+k+'\')" class="tab-btn px-4 py-2 rounded-full text-sm font-semibold bg-white shadow-sm border '+(k===currentTab?'active':'')+'">'+l+'</button>').join('');
 let b=document.getElementById('addMeetingBtn'); if(b) b.style.display=canApprove()?'':'none';
 }
-function renderApp(){ let u=me(); if(!u) return; document.getElementById('landing').classList.add('hidden'); document.getElementById('dashboard').classList.remove('hidden'); document.getElementById('userBadge').innerText=u.name+' ('+u.role+')'; document.getElementById('welcomeText').innerText='Welcome back, '+u.name; document.getElementById('welcomeSub').innerText='Role: '+u.role+' • Subject: '+u.subject; document.getElementById('welcomeDate').innerText=new Date().toLocaleDateString('en-PK',{weekday:'long',day:'numeric',month:'long',year:'numeric'}); document.getElementById('avatarCircle').innerText=u.name.split(' ').map(x=>x[0]).join('').slice(0,2).toUpperCase(); document.getElementById('rolePill').innerText=u.role; document.getElementById('newUserBox').classList.toggle('hidden',!isNewUser()); document.getElementById('newUserInfo').innerText=u.name+' • '+u.email+' • Joined as New User'; renderTabs(); renderAll(); goTab('overview'); }
-function drawChart(){ let c=document.getElementById('attChart'); if(!c) return; let ctx=c.getContext('2d'); ctx.clearRect(0,0,c.width,c.height); let labels=['Mon','Tue','Wed','Thu','Fri','Sat','Sun']; let vals=[0,0,0,0,0,0,0]; DB.attendance.forEach(a=>{ let d=new Date(a.date||todayStr()).getDay(); let idx=(d+6)%7; if(a.status==='Present') vals[idx]++; }); let max=Math.max(...vals,1); vals.forEach((v,i)=>{ let h=(v/max)*110; let x=30+i*80; ctx.fillStyle='#2563eb'; ctx.fillRect(x,140-h,42,h); ctx.fillStyle='#64748b'; ctx.font='12px Inter'; ctx.fillText(labels[i],x+6,158); ctx.fillStyle='#0f172a'; ctx.font='bold 12px Inter'; ctx.fillText(v,x+12,132-h); }); let rate=DB.students.length?Math.round(DB.attendance.filter(a=>a.status==='Present').length/Math.max(DB.students.length,1)*100):0; let el=document.getElementById('attRateTop'); if(el) el.innerText=rate+'% Present'; }
+function renderApp(){
+let u=me(); if(!u) return;
+document.getElementById('landing').classList.add('hidden');
+document.getElementById('dashboard').classList.remove('hidden');
+document.getElementById('userBadge').innerText=u.name+' ('+u.role+')';
+document.getElementById('welcomeText').innerText='Welcome back, '+u.name;
+document.getElementById('welcomeSub').innerText='Role: '+u.role+' • Subject: '+u.subject;
+document.getElementById('welcomeDate').innerText=new Date().toLocaleDateString('en-PK',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+document.getElementById('avatarCircle').innerText=u.name.split(' ').map(x=>x[0]).join('').slice(0,2).toUpperCase();
+document.getElementById('rolePill').innerText=u.role;
+document.getElementById('newUserBox').classList.toggle('hidden',!isNewUser());
+document.getElementById('newUserInfo').innerText=u.name+' • '+u.email+' • Joined as New User';
+renderTabs(); renderAll(); goTab('overview');
+}
+function drawChart(){
+let c=document.getElementById('attChart'); if(!c) return;
+let ctx=c.getContext('2d'); ctx.clearRect(0,0,c.width,c.height);
+let labels=['Mon','Tue','Wed','Thu','Fri','Sat','Sun']; let vals=[0,0,0,0,0,0,0];
+DB.attendance.forEach(a=>{ let d=new Date(a.date||todayStr()).getDay(); let idx=(d+6)%7; if(a.status==='Present') vals[idx]++; });
+let max=Math.max(...vals,1);
+vals.forEach((v,i)=>{ let h=(v/max)*110; let x=30+i*80; ctx.fillStyle='#2563eb'; ctx.fillRect(x,140-h,42,h); ctx.fillStyle='#64748b'; ctx.font='12px Inter'; ctx.fillText(labels[i],x+6,158); ctx.fillStyle='#0f172a'; ctx.font='bold 12px Inter'; ctx.fillText(v,x+12,132-h); });
+let rate=DB.students.length?Math.round(DB.attendance.filter(a=>a.status==='Present').length/Math.max(DB.students.length,1)*100):0;
+let el=document.getElementById('attRateTop'); if(el) el.innerText=rate+'% Present';
+}
 function renderAll(){
 if(!DB) return;
 let paid=DB.fees.filter(f=>f.status==='Paid').reduce((s,f)=>s+Number(f.amount||0),0);
@@ -224,7 +914,11 @@ document.getElementById('disciplineList').innerHTML=DB.discipline.map(d=>'<div c
 document.getElementById('healthList').innerHTML=DB.health.map(h=>'<div class="bg-white rounded-2xl p-4"><p class="font-bold">'+esc(h.student)+' • Height '+esc(h.height)+' • Weight '+esc(h.weight)+'</p><p class="text-sm mt-1">Vaccination: '+esc(h.vaccine)+' • Note: '+esc(h.note)+'</p><button type="button" onclick="delHealth(\''+h.id+'\')" class="text-red-500 text-xs mt-2 font-bold">Delete</button></div>').join(''); document.getElementById('emptyHealth').style.display=DB.health.length?'none':'block';
 document.getElementById('alumniList').innerHTML=DB.alumni.map(a=>'<div class="bg-white rounded-2xl p-4"><p class="font-bold">'+esc(a.name)+' • Passed Year '+esc(a.year)+'</p><p class="text-sm mt-1">Now: '+esc(a.currentStatus)+'</p><button type="button" onclick="delAlumni(\''+a.id+'\')" class="text-red-500 text-xs mt-2 font-bold">Delete</button></div>').join(''); document.getElementById('emptyAlumni').style.display=DB.alumni.length?'none':'block';
 document.getElementById('examScheduleList').innerHTML=DB.examSchedule.map(e=>'<div class="bg-white rounded-2xl p-4"><p class="font-bold">'+esc(e.exam)+' • '+esc(e.subject)+' • Class '+esc(e.cls)+'</p><p class="text-sm mt-1">Date: '+esc(e.date)+' • Time: '+esc(e.time)+' • Room: '+esc(e.room)+'</p><button type="button" onclick="delExamSchedule(\''+e.id+'\')" class="text-red-500 text-xs mt-2 font-bold">Delete</button></div>').join(''); document.getElementById('emptyExamSchedule').style.display=DB.examSchedule.length?'none':'block';
-if(isAdmin()){ let sq=(document.getElementById('staffSearch')?.value||'').toLowerCase(); let rf=document.getElementById('staffRoleFilter')?.value||''; let fstaff=DB.users.filter(u=>(!sq||u.name.toLowerCase().includes(sq)||u.email.toLowerCase().includes(sq))&&(!rf||u.role===rf)); document.getElementById('staffList').innerHTML=fstaff.map(u=>'<div class="bg-white rounded-2xl p-4 '+(u.role==='New User'?'border-2 border-amber-300':'')+'"><div class="flex justify-between"><p class="font-bold">'+esc(u.name)+' '+(u.email===ADMIN_EMAIL?'<span class="text-[10px] bg-amber-100 px-2 rounded-full">OWNER - ONLY ADMIN</span>':u.role==='New User'?'<span class="text-[10px] bg-amber-100 px-2 rounded-full">NEW - ASSIGN ROLE</span>':u.role==='Head Teacher'?'<span class="text-[10px] bg-purple-100 text-purple-700 px-2 rounded-full">HEAD TEACHER</span>':'')+'</p><span class="text-xs bg-blue-50 px-2 py-1 rounded-full font-bold">'+u.role+'</span></div><p class="text-xs text-slate-500 mt-1">'+esc(u.email)+' • '+esc(u.subject)+'</p><div class="flex gap-2 mt-3 items-center flex-wrap"><label class="text-xs font-bold">Change Role →</label><select onchange="changeRole(\''+u.id+'\',this.value)" '+(u.email===ADMIN_EMAIL?'disabled':'')+' class="border-2 border-blue-200 rounded-full px-3 py-1.5 text-sm font-bold bg-blue-50"><option '+(u.role==='New User'?'selected':'')+'>New User</option><option '+(u.role==='Teacher'?'selected':'')+'>Teacher</option><option '+(u.role==='Head Teacher'?'selected':'')+'>Head Teacher</option><option '+(u.role==='Parent'?'selected':'')+'>Parent</option><option '+(u.role==='Student'?'selected':'')+'>Student</option></select>'+(u.email!==ADMIN_EMAIL?'<button type="button" onclick="delUser(\''+u.id+'\')" class="text-red-500 text-xs font-bold">Delete</button><button type="button" onclick="resetPass(\''+u.id+'\')" class="border px-2 py-1 rounded-full text-xs">Reset Pass</button>':'')+'</div></div>').join(''); }
+if(isAdmin()){
+let sq=(document.getElementById('staffSearch')?.value||'').toLowerCase(); let rf=document.getElementById('staffRoleFilter')?.value||'';
+let fstaff=DB.users.filter(u=>(!sq||u.name.toLowerCase().includes(sq)||u.email.toLowerCase().includes(sq))&&(!rf||u.role===rf));
+document.getElementById('staffList').innerHTML=fstaff.map(u=>'<div class="bg-white rounded-2xl p-4 '+(u.role==='New User'?'border-2 border-amber-300':'')+'"><div class="flex justify-between"><p class="font-bold">'+esc(u.name)+' '+(u.email===ADMIN_EMAIL?'<span class="text-[10px] bg-amber-100 px-2 rounded-full">OWNER - ONLY ADMIN</span>':u.role==='New User'?'<span class="text-[10px] bg-amber-100 px-2 rounded-full">NEW - ASSIGN ROLE</span>':u.role==='Head Teacher'?'<span class="text-[10px] bg-purple-100 text-purple-700 px-2 rounded-full">HEAD TEACHER</span>':'')+'</p><span class="text-xs bg-blue-50 px-2 py-1 rounded-full font-bold">'+u.role+'</span></div><p class="text-xs text-slate-500 mt-1">'+esc(u.email)+' • '+esc(u.subject)+'</p><div class="flex gap-2 mt-3 items-center flex-wrap"><label class="text-xs font-bold">Change Role →</label><select onchange="changeRole(\''+u.id+'\',this.value)" '+(u.email===ADMIN_EMAIL?'disabled':'')+' class="border-2 border-blue-200 rounded-full px-3 py-1.5 text-sm font-bold bg-blue-50"><option '+(u.role==='New User'?'selected':'')+'>New User</option><option '+(u.role==='Teacher'?'selected':'')+'>Teacher</option><option '+(u.role==='Head Teacher'?'selected':'')+'>Head Teacher</option><option '+(u.role==='Parent'?'selected':'')+'>Parent</option><option '+(u.role==='Student'?'selected':'')+'>Student</option></select>'+(u.email!==ADMIN_EMAIL?'<button type="button" onclick="delUser(\''+u.id+'\')" class="text-red-500 text-xs font-bold">Delete</button><button type="button" onclick="resetPass(\''+u.id+'\')" class="border px-2 py-1 rounded-full text-xs">Reset Pass</button>':'')+'</div></div>').join('');
+}
 drawChart();
 }
 function setAtt(sid,st){ let d=document.getElementById('attDate')?.value||todayStr(); let ex=DB.attendance.find(a=>a.studentId===sid&&a.date===d); if(ex) ex.status=st; else DB.attendance.push({id:uid('att'),studentId:sid,status:st,date:d}); save(); renderAll(); }
@@ -260,7 +954,7 @@ function delTransport(id){ DB.transport=DB.transport.filter(x=>x.id!==id); save(
 function solveComplaint(id){ let c=DB.complaints.find(x=>x.id===id); c.status='Solved'; save(); renderAll(); }
 function sendChat(){ let inp=document.getElementById('chatInput'); if(!inp.value.trim()) return; let u=me(); DB.chats.push({id:uid('chat'),name:u.name,role:u.role,msg:inp.value.trim(),time:new Date().toLocaleString()}); inp.value=''; save(); renderAll(); }
 function delUser(id){ let u=DB.users.find(x=>x.id===id); if(u&&u.email===ADMIN_EMAIL) return alert('Cannot delete System Owner - Only Haris Awan is Admin'); if(!confirm('Delete staff?')) return; DB.users=DB.users.filter(x=>x.id!==id); save(); renderAll(); }
-function changeRole(id,role){ let u=DB.users.find(x=>x.id===id); if(u&&u.email===ADMIN_EMAIL) return alert('Cannot change Owner role'); if(role==='Admin') return alert('Only Haris Awan can be Admin. You cannot make anyone else Admin.'); u.role=role; save(); renderAll(); alert('Role updated to '+role+' - Head Teacher has full approve permissions'); }
+function changeRole(id,role){ let u=DB.users.find(x=>x.id===id); if(u&&u.email===ADMIN_EMAIL) return alert('Cannot change Owner role'); if(role==='Admin') return alert('Only Haris Awan can be Admin.'); u.role=role; save(); renderAll(); alert('Role updated to '+role); }
 function resetPass(id){ let u=DB.users.find(x=>x.id===id); let p=prompt('Enter new password for '+u.name); if(!p) return; u.password=p; save(); renderAll(); alert('Password reset done'); }
 function printReport(id){ let r=DB.reports.find(x=>x.id===id); let w=window.open('','_blank'); w.document.write('<h2>'+esc(r.title)+'</h2><p>Class '+esc(r.cls)+' • By '+esc(r.by)+'</p><p>'+esc(r.details)+'</p>'); w.print(); }
 function printCertificate(){ let sid=document.getElementById('certStudent').value; if(!sid) return alert('Select student'); let s=DB.students.find(x=>x.id===sid); let type=document.getElementById('certType').value; let w=window.open('','_blank'); w.document.write('<div style="text-align:center;border:3px solid #2563eb;padding:30px"><h1>'+type+'</h1><p>This is to certify that <b>'+esc(s.name)+'</b> • Roll '+s.roll+' • Class '+s.cls+' is a student of Govt Primary School Dhok Jhatt.</p><p>Principal Signature</p></div>'); w.print(); }
@@ -318,7 +1012,10 @@ function openHealthModal(){ openGeneric('Add Health Record','<div class="space-y
 function saveHealth(){ DB.health.push({id:uid('hea'),student:document.getElementById('hStudent').value,height:document.getElementById('hHeight').value,weight:document.getElementById('hWeight').value,vaccine:document.getElementById('hVaccine').value,note:document.getElementById('hNote').value,date:todayStr()}); save(); closeGeneric(); renderAll(); }
 function openAlumniModal(){ openGeneric('Add Alumni','<div class="space-y-3"><input id="alName" class="w-full border rounded-xl px-3 py-2.5" placeholder="Alumni Name"><input id="alYear" class="w-full border rounded-xl px-3 py-2.5" placeholder="Passing Year"><input id="alCls" class="w-full border rounded-xl px-3 py-2.5" placeholder="Last Class"><input id="alStatus" class="w-full border rounded-xl px-3 py-2.5" placeholder="Now Studying / Working Where"><button type="button" onclick="saveAlumni()" class="w-full bg-blue-600 text-white py-3 rounded-xl font-bold">Save Alumni</button></div>'); }
 function saveAlumni(){ DB.alumni.push({id:uid('alu'),name:document.getElementById('alName').value,year:document.getElementById('alYear').value,cls:document.getElementById('alCls').value,currentStatus:document.getElementById('alStatus').value}); save(); closeGeneric(); renderAll(); }
-function openExamScheduleModal(){ openGeneric('Add Exam Schedule','<div class="space-y-3"><input id="esExam" class="w-full border rounded-xl px-3 py-2.5" placeholder="Exam Name e.g. Mid Term"><input id="esSubject" class="w-full border rounded-xl px-3 py-2.5" placeholder="Subject"><select id="esCls" class="w-full border rounded-xl px-3 py-2.5"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select><input id="esDate" type="date" class="w-full border rounded-xl px-3 py-2.5"><input id="esTime" class="w-full border rounded-xl px-3 py-2.5" placeholder="Time e.g. 09:00 - 11:00"><input id="esRoom" class="w-full border rounded-xl px-3 py-2.5" placeholder="Room"><button type="button" onclick="saveExamSchedule()" class="w-full bg-blue-600 text-white py-3 rounded-xl font-bold">Save Schedule</button></div>'); }
+function openExamScheduleModal(){ openGeneric('Add Exam Schedule','<div class="space-y-3"><input id="esExam" class="w-full border rounded-xl px-3 py-2.5" placeholder="Exam Name e.g. Mid Term"><input id="esSubject" class="w-full border rounded-xl px-3 py-2.5" placeholder="Subject"><select id="esCls" class="w-full border rounded-xl px-3 py-2**Continuation — isko pichle code ke end me jod do, jahan ruka tha:**
+
+```html
+2.5" placeholder="Subject"><select id="esCls" class="w-full border rounded-xl px-3 py-2.5"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select><input id="esDate" type="date" class="w-full border rounded-xl px-3 py-2.5"><input id="esTime" class="w-full border rounded-xl px-3 py-2.5" placeholder="Time e.g. 09:00 - 11:00"><input id="esRoom" class="w-full border rounded-xl px-3 py-2.5" placeholder="Room"><button type="button" onclick="saveExamSchedule()" class="w-full bg-blue-600 text-white py-3 rounded-xl font-bold">Save Schedule</button></div>'); }
 function saveExamSchedule(){ DB.examSchedule.push({id:uid('es'),exam:document.getElementById('esExam').value,subject:document.getElementById('esSubject').value,cls:document.getElementById('esCls').value,date:document.getElementById('esDate').value,time:document.getElementById('esTime').value,room:document.getElementById('esRoom').value}); save(); closeGeneric(); renderAll(); }
 function openProfile(){ let u=me(); document.getElementById('pName').value=u.name; document.getElementById('pSubject').value=u.subject; document.getElementById('pPhone').value=u.phone||''; document.getElementById('pPass').value=u.password; document.getElementById('pEmail').value=u.email; document.getElementById('pRole').value=u.role; document.getElementById('profileModal').classList.add('open'); }
 function closeProfile(){ document.getElementById('profileModal').classList.remove('open'); }
