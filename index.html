@@ -1,987 +1,327 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Govt. Primary School Dhok Jhatt</title>
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        primary: '#1e40af',
-                        secondary: '#3b82f6',
-                        darkBg: '#0f172a'
-                    }
-                }
-            }
-        }
-    </script>
-    <style>
-        .glass-card {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-        }
-        .hero-bg {
-            background: linear-gradient(rgba(15, 23, 42, 0.85), rgba(15, 23, 42, 0.90)), url('https://images.unsplash.com/photo-1580582932707-520aed937b7b?auto=format&fit=crop&w=1920&q=80');
-            background-size: cover;
-            background-position: center;
-        }
-        @media print {
-            body * { visibility: hidden; }
-            #printableCard, #printableCard * { visibility: visible; }
-            #printableCard { position: absolute; left: 0; top: 0; width: 100%; }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TeacherHub ERP MEGA - Govt Primary School Dhok Jhatt</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<style>
+*{font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+body{background:#f1f5f9;color:#0f172a}
+.glass{background:rgba(255,255,255,.94);backdrop-filter:blur(16px)}
+.hero-bg{background:linear-gradient(rgba(15,23,42,.90),rgba(15,23,42,.82)),url('https://images.unsplash.com/photo-1580582932707-520aed937b7b?q=80&w=1600&auto=format&fit=crop');background-size:cover;background-position:center}
+.hero-bg2{background:linear-gradient(135deg,#2563eb,#1d4ed8 55%,#0f172a)}
+.tab-btn.active{background:#2563eb!important;color:#fff!important;border-color:#2563eb!important}
+::-webkit-scrollbar{width:6px;height:6px}::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:99px}
+input,select,textarea{outline:none}input:focus,select:focus,textarea:focus{border-color:#2563eb!important;box-shadow:0 0 0 3px rgba(37,99,235,.12)}
+.modal{display:none}.modal.open{display:flex}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}.fadeUp{animation:fadeUp .4s ease both}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}.float{animation:float 3s ease-in-out infinite}
+.badge{font-size:10px;padding:2px 8px;border-radius:999px;font-weight:700}
+.card-hover:hover{transform:translateY(-2px);box-shadow:0 12px 24px rgba(0,0,0,.08)}.card-hover{transition:all .2s}
+.stat-card{background:#fff;border-radius:20px;padding:16px;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+.th{font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:#64748b;font-weight:700}
+.print-card{border:2px dashed #2563eb}
+</style>
 </head>
-<body class="bg-slate-100 font-sans text-slate-800 antialiased min-h-screen flex flex-col">
-
-    <div id="app" class="flex-1 flex flex-col"></div>
-
-    <script>
-        const DB_KEY = "GPS_DHOK_JHATT_DB_V6";
-
-        function getDB() {
-            let data = localStorage.getItem(DB_KEY);
-            if (!data) {
-                const initialData = {
-                    users: [
-                        {
-                            id: "usr_admin_1",
-                            name: "Haris Awan",
-                            email: "harisawan.pk.@school.tm",
-                            password: "haris.pk72829@",
-                            role: "Admin",
-                            subject: "Overall Administration & Management",
-                            phone: "+92 300 0000000"
-                        }
-                    ],
-                    students: [],
-                    attendance: [],
-                    reports: [],
-                    homework: [],
-                    meetings: [],
-                    chats: [],
-                    timetable: [],
-                    exams: [],
-                    diaries: [],
-                    gallery: [],
-                    currentUser: null
-                };
-                localStorage.setItem(DB_KEY, JSON.stringify(initialData));
-                return initialData;
-            }
-            return JSON.parse(data);
-        }
-
-        function saveDB(data) {
-            localStorage.setItem(DB_KEY, JSON.stringify(data));
-        }
-
-        let db = getDB();
-
-        function render() {
-            const app = document.getElementById('app');
-            db = getDB();
-
-            if (!db.currentUser) {
-                app.innerHTML = renderLandingPage();
-            } else {
-                app.innerHTML = renderDashboard();
-            }
-        }
-
-        let showAuthModal = false;
-        let authMode = 'login';
-        let activeIDCardStudent = null;
-
-        function openAuth(mode) {
-            authMode = mode;
-            showAuthModal = true;
-            render();
-        }
-
-        function closeAuth() {
-            showAuthModal = false;
-            render();
-        }
-
-        function setAuthMode(mode) {
-            authMode = mode;
-            render();
-        }
-
-        function renderLandingPage() {
-            return `
-                <div class="hero-bg flex-1 flex flex-col justify-between p-4 sm:p-8 relative">
-                    <div class="max-w-7xl w-full mx-auto flex justify-between items-center py-4">
-                        <div class="flex items-center gap-2">
-                            <div class="bg-primary text-white p-2 rounded-xl shadow flex items-center justify-center">
-                                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5m0 0h4m-4 0V11m0 0h4m-4 0H7m4 0v10"></path></svg>
-                            </div>
-                            <span class="text-white font-bold text-sm sm:text-base tracking-wide uppercase">Govt. Primary School Dhok Jhatt</span>
-                        </div>
-                        <div>
-                            <button onclick="openAuth('login')" class="bg-primary hover:bg-blue-700 text-white font-bold px-5 py-2.5 rounded-xl shadow-lg text-sm transition">Sign In</button>
-                        </div>
-                    </div>
-
-                    <div class="text-center max-w-3xl mx-auto my-auto py-10">
-                        <h1 class="text-3xl sm:text-5xl font-extrabold text-white tracking-wide uppercase drop-shadow-lg mb-4">Government Primary School Dhok Jhatt</h1>
-                        <p class="text-slate-200 text-sm sm:text-base max-w-xl mx-auto">Official TeacherHub & Educational Portal for Streamlined Attendance, Academic Reporting, Exams & Faculty Collaboration.</p>
-                    </div>
-
-                    <div class="max-w-4xl mx-auto bg-slate-900/90 border border-slate-700 text-white rounded-2xl p-4 sm:p-6 shadow-2xl backdrop-blur-md mb-6">
-                        <h3 class="text-amber-400 font-bold text-sm sm:text-base uppercase tracking-wider mb-2 text-center">📜 Teacher Rules & Code of Conduct</h3>
-                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs sm:text-sm text-slate-300">
-                            <div class="bg-slate-800/80 p-3 rounded-xl border border-slate-700">
-                                <strong class="text-white block mb-1">1. Attendance & Punctuality</strong>
-                                Daily class attendance and diaries must be recorded accurately.
-                            </div>
-                            <div class="bg-slate-800/80 p-3 rounded-xl border border-slate-700">
-                                <strong class="text-white block mb-1">2. Academic Reporting</strong>
-                                Submit progress notes, exam grades, and diaries for leadership review.
-                            </div>
-                            <div class="bg-slate-800/80 p-3 rounded-xl border border-slate-700">
-                                <strong class="text-white block mb-1">3. System Security</strong>
-                                System roles are strictly supervised under Admin Haris Awan.
-                            </div>
-                        </div>
-                    </div>
-
-                    ${showAuthModal ? `
-                        <div class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-                            <div class="max-w-md w-full glass-card rounded-2xl shadow-2xl p-6 relative">
-                                <button onclick="closeAuth()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-700 font-bold text-lg">✕</button>
-                                <div class="flex border-b border-slate-200 mb-6 mt-2">
-                                    <button onclick="setAuthMode('login')" class="flex-1 pb-3 text-center font-bold text-sm ${authMode === 'login' ? 'text-primary border-b-2 border-primary' : 'text-slate-400'}">Login</button>
-                                    <button onclick="setAuthMode('signup')" class="flex-1 pb-3 text-center font-bold text-sm ${authMode === 'signup' ? 'text-primary border-b-2 border-primary' : 'text-slate-400'}">Sign Up</button>
-                                </div>
-                                ${authMode === 'login' ? `
-                                    <form onsubmit="handleLogin(event)" class="space-y-4">
-                                        <div>
-                                            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Email Address</label>
-                                            <input type="email" id="loginEmail" required class="w-full px-4 py-3 rounded-xl border border-slate-300 text-sm" placeholder="Enter email">
-                                        </div>
-                                        <div>
-                                            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Password</label>
-                                            <input type="password" id="loginPassword" required class="w-full px-4 py-3 rounded-xl border border-slate-300 text-sm" placeholder="••••••••">
-                                        </div>
-                                        <button type="submit" class="w-full bg-primary text-white font-bold py-3 rounded-xl text-sm uppercase">Login</button>
-                                        <div class="text-center pt-2">
-                                            <a href="#" onclick="setAuthMode('signup'); return false;" class="text-xs text-primary font-semibold hover:underline">If you Don't Have Account Sign Up</a>
-                                        </div>
-                                    </form>
-                                ` : `
-                                    <form onsubmit="handleSignup(event)" class="space-y-4">
-                                        <div>
-                                            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Full Name</label>
-                                            <input type="text" id="signupName" required class="w-full px-3 py-2.5 rounded-xl border border-slate-300 text-sm" placeholder="Your Name">
-                                        </div>
-                                        <div>
-                                            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Email Address</label>
-                                            <input type="email" id="signupEmail" required class="w-full px-3 py-2.5 rounded-xl border border-slate-300 text-sm" placeholder="name@school.tm">
-                                        </div>
-                                        <div>
-                                            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Subject / Designation</label>
-                                            <input type="text" id="signupSubject" required class="w-full px-3 py-2.5 rounded-xl border border-slate-300 text-sm" placeholder="e.g. Science Teacher">
-                                        </div>
-                                        <div>
-                                            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Password</label>
-                                            <input type="password" id="signupPassword" required class="w-full px-3 py-2.5 rounded-xl border border-slate-300 text-sm" placeholder="••••••••">
-                                        </div>
-                                        <button type="submit" class="w-full bg-emerald-600 text-white font-bold py-3 rounded-xl text-sm uppercase">Register Account</button>
-                                    </form>
-                                `}
-                            </div>
-                        </div>
-                    ` : ''}
-                </div>
-            `;
-        }
-
-        function handleLogin(e) {
-            e.preventDefault();
-            const email = document.getElementById('loginEmail').value.trim();
-            const password = document.getElementById('loginPassword').value;
-            const user = db.users.find(u => u.email === email && u.password === password);
-            if (user) {
-                db.currentUser = user;
-                saveDB(db);
-                render();
-            } else {
-                alert("Invalid email or password!");
-            }
-        }
-
-        function handleSignup(e) {
-            e.preventDefault();
-            const name = document.getElementById('signupName').value.trim();
-            const email = document.getElementById('signupEmail').value.trim();
-            const subject = document.getElementById('signupSubject').value.trim();
-            const password = document.getElementById('signupPassword').value;
-
-            if (db.users.some(u => u.email === email)) {
-                alert("An account with this email already exists!");
-                return;
-            }
-
-            const newUser = { id: "usr_" + Date.now(), name, email, password, role: "Teacher", subject, phone: "+92 300 0000000" };
-            db.users.push(newUser);
-            db.currentUser = newUser;
-            saveDB(db);
-            alert("Account registered!");
-            render();
-        }
-
-        function logout() {
-            db.currentUser = null;
-            saveDB(db);
-            render();
-        }
-
-        let currentTab = 'overview';
-
-        function switchTab(tab) {
-            currentTab = tab;
-            render();
-        }
-
-        function renderDashboard() {
-            const user = db.currentUser;
-            return `
-                <div class="min-h-screen flex flex-col bg-slate-50">
-                    <header class="bg-white border-b border-slate-200 sticky top-0 z-50 shadow-sm">
-                        <div class="max-w-7xl mx-auto px-4 py-3 flex flex-col sm:flex-row justify-between items-center gap-3">
-                            <div class="flex items-center gap-3">
-                                <div class="bg-primary text-white p-2.5 rounded-xl shadow flex items-center justify-center">
-                                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5m0 0h4m-4 0V11m0 0h4m-4 0H7m4 0v10"></path></svg>
-                                </div>
-                                <div>
-                                    <h1 class="text-base sm:text-lg font-bold text-slate-900 leading-tight">Govt. Primary School Dhok Jhatt</h1>
-                                    <p class="text-xs text-slate-500">Logged in as <span class="font-semibold text-primary">${user.name} (${user.role})</span></p>
-                                </div>
-                            </div>
-                            <div class="flex items-center gap-3">
-                                <button onclick="switchTab('profile')" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-1.5 rounded-lg text-xs font-bold transition">My Profile</button>
-                                <button onclick="logout()" class="bg-red-50 hover:bg-red-100 text-red-600 px-3 py-1.5 rounded-lg text-xs font-bold transition">Logout</button>
-                            </div>
-                        </div>
-                    </header>
-
-                    <div class="bg-white border-b border-slate-200 shadow-sm overflow-x-auto">
-                        <div class="max-w-7xl mx-auto px-4 flex gap-2 py-2">
-                            <button onclick="switchTab('overview')" class="px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap ${currentTab === 'overview' ? 'bg-primary text-white shadow' : 'text-slate-600 hover:bg-slate-100'}">Overview</button>
-                            <button onclick="switchTab('attendance')" class="px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap ${currentTab === 'attendance' ? 'bg-primary text-white shadow' : 'text-slate-600 hover:bg-slate-100'}">Attendance & ID</button>
-                            <button onclick="switchTab('exams')" class="px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap ${currentTab === 'exams' ? 'bg-primary text-white shadow' : 'text-slate-600 hover:bg-slate-100'}">Exams & Grades</button>
-                            <button onclick="switchTab('diary')" class="px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap ${currentTab === 'diary' ? 'bg-primary text-white shadow' : 'text-slate-600 hover:bg-slate-100'}">Daily Diary</button>
-                            <button onclick="switchTab('gallery')" class="px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap ${currentTab === 'gallery' ? 'bg-primary text-white shadow' : 'text-slate-600 hover:bg-slate-100'}">Photo Gallery</button>
-                            <button onclick="switchTab('reports')" class="px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap ${currentTab === 'reports' ? 'bg-primary text-white shadow' : 'text-slate-600 hover:bg-slate-100'}">Reports</button>
-                            <button onclick="switchTab('homework')" class="px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap ${currentTab === 'homework' ? 'bg-primary text-white shadow' : 'text-slate-600 hover:bg-slate-100'}">Worksheets & HW</button>
-                            <button onclick="switchTab('timetable')" class="px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap ${currentTab === 'timetable' ? 'bg-primary text-white shadow' : 'text-slate-600 hover:bg-slate-100'}">Timetable</button>
-                            <button onclick="switchTab('meetings')" class="px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap ${currentTab === 'meetings' ? 'bg-primary text-white shadow' : 'text-slate-600 hover:bg-slate-100'}">Meetings</button>
-                            <button onclick="switchTab('chat')" class="px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap ${currentTab === 'chat' ? 'bg-primary text-white shadow' : 'text-slate-600 hover:bg-slate-100'}">Staff Chat</button>
-                            ${user.role === 'Admin' ? `<button onclick="switchTab('staff')" class="px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap ${currentTab === 'staff' ? 'bg-indigo-600 text-white shadow' : 'text-indigo-600 hover:bg-indigo-50'}">Staff & Ranks (Admin)</button>` : ''}
-                        </div>
-                    </div>
-
-                    <main class="max-w-7xl w-full mx-auto p-4 sm:p-6 flex-1 flex flex-col gap-6">
-                        ${currentTab === 'overview' ? renderOverviewTab() : ''}
-                        ${currentTab === 'attendance' ? renderAttendanceTab() : ''}
-                        ${currentTab === 'exams' ? renderExamsTab() : ''}
-                        ${currentTab === 'diary' ? renderDiaryTab() : ''}
-                        ${currentTab === 'gallery' ? renderGalleryTab() : ''}
-                        ${currentTab === 'reports' ? renderReportsTab() : ''}
-                        ${currentTab === 'homework' ? renderHomeworkTab() : ''}
-                        ${currentTab === 'timetable' ? renderTimetableTab() : ''}
-                        ${currentTab === 'meetings' ? renderMeetingsTab() : ''}
-                        ${currentTab === 'chat' ? renderChatTab() : ''}
-                        ${currentTab === 'staff' && user.role === 'Admin' ? renderStaffTab() : ''}
-                        ${currentTab === 'profile' ? renderProfileTab() : ''}
-                    </main>
-
-                    ${activeIDCardStudent ? renderIDCardModal() : ''}
-
-                    <footer class="bg-white border-t border-slate-200 py-4 text-center text-xs text-slate-500">
-                        Government Primary School Dhok Jhatt • Made By Haris Awan
-                    </footer>
-                </div>
-            `;
-        }
-
-        function renderOverviewTab() {
-            const user = db.currentUser;
-            return `
-                <div class="space-y-6 flex-1 flex flex-col">
-                    <div class="bg-gradient-to-r from-blue-900 to-indigo-800 text-white rounded-2xl p-6 shadow-xl">
-                        <h2 class="text-2xl font-extrabold">Welcome back, ${user.name}!</h2>
-                        <p class="text-slate-200 text-sm mt-1">Role: <span class="bg-white/20 px-2 py-0.5 rounded font-bold">${user.role}</span> | Subject: ${user.subject}</p>
-                    </div>
-
-                    <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
-                        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
-                            <span class="text-xs font-bold text-slate-400 uppercase">Registered Students</span>
-                            <h3 class="text-2xl font-extrabold text-slate-800 mt-1">${db.students.length}</h3>
-                        </div>
-                        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
-                            <span class="text-xs font-bold text-slate-400 uppercase">Faculty Staff</span>
-                            <h3 class="text-2xl font-extrabold text-slate-800 mt-1">${db.users.length}</h3>
-                        </div>
-                        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
-                            <span class="text-xs font-bold text-slate-400 uppercase">Exam Records</span>
-                            <h3 class="text-2xl font-extrabold text-slate-800 mt-1">${db.exams.length}</h3>
-                        </div>
-                        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
-                            <span class="text-xs font-bold text-slate-400 uppercase">Event Photos</span>
-                            <h3 class="text-2xl font-extrabold text-slate-800 mt-1">${db.gallery.length}</h3>
-                        </div>
-                    </div>
-
-                    <div class="relative rounded-2xl overflow-hidden shadow-2xl flex-1 min-h-[220px] flex items-center justify-center p-6 text-center text-white" style="background: linear-gradient(rgba(15, 23, 42, 0.75), rgba(15, 23, 42, 0.85)), url('https://images.unsplash.com/photo-1580582932707-520aed937b7b?auto=format&fit=crop&w=1920&q=80'); background-size: cover; background-position: center;">
-                        <div class="z-10 space-y-2">
-                            <div class="bg-blue-600 text-white text-xs font-bold px-3 py-1 rounded-full inline-block shadow">TeacherHub Portal</div>
-                            <h3 class="text-2xl sm:text-3xl font-extrabold tracking-wide uppercase">Government Primary School Dhok Jhatt</h3>
-                            <p class="text-slate-300 text-xs sm:text-sm">Excellence in Primary Education & Faculty Collaboration</p>
-                            <div class="pt-2 text-xs text-amber-400 font-semibold tracking-wider uppercase">Made By Haris Awan</div>
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
-
-        function renderAttendanceTab() {
-            return `
-                <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm space-y-4">
-                    <div class="flex justify-between items-center flex-wrap gap-3">
-                        <div>
-                            <h3 class="font-bold text-slate-800 text-lg">Student Attendance & ID Cards</h3>
-                            <p class="text-xs text-slate-500">Register students, mark presence & print digital student ID cards.</p>
-                        </div>
-                        <button onclick="openAddStudentModal()" class="bg-primary hover:bg-blue-800 text-white px-4 py-2 rounded-xl text-sm font-bold transition">+ Add Student</button>
-                    </div>
-
-                    ${db.students.length === 0 ? `
-                        <div class="text-center py-10 text-slate-400 text-sm">No students registered yet. Click "+ Add Student".</div>
-                    ` : `
-                        <div class="overflow-x-auto">
-                            <table class="w-full text-left text-sm">
-                                <thead class="bg-slate-100 text-slate-700 uppercase text-xs">
-                                    <tr>
-                                        <th class="p-3">Roll No</th>
-                                        <th class="p-3">Name</th>
-                                        <th class="p-3">Class</th>
-                                        <th class="p-3">Status</th>
-                                        <th class="p-3 text-right">Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody class="divide-y divide-slate-200">
-                                    ${db.students.map(st => `
-                                        <tr>
-                                            <td class="p-3 font-semibold">${st.rollNo}</td>
-                                            <td class="p-3">${st.name}</td>
-                                            <td class="p-3">${st.className}</td>
-                                            <td class="p-3"><span class="px-2.5 py-1 rounded-full text-xs font-bold ${st.status === 'Present' ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-700'}">${st.status}</span></td>
-                                            <td class="p-3 text-right space-x-2">
-                                                <button onclick="updateStudentStatus('${st.id}', 'Present')" class="text-xs bg-emerald-50 text-emerald-700 px-2 py-1 rounded font-bold">Present</button>
-                                                <button onclick="updateStudentStatus('${st.id}', 'Absent')" class="text-xs bg-red-50 text-red-700 px-2 py-1 rounded font-bold">Absent</button>
-                                                <button onclick="showIDCard('${st.id}')" class="text-xs bg-blue-50 text-blue-700 px-2.5 py-1 rounded font-bold">🪪 ID Card</button>
-                                            </td>
-                                        </tr>
-                                    `).join('')}
-                                </tbody>
-                            </table>
-                        </div>
-                    `}
-                </div>
-            `;
-        }
-
-        function openAddStudentModal() {
-            const name = prompt("Student Name:");
-            if (!name) return;
-            const rollNo = prompt("Roll No:", "101");
-            if (!rollNo) return;
-            const className = prompt("Class (e.g. Class 1):", "Class 3");
-            if (!className) return;
-
-            db.students.push({ id: "st_" + Date.now(), name, rollNo, className, status: "Present" });
-            saveDB(db);
-            render();
-        }
-
-        function updateStudentStatus(id, status) {
-            const st = db.students.find(s => s.id === id);
-            if (st) { st.status = status; saveDB(db); render(); }
-        }
-
-        function showIDCard(id) {
-            activeIDCardStudent = db.students.find(s => s.id === id);
-            render();
-        }
-
-        function closeIDCard() {
-            activeIDCardStudent = null;
-            render();
-        }
-
-        function renderIDCardModal() {
-            const st = activeIDCardStudent;
-            return `
-                <div class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-                    <div class="bg-white rounded-2xl p-6 max-w-sm w-full relative shadow-2xl">
-                        <button onclick="closeIDCard()" class="absolute top-3 right-3 text-slate-400 hover:text-slate-700 font-bold">✕</button>
-                        
-                        <div id="printableCard" class="border-2 border-primary rounded-xl p-4 bg-gradient-to-b from-blue-50 to-white text-center space-y-3">
-                            <div class="bg-primary text-white p-2 rounded-t-lg -mx-4 -mt-4">
-                                <h4 class="font-extrabold text-xs uppercase tracking-wide">Government Primary School Dhok Jhatt</h4>
-                                <p class="text-[9px] text-blue-200">Official Student Identity Card</p>
-                            </div>
-                            <div class="w-20 h-20 bg-slate-200 rounded-full mx-auto flex items-center justify-center text-3xl font-bold text-slate-500 border-2 border-primary">
-                                ${st.name.charAt(0)}
-                            </div>
-                            <div>
-                                <h3 class="font-extrabold text-slate-800 text-lg">${st.name}</h3>
-                                <p class="text-xs text-primary font-bold">${st.className}</p>
-                            </div>
-                            <div class="bg-white border border-slate-200 rounded-lg p-2 text-xs space-y-1 text-left">
-                                <div><span class="text-slate-400">Roll Number:</span> <strong>${st.rollNo}</strong></div>
-                                <div><span class="text-slate-400">School ID:</span> <strong>GPS-${st.rollNo}</strong></div>
-                                <div><span class="text-slate-400">Issued By:</span> <strong>Admin Haris Awan</strong></div>
-                            </div>
-                            <p class="text-[9px] text-slate-400">Valid for Academic Session 2026-2027</p>
-                        </div>
-
-                        <button onclick="window.print()" class="w-full bg-primary text-white font-bold py-2.5 rounded-xl text-xs uppercase mt-4">🖨️ Print Student ID Card</button>
-                    </div>
-                </div>
-            `;
-        }
-
-        // --- NEW MODULE 2: EXAMS & GRADING SYSTEM ---
-        function renderExamsTab() {
-            return `
-                <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm space-y-4">
-                    <div class="flex justify-between items-center flex-wrap gap-3">
-                        <div>
-                            <h3 class="font-bold text-slate-800 text-lg">Exam Marks & Student Grading</h3>
-                            <p class="text-xs text-slate-500">Record term examination marks and auto-calculate grades.</p>
-                        </div>
-                        <button onclick="openAddExamModal()" class="bg-primary text-white px-4 py-2 rounded-xl text-sm font-bold">+ Record Exam Marks</button>
-                    </div>
-
-                    ${db.exams.length === 0 ? `<div class="text-center py-10 text-slate-400 text-sm">No exam marks entered yet.</div>` : `
-                        <div class="overflow-x-auto">
-                            <table class="w-full text-left text-sm">
-                                <thead class="bg-slate-100 text-slate-700 uppercase text-xs">
-                                    <tr>
-                                        <th class="p-3">Student Name</th>
-                                        <th class="p-3">Class</th>
-                                        <th class="p-3">Subject</th>
-                                        <th class="p-3">Marks</th>
-                                        <th class="p-3">Percentage</th>
-                                        <th class="p-3">Grade</th>
-                                    </tr>
-                                </thead>
-                                <tbody class="divide-y divide-slate-200">
-                                    ${db.exams.map(e => `
-                                        <tr>
-                                            <td class="p-3 font-semibold">${e.studentName}</td>
-                                            <td class="p-3">${e.className}</td>
-                                            <td class="p-3">${e.subject}</td>
-                                            <td class="p-3">${e.obtainedMarks} / ${e.totalMarks}</td>
-                                            <td class="p-3 font-bold">${e.percentage}%</td>
-                                            <td class="p-3"><span class="px-2 py-0.5 rounded text-xs font-bold ${e.percentage >= 60 ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-700'}">${e.grade}</span></td>
-                                        </tr>
-                                    `).join('')}
-                                </tbody>
-                            </table>
-                        </div>
-                    `}
-                </div>
-            `;
-        }
-
-        function openAddExamModal() {
-            const studentName = prompt("Student Full Name:");
-            if (!studentName) return;
-            const className = prompt("Class Name:", "Class 3");
-            if (!className) return;
-            const subject = prompt("Subject Name:", "Mathematics");
-            if (!subject) return;
-            const obtainedMarks = parseFloat(prompt("Obtained Marks:", "85"));
-            if (isNaN(obtainedMarks)) return;
-            const totalMarks = parseFloat(prompt("Total Marks:", "100"));
-            if (isNaN(totalMarks)) return;
-
-            const percentage = ((obtainedMarks / totalMarks) * 100).toFixed(1);
-            let grade = 'F';
-            if (percentage >= 80) grade = 'A+';
-            else if (percentage >= 70) grade = 'A';
-            else if (percentage >= 60) grade = 'B';
-            else if (percentage >= 50) grade = 'C';
-
-            db.exams.push({ id: "ex_" + Date.now(), studentName, className, subject, obtainedMarks, totalMarks, percentage, grade });
-            saveDB(db);
-            render();
-        }
-
-        // --- NEW MODULE 3: TEACHER DAILY DIARY ---
-        function renderDiaryTab() {
-            return `
-                <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm space-y-4">
-                    <div class="flex justify-between items-center flex-wrap gap-3">
-                        <div>
-                            <h3 class="font-bold text-slate-800 text-lg">Teacher Daily Lesson Diary</h3>
-                            <p class="text-xs text-slate-500">Record daily teaching history and class progress notes.</p>
-                        </div>
-                        <button onclick="openAddDiaryModal()" class="bg-primary text-white px-4 py-2 rounded-xl text-sm font-bold">+ Write Daily Diary</button>
-                    </div>
-
-                    ${db.diaries.length === 0 ? `<div class="text-center py-10 text-slate-400 text-sm">No daily diary entries recorded yet.</div>` : `
-                        <div class="space-y-3">
-                            ${db.diaries.map(d => `
-                                <div class="p-4 border border-slate-200 rounded-xl bg-slate-50">
-                                    <div class="flex justify-between items-center mb-1">
-                                        <strong class="text-xs text-primary font-bold">${d.teacherName} (${d.subject})</strong>
-                                        <span class="text-[10px] text-slate-400">${d.date}</span>
-                                    </div>
-                                    <h4 class="font-bold text-slate-800 text-sm">Class: ${d.className}</h4>
-                                    <p class="text-xs text-slate-600 mt-1">${d.lessonDetails}</p>
-                                </div>
-                            `).join('')}
-                        </div>
-                    `}
-                </div>
-            `;
-        }
-
-        function openAddDiaryModal() {
-            const className = prompt("Class Name:", "Class 3");
-            if (!className) return;
-            const subject = prompt("Subject Taught:", db.currentUser.subject);
-            if (!subject) return;
-            const lessonDetails = prompt("What did you teach today? (Lesson Summary):");
-            if (!lessonDetails) return;
-
-            db.diaries.push({
-                id: "diary_" + Date.now(),
-                teacherName: db.currentUser.name,
-                className,
-                subject,
-                lessonDetails,
-                date: new Date().toLocaleDateString()
-            });
-            saveDB(db);
-            render();
-        }
-
-        // --- NEW MODULE 4: SCHOOL PHOTO GALLERY ---
-        function renderGalleryTab() {
-            const canUpload = db.currentUser.role === 'Admin' || db.currentUser.role === 'Head Teacher';
-            return `
-                <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm space-y-4">
-                    <div class="flex justify-between items-center flex-wrap gap-3">
-                        <div>
-                            <h3 class="font-bold text-slate-800 text-lg">School Events & Photo Gallery</h3>
-                            <p class="text-xs text-slate-500">Record sports days, 14th August celebrations and school achievements.</p>
-                        </div>
-                        ${canUpload ? `<button onclick="openAddPhotoModal()" class="bg-primary text-white px-4 py-2 rounded-xl text-sm font-bold">+ Upload Event Photo</button>` : ''}
-                    </div>
-
-                    ${db.gallery.length === 0 ? `<div class="text-center py-10 text-slate-400 text-sm">No photo records uploaded yet.</div>` : `
-                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                            ${db.gallery.map(g => `
-                                <div class="border border-slate-200 rounded-xl overflow-hidden bg-slate-50">
-                                    <img src="${g.photoUrl}" class="w-full h-40 object-cover" alt="School Event" onError="this.src='https://images.unsplash.com/photo-1580582932707-520aed937b7b?auto=format&fit=crop&w=600&q=80'">
-                                    <div class="p-3">
-                                        <h4 class="font-bold text-slate-800 text-xs">${g.title}</h4>
-                                        <p class="text-[10px] text-slate-500 mt-0.5">${g.date}</p>
-                                    </div>
-                                </div>
-                            `).join('')}
-                        </div>
-                    `}
-                </div>
-            `;
-        }
-
-        function openAddPhotoModal() {
-            const title = prompt("Event Title (e.g. 14th August Celebration):");
-            if (!title) return;
-            const photoUrl = prompt("Enter Photo Image URL:", "https://images.unsplash.com/photo-1580582932707-520aed937b7b?auto=format&fit=crop&w=600&q=80");
-            if (!photoUrl) return;
-
-            db.gallery.push({ id: "gal_" + Date.now(), title, photoUrl, date: new Date().toLocaleDateString() });
-            saveDB(db);
-            render();
-        }
-
-        function renderReportsTab() {
-            const user = db.currentUser;
-            const canApprove = user.role === 'Head Teacher' || user.role === 'Admin';
-            return `
-                <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm space-y-4">
-                    <div class="flex justify-between items-center flex-wrap gap-3">
-                        <div>
-                            <h3 class="font-bold text-slate-800 text-lg">Student Reports</h3>
-                            <p class="text-xs text-slate-500">Submit progress reports for leadership approval.</p>
-                        </div>
-                        <button onclick="openAddReportModal()" class="bg-primary text-white px-4 py-2 rounded-xl text-sm font-bold">+ Submit Report</button>
-                    </div>
-                    ${db.reports.length === 0 ? `<div class="text-center py-10 text-slate-400 text-sm">No reports submitted yet.</div>` : `
-                        <div class="space-y-3">
-                            ${db.reports.map(r => `
-                                <div class="p-4 border border-slate-200 rounded-xl bg-slate-50 flex justify-between items-center">
-                                    <div>
-                                        <h4 class="font-bold text-slate-800">${r.title}</h4>
-                                        <p class="text-xs text-slate-500">Class: ${r.className} | By: ${r.teacherName}</p>
-                                        <p class="text-xs text-slate-700 mt-1">${r.details}</p>
-                                    </div>
-                                    ${canApprove && r.status === 'Pending' ? `<button onclick="approveReport('${r.id}')" class="bg-emerald-600 text-white px-3 py-1 rounded text-xs font-bold">Approve</button>` : `<span class="text-xs font-bold px-2 py-1 bg-emerald-100 text-emerald-700 rounded">${r.status}</span>`}
-                                </div>
-                            `).join('')}
-                        </div>
-                    `}
-                </div>
-            `;
-        }
-
-        function openAddReportModal() {
-            const title = prompt("Report Title:");
-            if (!title) return;
-            const className = prompt("Class Name:", "Class 3");
-            if (!className) return;
-            const details = prompt("Report Details:");
-            if (!details) return;
-
-            db.reports.push({ id: "rep_" + Date.now(), title, className, details, teacherName: db.currentUser.name, status: "Pending" });
-            saveDB(db);
-            render();
-        }
-
-        function approveReport(id) {
-            const r = db.reports.find(x => x.id === id);
-            if (r) { r.status = "Approved"; saveDB(db); render(); }
-        }
-
-        function renderHomeworkTab() {
-            return `
-                <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm space-y-4">
-                    <div class="flex justify-between items-center">
-                        <h3 class="font-bold text-slate-800 text-lg">Worksheets & Homework</h3>
-                        <button onclick="openAddHomeworkModal()" class="bg-primary text-white px-4 py-2 rounded-xl text-sm font-bold">+ Upload Worksheet</button>
-                    </div>
-                    ${db.homework.length === 0 ? `<div class="text-center py-10 text-slate-400 text-sm">No homework uploaded.</div>` : `
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            ${db.homework.map(hw => `
-                                <div class="p-4 border border-slate-200 rounded-xl bg-slate-50">
-                                    <h4 class="font-bold text-slate-800">${hw.title}</h4>
-                                    <p class="text-xs text-slate-500">Class: ${hw.className} | By: ${hw.teacherName}</p>
-                                    <p class="text-xs text-slate-600 mt-2">${hw.description}</p>
-                                </div>
-                            `).join('')}
-                        </div>
-                    `}
-                </div>
-            `;
-        }
-
-        function openAddHomeworkModal() {
-            const title = prompt("Worksheet Title:");
-            if (!title) return;
-            const className = prompt("Class:", "Class 3");
-            if (!className) return;
-            const description = prompt("Details:");
-            if (!description) return;
-
-            db.homework.push({ id: "hw_" + Date.now(), title, className, description, teacherName: db.currentUser.name });
-            saveDB(db);
-            render();
-        }
-
-        function renderTimetableTab() {
-            return `
-                <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm space-y-4">
-                    <div class="flex justify-between items-center flex-wrap gap-3">
-                        <div>
-                            <h3 class="font-bold text-slate-800 text-lg">Manage Class Timetable</h3>
-                            <p class="text-xs text-slate-500">Teachers, Head Teachers and Admins can add and manage schedule slots.</p>
-                        </div>
-                        <button onclick="openAddTimetableModal()" class="bg-primary text-white px-4 py-2 rounded-xl text-sm font-bold">+ Add Timetable Slot</button>
-                    </div>
-
-                    ${db.timetable.length === 0 ? `<div class="text-center py-10 text-slate-400 text-sm">No timetable slots added yet.</div>` : `
-                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                            ${db.timetable.map(t => `
-                                <div class="p-4 border border-slate-200 rounded-xl bg-slate-50 flex justify-between items-start">
-                                    <div>
-                                        <span class="bg-blue-100 text-blue-700 text-[10px] font-bold px-2 py-0.5 rounded">${t.day}</span>
-                                        <h4 class="font-bold text-slate-800 mt-1">${t.subject}</h4>
-                                        <p class="text-xs text-slate-500 mt-0.5">Class: ${t.className} | Time: ${t.time}</p>
-                                    </div>
-                                    <button onclick="deleteTimetable('${t.id}')" class="text-red-500 font-bold text-xs">Delete</button>
-                                </div>
-                            `).join('')}
-                        </div>
-                    `}
-                </div>
-            `;
-        }
-
-        function openAddTimetableModal() {
-            const day = prompt("Enter Day (e.g. Monday):", "Monday");
-            if (!day) return;
-            const className = prompt("Enter Class Name:", "Class 3");
-            if (!className) return;
-            const subject = prompt("Enter Subject:", "Mathematics");
-            if (!subject) return;
-            const time = prompt("Enter Time:", "08:00 AM");
-            if (!time) return;
-
-            db.timetable.push({ id: "tt_" + Date.now(), day, className, subject, time });
-            saveDB(db);
-            render();
-        }
-
-        function deleteTimetable(id) {
-            db.timetable = db.timetable.filter(t => t.id !== id);
-            saveDB(db);
-            render();
-        }
-
-        function renderMeetingsTab() {
-            const user = db.currentUser;
-            const canCreate = user.role === 'Head Teacher' || user.role === 'Admin';
-            return `
-                <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm space-y-4">
-                    <div class="flex justify-between items-center">
-                        <h3 class="font-bold text-slate-800 text-lg">Staff Meetings</h3>
-                        ${canCreate ? `<button onclick="openAddMeetingModal()" class="bg-primary text-white px-4 py-2 rounded-xl text-sm font-bold">+ Schedule Meeting</button>` : ''}
-                    </div>
-                    ${db.meetings.length === 0 ? `<div class="text-center py-10 text-slate-400 text-sm">No meetings scheduled.</div>` : `
-                        <div class="space-y-3">
-                            ${db.meetings.map(m => `
-                                <div class="p-4 border border-slate-200 rounded-xl bg-slate-50">
-                                    <h4 class="font-bold text-slate-800">${m.title}</h4>
-                                    <p class="text-xs text-slate-600">Date & Time: ${m.dateTime}</p>
-                                    <p class="text-xs text-slate-500 mt-1">${m.agenda}</p>
-                                </div>
-                            `).join('')}
-                        </div>
-                    `}
-                </div>
-            `;
-        }
-
-        function openAddMeetingModal() {
-            const title = prompt("Meeting Title:");
-            if (!title) return;
-            const dateTime = prompt("Date & Time:", "15 Nov, 10:00 AM");
-            if (!dateTime) return;
-            const agenda = prompt("Agenda:");
-            if (!agenda) return;
-
-            db.meetings.push({ id: "m_" + Date.now(), title, dateTime, agenda });
-            saveDB(db);
-            render();
-        }
-
-        function renderChatTab() {
-            return `
-                <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm flex flex-col h-[550px]">
-                    <h3 class="font-bold text-slate-800 text-lg mb-2">Staff Discussion</h3>
-                    <div class="flex-1 overflow-y-auto space-y-3 p-4 bg-slate-50 rounded-xl border border-slate-200 mb-4">
-                        ${db.chats.length === 0 ? `<div class="text-center py-20 text-slate-400 text-sm">No messages yet.</div>` : `
-                            ${db.chats.map(c => `
-                                <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm max-w-lg">
-                                    <div class="flex justify-between items-center mb-1">
-                                        <strong class="text-xs text-primary">${c.senderName}</strong>
-                                        <span class="text-[10px] text-slate-400">${c.time}</span>
-                                    </div>
-                                    <p class="text-xs text-slate-700">${c.message}</p>
-                                </div>
-                            `).join('')}
-                        `}
-                    </div>
-                    <form onsubmit="sendChatMessage(event)" class="flex gap-2">
-                        <input type="text" id="chatInput" required placeholder="Type message..." class="flex-1 px-4 py-3 rounded-xl border border-slate-300 text-sm">
-                        <button type="submit" class="bg-primary text-white px-6 py-3 rounded-xl font-bold text-sm">Send</button>
-                    </form>
-                </div>
-            `;
-        }
-
-        function sendChatMessage(e) {
-            e.preventDefault();
-            const input = document.getElementById('chatInput');
-            const msg = input.value.trim();
-            if (!msg) return;
-
-            db.chats.push({
-                id: "chat_" + Date.now(),
-                senderName: db.currentUser.name + " (" + db.currentUser.role + ")",
-                message: msg,
-                time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-            });
-            saveDB(db);
-            input.value = '';
-            render();
-        }
-
-        function renderStaffTab() {
-            return `
-                <div class="space-y-6">
-                    <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
-                        <div class="flex justify-between items-center mb-4 flex-wrap gap-3">
-                            <div>
-                                <h3 class="font-bold text-slate-800 text-lg">Staff & Rank Management</h3>
-                                <p class="text-xs text-slate-500">Promote/Demote staff or manually add accounts.</p>
-                            </div>
-                            <button onclick="openAddStaffModal()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-xl text-sm font-bold transition">+ Add New Staff Account</button>
-                        </div>
-
-                        <div class="overflow-x-auto">
-                            <table class="w-full text-left text-sm">
-                                <thead class="bg-slate-100 text-slate-700 uppercase text-xs">
-                                    <tr>
-                                        <th class="p-3">Name</th>
-                                        <th class="p-3">Email</th>
-                                        <th class="p-3">Subject</th>
-                                        <th class="p-3">Current Role</th>
-                                        <th class="p-3 text-right">Change Role</th>
-                                    </tr>
-                                </thead>
-                                <tbody class="divide-y divide-slate-200">
-                                    ${db.users.map(u => `
-                                        <tr>
-                                            <td class="p-3 font-semibold">${u.name}</td>
-                                            <td class="p-3">${u.email}</td>
-                                            <td class="p-3">${u.subject}</td>
-                                            <td class="p-3"><span class="px-2.5 py-1 rounded-full text-xs font-bold ${u.role === 'Admin' ? 'bg-purple-100 text-purple-700' : u.role === 'Head Teacher' ? 'bg-blue-100 text-blue-700' : 'bg-slate-100 text-slate-600'}">${u.role}</span></td>
-                                            <td class="p-3 text-right">
-                                                ${u.email === 'harisawan.pk.@school.tm' ? '<span class="text-xs text-slate-400 italic">System Owner</span>' : `
-                                                    <select onchange="changeUserRole('${u.id}', this.value)" class="text-xs border border-slate-300 rounded p-1 font-semibold">
-                                                        <option value="Teacher" ${u.role === 'Teacher' ? 'selected' : ''}>Teacher</option>
-                                                        <option value="Head Teacher" ${u.role === 'Head Teacher' ? 'selected' : ''}>Head Teacher</option>
-                                                        <option value="Admin" ${u.role === 'Admin' ? 'selected' : ''}>Admin</option>
-                                                    </select>
-                                                `}
-                                            </td>
-                                        </tr>
-                                    `).join('')}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
-
-        function openAddStaffModal() {
-            const name = prompt("Enter Staff Full Name:");
-            if (!name) return;
-            const email = prompt("Enter Staff Email Address:");
-            if (!email) return;
-            const subject = prompt("Enter Assigned Subject:");
-            if (!subject) return;
-            const password = prompt("Set Temporary Password:", "123456");
-            if (!password) return;
-            const role = prompt("Enter Staff Role (Teacher / Head Teacher):", "Teacher");
-
-            db.users.push({ id: "usr_" + Date.now(), name, email, subject, password, role: role || "Teacher", phone: "+92 300 0000000" });
-            saveDB(db);
-            alert("New staff account created successfully!");
-            render();
-        }
-
-        function changeUserRole(userId, newRole) {
-            const u = db.users.find(x => x.id === userId);
-            if (u) { u.role = newRole; saveDB(db); alert(`Role updated for ${u.name}`); render(); }
-        }
-
-        function renderProfileTab() {
-            const user = db.currentUser;
-            return `
-                <div class="max-w-xl mx-auto bg-white rounded-2xl border border-slate-200 p-6 shadow-sm space-y-6">
-                    <div>
-                        <h3 class="font-bold text-slate-800 text-lg mb-1">Edit Profile & Data Backup</h3>
-                        <p class="text-xs text-slate-500">Update personal info or export/import database backups.</p>
-                    </div>
-
-                    <form onsubmit="handleProfileUpdate(event)" class="space-y-4">
-                        <div>
-                            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Full Name</label>
-                            <input type="text" id="profileName" value="${user.name}" required class="w-full px-4 py-3 rounded-xl border border-slate-300 text-sm">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Subject</label>
-                            <input type="text" id="profileSubject" value="${user.subject}" required class="w-full px-4 py-3 rounded-xl border border-slate-300 text-sm">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Password</label>
-                            <input type="password" id="profilePassword" value="${user.password}" required class="w-full px-4 py-3 rounded-xl border border-slate-300 text-sm">
-                        </div>
-                        <button type="submit" class="w-full bg-primary text-white font-bold py-3 rounded-xl text-sm uppercase">Save Profile</button>
-                    </form>
-
-                    <hr class="border-slate-200">
-
-                    <div class="space-y-2">
-                        <h4 class="font-bold text-slate-800 text-xs uppercase">Database Protection Tools</h4>
-                        <div class="flex gap-2">
-                            <button onclick="exportJSONBackup()" class="flex-1 bg-slate-800 hover:bg-slate-900 text-white font-bold py-2.5 rounded-xl text-xs">📥 Export Backup (JSON)</button>
-                            <button onclick="importJSONBackup()" class="flex-1 bg-amber-600 hover:bg-amber-700 text-white font-bold py-2.5 rounded-xl text-xs">📤 Restore Backup (JSON)</button>
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
-
-        function handleProfileUpdate(e) {
-            e.preventDefault();
-            db.currentUser.name = document.getElementById('profileName').value.trim();
-            db.currentUser.subject = document.getElementById('profileSubject').value.trim();
-            db.currentUser.password = document.getElementById('profilePassword').value;
-
-            const idx = db.users.findIndex(u => u.id === db.currentUser.id);
-            if (idx !== -1) db.users[idx] = db.currentUser;
-
-            saveDB(db);
-            alert("Profile saved!");
-            render();
-        }
-
-        function exportJSONBackup() {
-            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(db));
-            const downloadAnchor = document.createElement('a');
-            downloadAnchor.setAttribute("href", dataStr);
-            downloadAnchor.setAttribute("download", `GPS_Backup_${Date.now()}.json`);
-            document.body.appendChild(downloadAnchor);
-            downloadAnchor.click();
-            downloadAnchor.remove();
-        }
-
-        function importJSONBackup() {
-            const inputJson = prompt("Paste your JSON backup code here:");
-            if (!inputJson) return;
-            try {
-                const parsed = JSON.parse(inputJson);
-                if (parsed.users) {
-                    db = parsed;
-                    saveDB(db);
-                    alert("Database backup restored successfully!");
-                    render();
-                } else {
-                    alert("Invalid backup format!");
-                }
-            } catch (err) {
-                alert("Error parsing JSON backup string!");
-            }
-        }
-
-        render();
-    </script>
+<body>
+<!-- LANDING -->
+<div id="landing">
+<header class="hero-bg text-white">
+<div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
+<div class="flex items-center gap-3"><div class="w-11 h-11 bg-blue-600 rounded-xl flex items-center justify-center text-xl float"><i class="fa-solid fa-graduation-cap"></i></div><div><p class="font-bold">Government Primary School</p><p class="text-sm text-blue-200">Dhok Jhatt • Punjab, Pakistan</p></div></div>
+<div class="flex gap-2"><button onclick="openAuth('login')" class="bg-blue-600 px-5 py-2.5 rounded-full font-semibold text-sm">Sign In →</button></div>
+</div>
+<div class="max-w-5xl mx-auto px-4 pt-12 pb-8 text-center fadeUp">
+<span class="bg-white/10 border border-white/20 text-[11px] px-3 py-1.5 rounded-full tracking-widest">MEGA ERP • LMS • ZERO TO ADVANCE • 100%</span>
+<h1 class="text-3xl md:text-5xl font-extrabold leading-tight mt-5">TeacherHub Mega Portal<br><span class="text-blue-300">Government Primary School Dhok Jhatt</span></h1>
+<p class="text-slate-300 mt-4 max-w-2xl mx-auto text-sm md:text-base">Students, Parents, Teachers, Head Teacher & Admin — sab ka ek hi portal. Attendance, Fees, Results, Quiz, Salary, Transport, Library, Certificates sab kuch.</p>
+<div class="flex flex-wrap justify-center gap-3 mt-7"><button onclick="openAuth('login')" class="bg-blue-600 px-7 py-3 rounded-full font-bold">Login to Portal</button><button onclick="openAuth('signup')" class="bg-white text-slate-900 px-7 py-3 rounded-full font-bold">Create Account</button></div>
+<div class="flex justify-center gap-6 md:gap-10 mt-8 text-center"><div><p class="text-2xl font-bold" id="landStudents">0</p><p class="text-xs text-slate-300">Students</p></div><div><p class="text-2xl font-bold" id="landTeachers">1</p><p class="text-xs text-slate-300">Faculty</p></div><div><p class="text-2xl font-bold" id="landQuiz">0</p><p class="text-xs text-slate-300">Quizzes</p></div><div><p class="text-2xl font-bold">100%</p><p class="text-xs text-slate-300">Advance</p></div></div>
+</div>
+<div class="max-w-7xl mx-auto px-4 pb-6"><div class="grid md:grid-cols-3 gap-3">
+<div class="bg-white/10 backdrop-blur-md border border-white/10 rounded-2xl p-4"><p class="font-bold text-sm">1. Attendance & Punctuality</p><p class="text-xs text-slate-300 mt-1">Daily marking of student and self-logs.</p></div>
+<div class="bg-white/10 backdrop-blur-md border border-white/10 rounded-2xl p-4"><p class="font-bold text-sm">2. Academic Reporting</p><p class="text-xs text-slate-300 mt-1">Timely reports to Head Teachers & Admin.</p></div>
+<div class="bg-white/10 backdrop-blur-md border border-white/10 rounded-2xl p-4"><p class="font-bold text-sm">3. System Security</p><p class="text-xs text-slate-300 mt-1">Role-based permissions under Admin Haris Awan.</p></div>
+</div></div>
+<div class="max-w-7xl mx-auto px-4 pb-8"><div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+<div class="bg-white text-slate-900 rounded-2xl p-4"><p class="text-2xl">🧑‍🎓</p><p class="font-bold text-sm mt-1">Parent Portal</p><p class="text-xs text-slate-500">Bache ka record dekhen</p></div>
+<div class="bg-white text-slate-900 rounded-2xl p-4"><p class="text-2xl">📝</p><p class="font-bold text-sm mt-1">Online Quiz</p><p class="text-xs text-slate-500">Auto Marks + Grade</p></div>
+<div class="bg-white text-slate-900 rounded-2xl p-4"><p class="text-2xl">💰</p><p class="font-bold text-sm mt-1">Salary + Fees</p><p class="text-xs text-slate-500">Paid / Pending</p></div>
+<div class="bg-white text-slate-900 rounded-2xl p-4"><p class="text-2xl">🚌</p><p class="font-bold text-sm mt-1">Transport</p><p class="text-xs text-slate-500">Van / Route</p></div>
+<div class="bg-white text-slate-900 rounded-2xl p-4"><p class="text-2xl">📜</p><p class="font-bold text-sm mt-1">Certificates</p><p class="text-xs text-slate-500">Print Certificate</p></div>
+<div class="bg-white text-slate-900 rounded-2xl p-4"><p class="text-2xl">🪪</p><p class="font-bold text-sm mt-1">ID Card</p><p class="text-xs text-slate-500">Student ID Print</p></div>
+<div class="bg-white text-slate-900 rounded-2xl p-4"><p class="text-2xl">📦</p><p class="font-bold text-sm mt-1">Inventory</p><p class="text-xs text-slate-500">Stock Manage</p></div>
+<div class="bg-white text-slate-900 rounded-2xl p-4"><p class="text-2xl">📅</p><p class="font-bold text-sm mt-1">Events</p><p class="text-xs text-slate-500">PTM / Holidays</p></div>
+</div><p class="text-center text-xs text-slate-400 mt-6">© 2026 Govt Primary School Dhok Jhatt • Made By Haris Awan • Mega Project</p></div>
+</header>
+</div>
+<!-- AUTH -->
+<div id="authModal" class="modal fixed inset-0 z-50 items-center justify-center bg-black/60 backdrop-blur-sm p-4"><div class="glass w-full max-w-md rounded-3xl p-6 shadow-2xl fadeUp max-h-[92vh] overflow-y-auto">
+<div class="flex justify-between"><div><div class="w-12 h-12 bg-blue-600 text-white rounded-2xl flex items-center justify-center text-xl"><i class="fa-solid fa-graduation-cap"></i></div><h2 class="font-extrabold text-xl mt-3">Govt Primary School<br>Dhok Jhatt</h2><p class="text-xs text-slate-500">Mega ERP Login • 5 Roles</p></div><button onclick="closeAuth()" class="text-slate-400 text-xl">✕</button></div>
+<div class="flex bg-slate-100 rounded-full p-1 mt-4"><button id="tabLogin" onclick="setAuthMode('login')" class="flex-1 py-2 rounded-full bg-blue-600 text-white font-bold text-sm">Login</button><button id="tabSignup" onclick="setAuthMode('signup')" class="flex-1 py-2 rounded-full font-bold text-sm text-slate-500">Sign Up</button></div>
+<div class="mt-4"><p class="text-[11px] font-bold text-slate-500 mb-2">SELECT ROLE</p><div class="flex flex-wrap gap-2" id="roleWrap"></div></div>
+<div id="signupNameWrap" class="hidden mt-4"><label class="text-xs font-bold">Full Name *</label><input id="authName" class="w-full border rounded-xl px-3 py-2.5 mt-1" placeholder="Enter full name"></div>
+<div class="mt-3"><label class="text-xs font-bold">Email *</label><input id="authEmail" class="w-full border rounded-xl px-3 py-2.5 mt-1" placeholder="name@example.com"></div>
+<div id="signupSubjectWrap" class="hidden mt-3"><label class="text-xs font-bold">Subject / Designation / Child Roll (Parent)</label><input id="authSubject" class="w-full border rounded-xl px-3 py-2.5 mt-1" placeholder="e.g. English / Roll 12"></div>
+<div id="signupPhoneWrap" class="hidden mt-3"><label class="text-xs font-bold">Phone</label><input id="authPhone" class="w-full border rounded-xl px-3 py-2.5 mt-1" placeholder="+92 300 1234567"></div>
+<div class="mt-3"><label class="text-xs font-bold">Password *</label><div class="relative"><input id="authPass" type="password" class="w-full border rounded-xl px-3 py-2.5 mt-1 pr-10" placeholder="••••••••"><button onclick="togglePass()" class="absolute right-3 top-3.5 text-slate-400"><i class="fa-regular fa-eye"></i></button></div></div>
+<button onclick="doAuth()" id="authSubmit" class="w-full bg-blue-600 text-white py-3 rounded-xl font-bold mt-5">Login</button>
+<p class="text-center text-sm mt-3"><button onclick="switchAuth()" id="authSwitchText" class="text-blue-600 font-semibold">If you Don't Have Account Sign Up</button></p>
+<div class="bg-blue-50 rounded-xl p-3 mt-4 text-xs"><p class="font-bold text-blue-800">🔐 Admin Access (NEW):</p><p class="text-slate-600 mt-1">Email: harisawan.pk.@school.tm<br>Password: haris786786786 • Role: Admin</p><button onclick="fillDemo()" class="text-blue-600 font-bold mt-1">Auto Fill Admin →</button></div>
+<p id="authError" class="text-center text-xs text-red-600 mt-2 hidden"></p>
+</div></div>
+<!-- DASHBOARD -->
+<div id="dashboard" class="hidden">
+<header class="bg-white shadow-sm sticky top-0 z-40"><div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-2">
+<div class="flex items-center gap-2"><div class="w-9 h-9 bg-blue-600 text-white rounded-lg flex items-center justify-center"><i class="fa-solid fa-graduation-cap"></i></div><div><p class="font-bold text-sm">GPS Dhok Jhatt</p><p class="text-[11px] text-slate-500">Mega ERP • 100% Advance</p></div></div>
+<div class="flex items-center gap-2"><div class="relative hidden md:block"><i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-slate-400 text-xs"></i><input id="globalSearch" oninput="onGlobalSearch(this.value)" class="border rounded-full pl-8 pr-3 py-2 text-xs w-56" placeholder="Search..."></div><button onclick="openNotices()" class="relative w-9 h-9 border rounded-full">🔔<span id="noticeDot" class="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-red-500 rounded-full hidden"></span></button><span id="userBadge" class="bg-blue-50 text-blue-700 text-xs font-bold px-3 py-1.5 rounded-full hidden sm:block"></span><button onclick="openProfile()" class="border px-3 py-1.5 rounded-full text-xs font-bold">My Profile</button><button onclick="logout()" class="bg-slate-900 text-white px-3 py-1.5 rounded-full text-xs font-bold">Logout</button></div>
+</div><div class="max-w-7xl mx-auto px-4 pb-3 flex gap-2 overflow-x-auto whitespace-nowrap" id="tabsBar"></div></header>
+<main class="max-w-7xl mx-auto px-4 py-5">
+<!-- OVERVIEW -->
+<div id="tab-overview" class="tabPage">
+<div class="hero-bg2 text-white rounded-3xl p-5 md:p-6 flex justify-between items-center"><div><h2 class="text-xl md:text-2xl font-bold" id="welcomeText">Welcome back</h2><p class="text-blue-100 text-sm" id="welcomeSub"></p><p class="text-xs text-blue-200 mt-1" id="welcomeDate"></p><div class="flex gap-2 mt-3 flex-wrap"><button onclick="goTab('attendance')" class="bg-white text-blue-700 px-3 py-1.5 rounded-full text-xs font-bold">Mark Attendance</button><button onclick="goTab('quiz')" class="bg-white/20 px-3 py-1.5 rounded-full text-xs font-bold">Take Quiz</button><button onclick="goTab('parent')" class="bg-white/20 px-3 py-1.5 rounded-full text-xs font-bold">Parent View</button></div></div><div class="text-center shrink-0"><div class="w-14 h-14 bg-white/20 rounded-full flex items-center justify-center font-bold text-xl mx-auto" id="avatarCircle">HA</div><p class="text-[11px] mt-1 bg-white/20 px-2 py-0.5 rounded-full" id="rolePill">Admin</p></div></div>
+<div class="grid grid-cols-2 md:grid-cols-4 gap-3 mt-4">
+<div class="stat-card card-hover"><p class="text-xs text-slate-500">Students</p><p class="text-2xl font-extrabold" id="statStudents">0</p><p class="text-[11px] text-emerald-600 font-bold">Live DB</p></div>
+<div class="stat-card card-hover"><p class="text-xs text-slate-500">Faculty</p><p class="text-2xl font-extrabold" id="statFaculty">0</p><p class="text-[11px] text-blue-600 font-bold">Live DB</p></div>
+<div class="stat-card card-hover"><p class="text-xs text-slate-500">Quizzes</p><p class="text-2xl font-extrabold" id="statQuiz">0</p><p class="text-[11px] text-amber-600 font-bold" id="statQuizSub">0 Attempts</p></div>
+<div class="stat-card card-hover"><p class="text-xs text-slate-500">Fees Collected</p><p class="text-2xl font-extrabold" id="statFees">Rs 0</p><p class="text-[11px] text-slate-500" id="statFeesSub">0 Paid</p></div>
+</div>
+<div class="grid md:grid-cols-3 gap-4 mt-4">
+<div class="md:col-span-2 bg-white rounded-3xl p-4 shadow-sm"><div class="flex justify-between"><h3 class="font-bold">Attendance Overview</h3><span class="text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded-full font-bold" id="attRateTop">0%</span></div><canvas id="attChart" width="600" height="180" class="w-full mt-3 border rounded-xl bg-slate-50"></canvas></div>
+<div class="bg-white rounded-3xl p-4 shadow-sm"><h3 class="font-bold">Quick Actions</h3><div class="space-y-2 mt-3"><button onclick="goTab('attendance')" class="w-full text-left bg-blue-50 rounded-xl p-3"><p class="font-bold text-sm">📅 Mark Attendance</p></button><button onclick="goTab('quiz')" class="w-full text-left bg-purple-50 rounded-xl p-3"><p class="font-bold text-sm">📝 Create / Take Quiz</p></button><button onclick="goTab('fees')" class="w-full text-left bg-emerald-50 rounded-xl p-3"><p class="font-bold text-sm">💰 Fees</p></button><button onclick="goTab('certificates')" class="w-full text-left bg-amber-50 rounded-xl p-3"><p class="font-bold text-sm">📜 Certificates & ID Card</p></button></div></div>
+</div>
+<div class="grid md:grid-cols-2 gap-4 mt-4"><div class="bg-white rounded-3xl p-4 shadow-sm"><h3 class="font-bold">Recent Notices</h3><div id="recentNotices" class="space-y-2 mt-3"></div><p id="emptyRecentNotices" class="text-sm text-slate-400">No notices yet.</p></div><div class="bg-white rounded-3xl p-4 shadow-sm"><h3 class="font-bold">Upcoming Events</h3><div id="recentEvents" class="space-y-2 mt-3"></div><p id="emptyRecentEvents" class="text-sm text-slate-400">No events yet.</p></div></div>
+<div class="hero-bg rounded-3xl mt-6 p-6 md:p-10 text-white text-center"><span class="bg-blue-600 text-[11px] px-3 py-1 rounded-full font-bold">TEACHERHUB MEGA</span><h3 class="text-2xl md:text-3xl font-extrabold mt-4">Government Primary School Dhok Jhatt</h3><p class="text-slate-300 mt-2">Excellence in Primary Education & Faculty Collaboration</p><p class="text-xs mt-6 text-slate-400">Made By Haris Awan • Mega Project • 2026 • 100% Advance</p></div>
+</div>
+<!-- PARENT PORTAL -->
+<div id="tab-parent" class="tabPage hidden"><h2 class="font-bold text-lg">👨‍👩‍👧 Parent Portal</h2><p class="text-sm text-slate-500">Apne bache ka Roll No select karein — Attendance, Fees, Result sab dikhega.</p><div class="flex gap-2 mt-3 flex-wrap"><select id="parentStudent" onchange="renderAll()" class="border rounded-full px-3 py-2 text-sm"><option value="">Select Student</option></select><button onclick="goTab('complaints')" class="bg-amber-500 text-white px-4 py-2 rounded-full text-sm font-bold">File Complaint</button></div><div id="parentView" class="grid md:grid-cols-3 gap-3 mt-4"></div><p id="emptyParent" class="text-sm text-slate-400 mt-4">Select student to view parent dashboard.</p></div>
+<!-- STUDENT PORTAL -->
+<div id="tab-studentportal" class="tabPage hidden"><h2 class="font-bold text-lg">🎓 My Student Portal</h2><p class="text-sm text-slate-500">Homework, Quiz, Timetable, Result — student ke liye sab kuch.</p><div class="grid md:grid-cols-3 gap-3 mt-4"><div class="bg-white rounded-2xl p-4"><p class="font-bold">My Homework</p><div id="myHW"></div></div><div class="bg-white rounded-2xl p-4"><p class="font-bold">My Results</p><div id="myResults"></div></div><div class="bg-white rounded-2xl p-4"><p class="font-bold">My Timetable</p><div id="myTT"></div></div></div><button onclick="goTab('quiz')" class="bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-bold mt-4">Go To Quiz →</button></div>
+<!-- STUDENTS -->
+<div id="tab-students" class="tabPage hidden"><div class="flex flex-wrap gap-2 justify-between"><h2 class="font-bold text-lg">Students</h2><div class="flex gap-2 flex-wrap"><input id="studentSearch" oninput="renderAll()" class="border rounded-full px-4 py-2 text-sm" placeholder="Search..."><select id="studentClassFilter" onchange="renderAll()" class="border rounded-full px-3 py-2 text-sm"><option value="">All Classes</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select><button onclick="exportStudentsCSV()" class="bg-emerald-600 text-white px-4 py-2 rounded-full text-sm font-bold">Export CSV</button><button onclick="openStudentModal()" class="bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-bold">+ Add Student</button></div></div><div class="bg-white rounded-2xl shadow-sm mt-4 overflow-hidden"><div class="overflow-x-auto"><table class="w-full text-sm min-w-[700px]"><thead class="bg-slate-50"><tr><th class="text-left p-3 th">Student</th><th class="text-left p-3 th">Roll / Class</th><th class="text-left p-3 th">Father / Phone</th><th class="text-left p-3 th">Fees</th><th class="text-left p-3 th">Actions</th></tr></thead><tbody id="studentsTable"></tbody></table></div><p id="emptyStudents2" class="p-5 text-center text-slate-400 text-sm">No students yet.</p></div></div>
+<!-- ATTENDANCE -->
+<div id="tab-attendance" class="tabPage hidden"><div class="flex flex-wrap gap-2 justify-between"><h2 class="font-bold text-lg">Attendance</h2><div class="flex gap-2"><input type="date" id="attDate" class="border rounded-full px-3 py-2 text-sm" onchange="renderAll()"><button onclick="markAllPresent()" class="bg-emerald-600 text-white px-3 py-2 rounded-full text-xs font-bold">Mark All Present</button><button onclick="exportAttendanceCSV()" class="border px-3 py-2 rounded-full text-xs font-bold">Export CSV</button></div></div><div class="grid grid-cols-4 gap-3 mt-4"><div class="bg-white rounded-2xl p-3 text-center"><p class="text-xs text-slate-500">Present</p><p class="text-xl font-bold text-emerald-600" id="attPresent">0</p></div><div class="bg-white rounded-2xl p-3 text-center"><p class="text-xs text-slate-500">Absent</p><p class="text-xl font-bold text-red-600" id="attAbsent">0</p></div><div class="bg-white rounded-2xl p-3 text-center"><p class="text-xs text-slate-500">Late</p><p class="text-xl font-bold text-amber-600" id="attLate">0</p></div><div class="bg-white rounded-2xl p-3 text-center"><p class="text-xs text-slate-500">Rate</p><p class="text-xl font-bold text-blue-600" id="attRate">0%</p></div></div><div class="bg-white rounded-2xl shadow-sm mt-4 overflow-hidden"><table class="w-full text-sm"><thead class="bg-slate-50"><tr><th class="text-left p-3 th">Roll</th><th class="text-left p-3 th">Name</th><th class="text-left p-3 th">Class</th><th class="text-left p-3 th">Status</th><th class="text-left p-3 th">Action</th></tr></thead><tbody id="studentTable"></tbody></table><p id="emptyStudents" class="p-5 text-center text-slate-400 text-sm">No students yet.</p></div></div>
+<!-- REPORTS -->
+<div id="tab-reports" class="tabPage hidden"><div class="flex justify-between"><h2 class="font-bold text-lg">Reports</h2><button onclick="openReportModal()" class="bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-bold">+ New Report</button></div><div id="reportsList" class="grid md:grid-cols-2 gap-3 mt-4"></div><p id="emptyReports" class="text-center text-slate-400 text-sm mt-6">No reports yet.</p></div>
+<!-- HOMEWORK -->
+<div id="tab-homework" class="tabPage hidden"><div class="flex justify-between"><h2 class="font-bold text-lg">Worksheets & Homework</h2><button onclick="openHWModal()" class="bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-bold">+ Publish</button></div><div id="hwList" class="grid md:grid-cols-2 gap-3 mt-4"></div><p id="emptyHW" class="text-center text-slate-400 text-sm mt-6">No worksheets yet.</p><h3 class="font-bold mt-6">Submissions</h3><div id="hwSubList" class="grid md:grid-cols-2 gap-3 mt-3"></div></div>
+<!-- QUIZ -->
+<div id="tab-quiz" class="tabPage hidden"><div class="flex justify-between"><h2 class="font-bold text-lg">📝 Online Quiz / Test</h2><button onclick="openQuizModal()" class="bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-bold">+ Create Quiz</button></div><p class="text-xs text-slate-500 mt-1">Teacher quiz banaye • Student attempt kare • Auto Marks + Grade</p><div id="quizList" class="grid md:grid-cols-2 gap-3 mt-4"></div><p id="emptyQuiz" class="text-center text-slate-400 text-sm mt-6">No quizzes yet.</p><h3 class="font-bold mt-6">My Attempts</h3><div id="quizAttempts" class="grid md:grid-cols-2 gap-3 mt-3"></div></div>
+<!-- FEES -->
+<div id="tab-fees" class="tabPage hidden"><div class="flex justify-between"><h2 class="font-bold text-lg">Fees</h2><button onclick="openFeeModal()" class="bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-bold">+ Add Fee</button></div><div class="grid grid-cols-3 gap-3 mt-4"><div class="bg-white rounded-2xl p-4 text-center"><p class="text-xs text-slate-500">Total Due</p><p class="font-bold" id="feeDue">Rs 0</p></div><div class="bg-white rounded-2xl p-4 text-center"><p class="text-xs text-slate-500">Collected</p><p class="font-bold text-emerald-600" id="feePaid">Rs 0</p></div><div class="bg-white rounded-2xl p-4 text-center"><p class="text-xs text-slate-500">Pending</p><p class="font-bold text-red-600" id="feePending">Rs 0</p></div></div><div id="feesList" class="grid md:grid-cols-2 gap-3 mt-4"></div><p id="emptyFees" class="text-center text-slate-400 text-sm mt-6">No fee records.</p></div>
+<!-- RESULTS -->
+<div id="tab-results" class="tabPage hidden"><div class="flex justify-between"><h2 class="font-bold text-lg">Results & Grades</h2><button onclick="openResultModal()" class="bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-bold">+ Add Result</button></div><div id="resultsList" class="grid md:grid-cols-2 gap-3 mt-4"></div><p id="emptyResults" class="text-center text-slate-400 text-sm mt-6">No results yet.</p></div>
+<!-- SALARY -->
+<div id="tab-salary" class="tabPage hidden"><div class="flex justify-between"><h2 class="font-bold text-lg">💰 Teacher Salary</h2><button onclick="openSalaryModal()" class="bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-bold">+ Add Salary</button></div><div id="salaryList" class="grid md:grid-cols-2 gap-3 mt-4"></div><p id="emptySalary" class="text-center text-slate-400 text-sm mt-6">No salary records.</p></div>
+<!-- TIMETABLE -->
+<div id="tab-timetable" class="tabPage hidden"><div class="flex justify-between"><h2 class="font-bold text-lg">Timetable</h2><button onclick="openTimetableModal()" class="bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-bold">+ Add Slot</button></div><div id="ttList" class="grid md:grid-cols-3 gap-3 mt-4"></div><p id="emptyTT" class="text-center text-slate-400 text-sm mt-6">No slots yet.</p></div>
+<!-- LEAVE -->
+<div id="tab-leave" class="tabPage hidden"><div class="flex justify-between"><h2 class="font-bold text-lg">Leave</h2><button onclick="openLeaveModal()" class="bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-bold">+ Request Leave</button></div><div id="leaveList" class="grid md:grid-cols-2 gap-3 mt-4"></div><p id="emptyLeave" class="text-center text-slate-400 text-sm mt-6">No leave yet.</p></div>
+<!-- MEETINGS -->
+<div id="tab-meetings" class="tabPage hidden"><div class="flex justify-between"><h2 class="font-bold text-lg">Meetings</h2><button id="addMeetingBtn" onclick="openMeetingModal()" class="bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-bold">+ Schedule</button></div><div id="meetingsList" class="grid md:grid-cols-2 gap-3 mt-4"></div><p id="emptyMeetings" class="text-center text-slate-400 text-sm mt-6">No meetings.</p></div>
+<!-- NOTICES -->
+<div id="tab-notices" class="tabPage hidden"><div class="flex justify-between"><h2 class="font-bold text-lg">Notices</h2><button onclick="openNoticeModal()" class="bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-bold">+ New Notice</button></div><div id="noticesList" class="grid md:grid-cols-2 gap-3 mt-4"></div><p id="emptyNotices" class="text-center text-slate-400 text-sm mt-6">No notices.</p></div>
+<!-- EVENTS -->
+<div id="tab-events" class="tabPage hidden"><div class="flex justify-between"><h2 class="font-bold text-lg">📅 Events & Calendar</h2><button onclick="openEventModal()" class="bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-bold">+ Add Event</button></div><div id="eventsList" class="grid md:grid-cols-2 gap-3 mt-4"></div><p id="emptyEvents" class="text-center text-slate-400 text-sm mt-6">No events.</p></div>
+<!-- LIBRARY -->
+<div id="tab-library" class="tabPage hidden"><div class="flex justify-between"><h2 class="font-bold text-lg">Library</h2><button onclick="openBookModal()" class="bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-bold">+ Add Book</button></div><div id="booksList" class="grid md:grid-cols-3 gap-3 mt-4"></div><p id="emptyBooks" class="text-center text-slate-400 text-sm mt-6">No books.</p></div>
+<!-- INVENTORY -->
+<div id="tab-inventory" class="tabPage hidden"><div class="flex justify-between"><h2 class="font-bold text-lg">📦 Inventory / Stock</h2><button onclick="openInventoryModal()" class="bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-bold">+ Add Item</button></div><div id="inventoryList" class="grid md:grid-cols-3 gap-3 mt-4"></div><p id="emptyInventory" class="text-center text-slate-400 text-sm mt-6">No inventory.</p></div>
+<!-- TRANSPORT -->
+<div id="tab-transport" class="tabPage hidden"><div class="flex justify-between"><h2 class="font-bold text-lg">🚌 Transport</h2><button onclick="openTransportModal()" class="bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-bold">+ Add Route</button></div><div id="transportList" class="grid md:grid-cols-2 gap-3 mt-4"></div><p id="emptyTransport" class="text-center text-slate-400 text-sm mt-6">No routes.</p></div>
+<!-- CERTIFICATES -->
+<div id="tab-certificates" class="tabPage hidden"><h2 class="font-bold text-lg">📜 Certificates & ID Card</h2><div class="grid md:grid-cols-2 gap-3 mt-4"><div class="bg-white rounded-2xl p-4"><p class="font-bold">Generate Certificate</p><select id="certStudent" class="w-full border rounded-xl px-3 py-2.5 mt-2"><option value="">Select Student</option></select><select id="certType" class="w-full border rounded-xl px-3 py-2.5 mt-2"><option>Character Certificate</option><option>Bonafide Certificate</option><option>School Leaving Certificate</option></select><button onclick="printCertificate()" class="w-full bg-blue-600 text-white py-3 rounded-xl font-bold mt-3">Print Certificate</button></div><div class="bg-white rounded-2xl p-4"><p class="font-bold">Student ID Card</p><select id="idStudent" class="w-full border rounded-xl px-3 py-2.5 mt-2"><option value="">Select Student</option></select><button onclick="printIDCard()" class="w-full bg-emerald-600 text-white py-3 rounded-xl font-bold mt-3">Print ID Card</button><div class="print-card rounded-xl p-3 mt-3 text-center"><p class="font-bold text-sm">GOVT PRIMARY SCHOOL DHOK JHATT</p><p class="text-xs">Student ID • 2026-2027</p><p class="text-[11px] text-slate-500 mt-2">Select student & print for preview</p></div></div></div></div>
+<!-- COMPLAINTS -->
+<div id="tab-complaints" class="tabPage hidden"><div class="flex justify-between"><h2 class="font-bold text-lg">📩 Complaints / Suggestions</h2><button onclick="openComplaintModal()" class="bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-bold">+ New Complaint</button></div><div id="complaintsList" class="grid md:grid-cols-2 gap-3 mt-4"></div><p id="emptyComplaints" class="text-center text-slate-400 text-sm mt-6">No complaints.</p></div>
+<!-- CHAT -->
+<div id="tab-chat" class="tabPage hidden"><h2 class="font-bold text-lg">Staff Chat</h2><div class="bg-white rounded-2xl shadow-sm mt-3 p-4"><div id="chatBox" class="space-y-3 max-h-[380px] overflow-y-auto"></div><p id="emptyChat" class="text-center text-slate-400 text-sm py-4">No messages.</p><div class="flex gap-2 mt-4"><input id="chatInput" class="flex-1 border rounded-full px-4 py-2.5" placeholder="Type message..."><button onclick="sendChat()" class="bg-blue-600 text-white px-5 rounded-full font-bold">Send</button></div></div></div>
+<!-- STAFF -->
+<div id="tab-staff" class="tabPage hidden"><div class="flex justify-between"><h2 class="font-bold text-lg">Staff & Ranks (Admin Only)</h2><button onclick="openAddStaffModal()" class="bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-bold">+ Add Staff</button></div><div id="staffList" class="grid md:grid-cols-2 gap-3 mt-4"></div></div>
+<!-- SETTINGS -->
+<div id="tab-settings" class="tabPage hidden"><h2 class="font-bold text-lg">Settings & Data</h2><div class="bg-white rounded-3xl p-5 mt-4 shadow-sm"><p class="font-bold">Backup & Restore</p><div class="flex flex-wrap gap-2 mt-3"><button onclick="exportDB()" class="bg-emerald-600 text-white px-4 py-2 rounded-full text-sm font-bold">Export JSON</button><label class="bg-amber-500 text-white px-4 py-2 rounded-full text-sm font-bold cursor-pointer">Import JSON<input type="file" accept=".json" onchange="importDB(event)" class="hidden"></label><button onclick="hardReset()" class="bg-red-600 text-white px-4 py-2 rounded-full text-sm font-bold">Hard Reset</button></div><p class="text-xs text-slate-400 mt-4">DB: GPS_DHOK_JHATT_DB_V6 • Admin: harisawan.pk.@school.tm • Version 7 Mega • Migration Guard ON</p></div></div>
+</main>
+</div>
+<!-- GENERIC MODAL -->
+<div id="genericModal" class="modal fixed inset-0 z-50 items-center justify-center bg-black/60 backdrop-blur-sm p-4"><div class="glass w-full max-w-lg rounded-3xl p-6 shadow-2xl max-h-[92vh] overflow-y-auto"><div class="flex justify-between"><h3 id="genericTitle" class="font-bold text-lg">Modal</h3><button onclick="closeGeneric()" class="text-slate-400 text-xl">✕</button></div><div id="genericBody" class="mt-4"></div></div></div>
+<!-- PROFILE -->
+<div id="profileModal" class="modal fixed inset-0 z-50 items-center justify-center bg-black/60 backdrop-blur-sm p-4"><div class="glass w-full max-w-md rounded-3xl p-6 max-h-[92vh] overflow-y-auto"><div class="flex justify-between"><h3 class="font-bold text-lg">My Profile</h3><button onclick="closeProfile()" class="text-slate-400 text-xl">✕</button></div><div class="space-y-3 mt-4"><div><label class="text-xs font-bold">Full Name</label><input id="pName" class="w-full border rounded-xl px-3 py-2.5 mt-1"></div><div><label class="text-xs font-bold">Subject</label><input id="pSubject" class="w-full border rounded-xl px-3 py-2.5 mt-1"></div><div><label class="text-xs font-bold">Phone</label><input id="pPhone" class="w-full border rounded-xl px-3 py-2.5 mt-1"></div><div><label class="text-xs font-bold">Password</label><input id="pPass" class="w-full border rounded-xl px-3 py-2.5 mt-1"></div><div><label class="text-xs font-bold">Email</label><input id="pEmail" disabled class="w-full border rounded-xl px-3 py-2.5 mt-1 bg-slate-50"></div></div><button onclick="saveProfile()" class="w-full bg-blue-600 text-white py-3 rounded-xl font-bold mt-4">Save Profile</button><div class="border-t mt-5 pt-4 flex gap-2"><button onclick="exportDB()" class="flex-1 bg-emerald-600 text-white py-2.5 rounded-xl text-sm font-bold">Export JSON</button><label class="flex-1 bg-amber-500 text-white py-2.5 rounded-xl text-sm font-bold text-center cursor-pointer">Import<input type="file" accept=".json" onchange="importDB(event)" class="hidden"></label></div></div></div>
+<script>
+const KEY='GPS_DHOK_JHATT_DB_V6';
+let DB=null,authMode='login',selectedRole='Teacher',currentTab='overview';
+const ADMIN_EMAIL='harisawan.pk.@school.tm';
+const ADMIN_PASS='haris786786786';
+const ROLES=['Admin','Head Teacher','Teacher','Parent','Student'];
+function seed(){return{version:7,users:[{id:'usr_admin_1',name:'Haris Awan',email:ADMIN_EMAIL,password:ADMIN_PASS,role:'Admin',subject:'Overall Administration & Management',phone:'+92 300 0000000'}],students:[],attendance:[],reports:[],homework:[],hwSubs:[],meetings:[],chats:[],timetable:[],fees:[],results:[],leaves:[],notices:[],books:[],quizzes:[],quizAttempts:[],salary:[],inventory:[],transport:[],events:[],complaints:[],currentUser:null,settings:{school:'Government Primary School Dhok Jhatt',session:'2026-2027'}}}
+function load(){try{let raw=localStorage.getItem(KEY);if(!raw){DB=seed();save();return}DB=JSON.parse(raw);let s=seed();Object.keys(s).forEach(k=>{if(DB[k]===undefined)DB[k]=s[k]});if(!DB.users.find(u=>u.email===ADMIN_EMAIL)){DB.users.unshift(s.users[0])}else{let a=DB.users.find(u=>u.email===ADMIN_EMAIL);a.password=ADMIN_PASS;a.name='Haris Awan';a.role='Admin'}save()}catch(e){DB=seed();save()}}
+function save(){localStorage.setItem(KEY,JSON.stringify(DB))}
+function uid(p){return p+'_'+Date.now()+'_'+Math.floor(Math.random()*999)}
+function esc(v){return String(v||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function me(){return DB.users.find(u=>u.id===DB.currentUser)||null}
+function canApprove(){let u=me();return u&&(u.role==='Admin'||u.role==='Head Teacher')}
+function canSchedule(){return canApprove()}
+function isAdmin(){let u=me();return u&&u.role==='Admin'}
+function todayStr(){return new Date().toISOString().slice(0,10)}
+function gradeFromMarks(m){m=Number(m);if(m>=90)return'A+';if(m>=80)return'A';if(m>=70)return'B';if(m>=60)return'C';if(m>=50)return'D';return'F'}
+function fillDemo(){document.getElementById('authEmail').value=ADMIN_EMAIL;document.getElementById('authPass').value=ADMIN_PASS;setRole('Admin')}
+function openAuth(m){setAuthMode(m);renderRoles();document.getElementById('authModal').classList.add('open')}
+function closeAuth(){document.getElementById('authModal').classList.remove('open')}
+function renderRoles(){document.getElementById('roleWrap').innerHTML=ROLES.map(r=>`<button onclick="setRole('${r}')" class="roleBtn border rounded-full px-3 py-1.5 text-xs font-semibold ${r===selectedRole?'bg-blue-600 text-white':'bg-white'}" data-role="${r}">${r}</button>`).join('')}
+function setAuthMode(m){authMode=m;document.getElementById('tabLogin').className=m==='login'?'flex-1 py-2 rounded-full bg-blue-600 text-white font-bold text-sm':'flex-1 py-2 rounded-full font-bold text-sm text-slate-500';document.getElementById('tabSignup').className=m==='signup'?'flex-1 py-2 rounded-full bg-blue-600 text-white font-bold text-sm':'flex-1 py-2 rounded-full font-bold text-sm text-slate-500';['signupNameWrap','signupSubjectWrap','signupPhoneWrap'].forEach(id=>document.getElementById(id).classList.toggle('hidden',m!=='signup'));document.getElementById('authSubmit').innerText=m==='login'?'Login':'Create Account';document.getElementById('authSwitchText').innerText=m==='login'?"If you Don't Have Account Sign Up":"Already have an account? Login"}
+function switchAuth(){setAuthMode(authMode==='login'?'signup':'login')}
+function setRole(r){selectedRole=r;renderRoles()}
+function togglePass(){let i=document.getElementById('authPass');i.type=i.type==='password'?'text':'password'}
+function showErr(t){let e=document.getElementById('authError');e.innerText=t;e.classList.remove('hidden')}
+function doAuth(){let email=document.getElementById('authEmail').value.trim().toLowerCase(),pass=document.getElementById('authPass').value;if(!email||!pass)return showErr('Email & Password required');if(authMode==='login'){let u=DB.users.find(x=>x.email===email&&x.password===pass);if(!u)return showErr('Invalid email or password');if(u.role!==selectedRole&&u.email!==ADMIN_EMAIL)return showErr('Role mismatch. Your role is: '+u.role);DB.currentUser=u.id;save();closeAuth();renderApp()}else{let name=document.getElementById('authName').value.trim(),subj=document.getElementById('authSubject').value.trim()||'General',ph=document.getElementById('authPhone').value.trim();if(!name)return showErr('Full Name required');if(DB.users.find(x=>x.email===email))return showErr('Email already exists. Please Login.');let nu={id:uid('usr'),name,email,password:pass,role:selectedRole,subject:subj,phone:ph};DB.users.push(nu);DB.currentUser=nu.id;save();closeAuth();renderApp();alert('Account created as '+selectedRole)}}
+function logout(){DB.currentUser=null;save();document.getElementById('dashboard').classList.add('hidden');document.getElementById('landing').classList.remove('hidden');window.scrollTo(0,0)}
+function goTab(t){currentTab=t;document.querySelectorAll('.tabPage').forEach(p=>p.classList.add('hidden'));let el=document.getElementById('tab-'+t);if(el)el.classList.remove('hidden');document.querySelectorAll('.tab-btn').forEach(b=>b.classList.toggle('active',b.dataset.tab===t));renderAll()}
+function renderTabs(){let tabs=[['overview','🏠 Overview'],['parent','👨‍👩‍👧 Parent'],['studentportal','🎓 Student Portal'],['students','👨‍🎓 Students'],['attendance','📅 Attendance'],['reports','📝 Reports'],['homework','📚 HW'],['quiz','📝 Quiz'],['fees','💰 Fees'],['results','🏆 Results'],['salary','💰 Salary'],['timetable','🗓 Timetable'],['leave','🌴 Leave'],['meetings','🤝 Meetings'],['notices','📢 Notices'],['events','📅 Events'],['library','📖 Library'],['inventory','📦 Inventory'],['transport','🚌 Transport'],['certificates','📜 Certificates'],['complaints','📩 Complaints'],['chat','💬 Chat']];if(isAdmin())tabs.push(['staff','👥 Staff & Ranks']);tabs.push(['settings','⚙️ Settings']);document.getElementById('tabsBar').innerHTML=tabs.map(([k,l])=>`<button data-tab="${k}" onclick="goTab('${k}')" class="tab-btn px-4 py-2 rounded-full text-sm font-semibold bg-white shadow-sm border ${k===currentTab?'active':''}">${l}</button>`).join('');let b=document.getElementById('addMeetingBtn');if(b)b.style.display=canSchedule()?'':'none'}
+function onGlobalSearch(v){let i=document.getElementById('studentSearch');if(i){i.value=v;goTab('students')}}
+function renderApp(){let u=me();if(!u)return;document.getElementById('landing').classList.add('hidden');document.getElementById('dashboard').classList.remove('hidden');document.getElementById('userBadge').innerText=u.name+' ('+u.role+')';document.getElementById('welcomeText').innerText='Welcome back, '+u.name;document.getElementById('welcomeSub').innerText='Role: '+u.role+' • Subject: '+u.subject;document.getElementById('welcomeDate').innerText=new Date().toLocaleDateString('en-PK',{weekday:'long',day:'numeric',month:'long',year:'numeric'});document.getElementById('avatarCircle').innerText=u.name.split(' ').map(x=>x[0]).join('').slice(0,2).toUpperCase();document.getElementById('rolePill').innerText=u.role;renderTabs();renderAll();goTab('overview')}
+function drawChart(){let c=document.getElementById('attChart');if(!c)return;let ctx=c.getContext('2d');ctx.clearRect(0,0,c.width,c.height);let labels=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];let vals=[0,0,0,0,0,0,0];DB.attendance.forEach(a=>{let d=new Date(a.date||todayStr()).getDay();let idx=(d+6)%7;if(a.status==='Present')vals[idx]++});let max=Math.max(...vals,1);vals.forEach((v,i)=>{let h=(v/max)*110;let x=30+i*80;ctx.fillStyle='#2563eb';ctx.fillRect(x,140-h,42,h);ctx.fillStyle='#64748b';ctx.font='12px Inter';ctx.fillText(labels[i],x+6,158);ctx.fillStyle='#0f172a';ctx.font='bold 12px Inter';ctx.fillText(v,x+12,132-h)});let rate=DB.students.length?Math.round(DB.attendance.filter(a=>a.status==='Present').length/Math.max(DB.students.length,1)*100):0;let el=document.getElementById('attRateTop');if(el)el.innerText=rate+'% Present'}
+function renderAll(){
+if(!DB)return;
+let paid=DB.fees.filter(f=>f.status==='Paid').reduce((s,f)=>s+Number(f.amount||0),0),due=DB.fees.reduce((s,f)=>s+Number(f.amount||0),0);
+document.getElementById('statStudents').innerText=DB.students.length;document.getElementById('statFaculty').innerText=DB.users.length;document.getElementById('statQuiz').innerText=DB.quizzes.length;document.getElementById('statQuizSub').innerText=DB.quizAttempts.length+' Attempts';document.getElementById('statFees').innerText='Rs '+paid.toLocaleString();document.getElementById('statFeesSub').innerText=DB.fees.filter(f=>f.status==='Paid').length+' Paid';document.getElementById('landStudents').innerText=DB.students.length;document.getElementById('landTeachers').innerText=DB.users.length;document.getElementById('landQuiz').innerText=DB.quizzes.length;
+document.getElementById('feeDue').innerText='Rs '+due.toLocaleString();document.getElementById('feePaid').innerText='Rs '+paid.toLocaleString();document.getElementById('feePending').innerText='Rs '+(due-paid).toLocaleString();
+let pres=DB.attendance.filter(a=>a.status==='Present').length,abs=DB.attendance.filter(a=>a.status==='Absent').length,late=DB.attendance.filter(a=>a.status==='Late').length;
+document.getElementById('attPresent').innerText=pres;document.getElementById('attAbsent').innerText=abs;document.getElementById('attLate').innerText=late;document.getElementById('attRate').innerText=DB.students.length?Math.round(pres/DB.students.length*100)+'%':'0%';
+document.getElementById('noticeDot').classList.toggle('hidden',DB.notices.length===0);
+// Parent + Cert selects
+let opts=DB.students.map(s=>`<option value="${s.id}">${esc(s.name)} - Roll ${s.roll} - Class ${s.cls}</option>`).join('');
+['parentStudent','certStudent','idStudent'].forEach(id=>{let el=document.getElementById(id);if(el){let cur=el.value;el.innerHTML='<option value="">Select Student</option>'+opts;el.value=cur}});
+let q=(document.getElementById('studentSearch')?.value||'').toLowerCase(),cf=document.getElementById('studentClassFilter')?.value||'';
+let fStu=DB.students.filter(s=>(!q||s.name.toLowerCase().includes(q)||s.roll.toLowerCase().includes(q))&&(!cf||String(s.cls)===cf));
+document.getElementById('studentsTable').innerHTML=fStu.map(s=>{let fee=DB.fees.find(f=>f.studentId===s.id);return `<tr class="border-t hover:bg-slate-50"><td class="p-3"><div class="flex gap-2 items-center"><div class="w-9 h-9 bg-blue-100 text-blue-700 rounded-full flex items-center justify-center font-bold">${esc(s.name[0])}</div><div><p class="font-bold">${esc(s.name)}</p><p class="text-xs text-slate-500">${esc(s.address||'Dhok Jhatt')}</p></div></div></td><td class="p-3">Roll ${esc(s.roll)}<br><span class="text-xs bg-slate-100 px-2 py-0.5 rounded-full">Class ${esc(s.cls)} • Sec ${esc(s.section||'A')}</span></td><td class="p-3">${esc(s.father||'-')}<br><span class="text-xs text-slate-500">${esc(s.phone||'')}</span></td><td class="p-3">${fee?`<span class="badge ${fee.status==='Paid'?'bg-emerald-100 text-emerald-700':'bg-red-100 text-red-700'}">${fee.status} Rs ${fee.amount}</span>`:'<span class="text-xs text-slate-400">No Fee</span>'}</td><td class="p-3"><div class="flex gap-1 flex-wrap"><button onclick="viewStudent('${s.id}')" class="border px-2 py-1 rounded-full text-xs font-bold">View</button><button onclick="editStudent('${s.id}')" class="border px-2 py-1 rounded-full text-xs font-bold">Edit</button><button onclick="delStudent('${s.id}')" class="text-red-500 text-xs font-bold">Delete</button></div></td></tr>`}).join('');
+document.getElementById('emptyStudents2').style.display=fStu.length?'none':'block';
+document.getElementById('studentTable').innerHTML=DB.students.map(s=>{let a=DB.attendance.find(x=>x.studentId===s.id&&x.date===(document.getElementById('attDate')?.value||todayStr()));let st=a?a.status:'—';return `<tr class="border-t"><td class="p-3">${esc(s.roll)}</td><td class="p-3 font-semibold">${esc(s.name)}</td><td class="p-3">Class ${esc(s.cls)}</td><td class="p-3"><span class="badge ${st==='Present'?'bg-emerald-100 text-emerald-700':st==='Absent'?'bg-red-100 text-red-700':st==='Late'?'bg-amber-100 text-amber-700':'bg-slate-100'}">${st}</span></td><td class="p-3 flex gap-1 flex-wrap"><button onclick="setAtt('${s.id}','Present')" class="bg-emerald-600 text-white px-2 py-1 rounded-full text-[11px]">Present</button><button onclick="setAtt('${s.id}','Absent')" class="bg-red-500 text-white px-2 py-1 rounded-full text-[11px]">Absent</button><button onclick="setAtt('${s.id}','Late')" class="bg-amber-500 text-white px-2 py-1 rounded-full text-[11px]">Late</button></td></tr>`}).join('');
+document.getElementById('emptyStudents').style.display=DB.students.length?'none':'block';
+// Parent View
+let pid=document.getElementById('parentStudent')?.value||'';let ps=DB.students.find(s=>s.id===pid);
+if(ps){let att=DB.attendance.filter(a=>a.studentId===ps.id);let fees=DB.fees.filter(f=>f.studentId===ps.id);let res=DB.results.filter(r=>r.studentId===ps.id);document.getElementById('parentView').innerHTML=`<div class="bg-white rounded-2xl p-4"><p class="font-bold">👨‍🎓 ${esc(ps.name)}</p><p class="text-xs text-slate-500">Roll ${esc(ps.roll)} • Class ${esc(ps.cls)} • Father ${esc(ps.father||'-')}</p><p class="text-sm mt-2">Attendance: <b>${att.filter(a=>a.status==='Present').length} Present / ${att.length} Total</b></p></div><div class="bg-white rounded-2xl p-4"><p class="font-bold">💰 Fees</p>${fees.map(f=>`<p class="text-sm mt-1">Rs ${f.amount} • ${f.month} • <b>${f.status}</b></p>`).join('')||'<p class="text-sm text-slate-400">No fees</p>'}</div><div class="bg-white rounded-2xl p-4"><p class="font-bold">🏆 Results</p>${res.map(r=>`<p class="text-sm mt-1">${esc(r.subject)}: ${r.marks}/100 • ${gradeFromMarks(r.marks)}</p>`).join('')||'<p class="text-sm text-slate-400">No results</p>'}</div>`;document.getElementById('emptyParent').style.display='none'}else{document.getElementById('parentView').innerHTML='';document.getElementById('emptyParent').style.display='block'}
+// Student Portal
+document.getElementById('myHW').innerHTML=DB.homework.slice(-3).map(h=>`<p class="text-sm mt-1">• ${esc(h.title)} - Class ${h.cls}</p>`).join('')||'<p class="text-sm text-slate-400">No HW</p>';
+document.getElementById('myResults').innerHTML=DB.results.slice(-3).map(r=>{let s=DB.students.find(x=>x.id===r.studentId);return `<p class="text-sm mt-1">• ${esc(s?s.name:'')} - ${esc(r.subject)}: ${r.marks} • ${gradeFromMarks(r.marks)}</p>`}).join('')||'<p class="text-sm text-slate-400">No results</p>';
+document.getElementById('myTT').innerHTML=DB.timetable.slice(-3).map(t=>`<p class="text-sm mt-1">• ${esc(t.day)} ${esc(t.time)} - ${esc(t.subject)}</p>`).join('')||'<p class="text-sm text-slate-400">No timetable</p>';
+// Reports
+document.getElementById('reportsList').innerHTML=DB.reports.map(r=>`<div class="bg-white rounded-2xl p-4 shadow-sm"><div class="flex justify-between"><p class="font-bold">${esc(r.title)}</p><span class="badge ${r.status==='Approved'?'bg-emerald-100 text-emerald-700':'bg-amber-100 text-amber-700'}">${r.status}</span></div><p class="text-xs text-slate-500">Class ${esc(r.cls)} • By ${esc(r.by)}</p><p class="text-sm mt-2">${esc(r.details)}</p><div class="flex gap-2 mt-3 flex-wrap">${canApprove()&&r.status!=='Approved'?`<button onclick="approveReport('${r.id}')" class="bg-emerald-600 text-white px-3 py-1.5 rounded-full text-xs font-bold">Approve</button>`:''}<button onclick="printReport('${r.id}')" class="border px-3 py-1.5 rounded-full text-xs font-bold">Print</button><button onclick="delReport('${r.id}')" class="text-red-500 text-xs font-bold">Delete</button></div></div>`).join('');document.getElementById('emptyReports').style.display=DB.reports.length?'none':'block';
+// HW + Subs
+document.getElementById('hwList').innerHTML=DB.homework.map(h=>`<div class="bg-white rounded-2xl p-4 shadow-sm"><p class="font-bold">${esc(h.title)}</p><p class="text-xs text-slate-500">Class ${esc(h.cls)} • By ${esc(h.by)}</p><p class="text-sm mt-2">${esc(h.instructions)}</p><div class="flex gap-2 mt-2"><button onclick="submitHW('${h.id}')" class="bg-blue-600 text-white px-3 py-1 rounded-full text-xs font-bold">Submit HW</button><button onclick="delHW('${h.id}')" class="text-red-500 text-xs font-bold">Delete</button></div></div>`).join('');document.getElementById('emptyHW').style.display=DB.homework.length?'none':'block';
+document.getElementById('hwSubList').innerHTML=DB.hwSubs.map(s=>`<div class="bg-white rounded-2xl p-4"><p class="font-bold">${esc(s.student)} • HW: ${esc(s.hwTitle)}</p><p class="text-sm mt-1">${esc(s.text)}</p><p class="text-xs text-slate-500">${esc(s.date)} • Status: ${s.status}</p>${canApprove()?`<button onclick="checkHW('${s.id}')" class="bg-emerald-600 text-white px-3 py-1 rounded-full text-xs font-bold mt-2">Mark Checked</button>`:''}</div>`).join('');
+// Quiz
+document.getElementById('quizList').innerHTML=DB.quizzes.map(qz=>`<div class="bg-white rounded-2xl p-4 shadow-sm"><p class="font-bold">📝 ${esc(qz.title)} • Class ${esc(qz.cls)} • ${qz.questions.length} Qs</p><p class="text-xs text-slate-500">By ${esc(qz.by)} • Total Marks ${qz.questions.length*10}</p><p class="text-sm mt-1">${esc(qz.desc||'')}</p><div class="flex gap-2 mt-3"><button onclick="attemptQuiz('${qz.id}')" class="bg-blue-600 text-white px-3 py-1.5 rounded-full text-xs font-bold">Attempt Quiz</button><button onclick="delQuiz('${qz.id}')" class="text-red-500 text-xs font-bold">Delete</button></div></div>`).join('');document.getElementById('emptyQuiz').style.display=DB.quizzes.length?'none':'block';
+document.getElementById('quizAttempts').innerHTML=DB.quizAttempts.map(a=>`<div class="bg-white rounded-2xl p-4"><p class="font-bold">${esc(a.quizTitle)} • ${esc(a.by)} • Score ${a.score}/${a.total} • Grade ${gradeFromMarks(a.score/a.total*100)}</p><p class="text-xs text-slate-500">${esc(a.date)}</p></div>`).join('');
+// Fees / Results / Salary
+document.getElementById('feesList').innerHTML=DB.fees.map(f=>{let s=DB.students.find(x=>x.id===f.studentId);return `<div class="bg-white rounded-2xl p-4"><div class="flex justify-between"><p class="font-bold">${esc(s?s.name:'Unknown')} • Class ${esc(s?s.cls:'-')}</p><span class="badge ${f.status==='Paid'?'bg-emerald-100 text-emerald-700':'bg-red-100 text-red-700'}">${f.status}</span></div><p class="text-sm mt-1">Rs ${f.amount} • ${esc(f.month)}</p><div class="flex gap-2 mt-2"><button onclick="toggleFee('${f.id}')" class="bg-blue-600 text-white px-3 py-1 rounded-full text-xs font-bold">${f.status==='Paid'?'Mark Unpaid':'Mark Paid'}</button><button onclick="printReceipt('${f.id}')" class="border px-3 py-1 rounded-full text-xs font-bold">Receipt</button><button onclick="delFee('${f.id}')" class="text-red-500 text-xs font-bold">Delete</button></div></div>`}).join('');document.getElementById('emptyFees').style.display=DB.fees.length?'none':'block';
+document.getElementById('resultsList').innerHTML=DB.results.map(r=>{let s=DB.students.find(x=>x.id===r.studentId);return `<div class="bg-white rounded-2xl p-4"><p class="font-bold">${esc(s?s.name:'Unknown')} • ${esc(r.subject)} • ${r.marks}/100 • ${gradeFromMarks(r.marks)}</p><p class="text-xs text-slate-500">Class ${esc(r.cls)} • By ${esc(r.by)}</p><div class="flex gap-2 mt-2"><button onclick="printResult('${r.id}')" class="border px-3 py-1 rounded-full text-xs font-bold">Report Card</button><button onclick="delResult('${r.id}')" class="text-red-500 text-xs font-bold">Delete</button></div></div>`}).join('');document.getElementById('emptyResults').style.display=DB.results.length?'none':'block';
+document.getElementById('salaryList').innerHTML=DB.salary.map(s=>`<div class="bg-white rounded-2xl p-4"><p class="font-bold">💰 ${esc(s.teacher)} • Rs ${s.amount} • ${esc(s.month)}</p><p class="text-xs text-slate-500">Status: ${s.status} • By ${esc(s.by)}</p><div class="flex gap-2 mt-2"><button onclick="toggleSalary('${s.id}')" class="bg-blue-600 text-white px-3 py-1 rounded-full text-xs font-bold">Toggle Paid</button><button onclick="delSalary('${s.id}')" class="text-red-500 text-xs font-bold">Delete</button></div></div>`).join('');document.getElementById('emptySalary').style.display=DB.salary.length?'none':'block';
+// Timetable / Leave / Meetings / Notices / Events / Library / Inventory / Transport / Complaints / Chat / Staff
+document.getElementById('ttList').innerHTML=DB.timetable.map(t=>`<div class="bg-white rounded-2xl p-4"><p class="font-bold text-sm">${esc(t.day)} • ${esc(t.time)}</p><p class="text-sm mt-1">Class ${esc(t.cls)} - ${esc(t.subject)} • ${esc(t.teacher||t.by)}</p><div class="flex gap-2 mt-2"><button onclick="editTT('${t.id}')" class="border px-3 py-1 rounded-full text-xs font-bold">Edit</button><button onclick="delTT('${t.id}')" class="text-red-500 text-xs font-bold">Delete</button></div></div>`).join('');document.getElementById('emptyTT').style.display=DB.timetable.length?'none':'block';
+document.getElementById('leaveList').innerHTML=DB.leaves.map(l=>`<div class="bg-white rounded-2xl p-4"><p class="font-bold">${esc(l.by)} • ${esc(l.type)} • ${esc(l.from)} to ${esc(l.to)}</p><p class="text-sm mt-1">${esc(l.reason)}</p><p class="mt-2"><span class="badge ${l.status==='Approved'?'bg-emerald-100 text-emerald-700':l.status==='Rejected'?'bg-red-100 text-red-700':'bg-amber-100 text-amber-700'}">${l.status}</span></p>${canApprove()&&l.status==='Pending'?`<div class="flex gap-2 mt-2"><button onclick="setLeave('${l.id}','Approved')" class="bg-emerald-600 text-white px-3 py-1 rounded-full text-xs font-bold">Approve</button><button onclick="setLeave('${l.id}','Rejected')" class="bg-red-600 text-white px-3 py-1 rounded-full text-xs font-bold">Reject</button></div>`:''}</div>`).join('');document.getElementById('emptyLeave').style.display=DB.leaves.length?'none':'block';
+document.getElementById('meetingsList').innerHTML=DB.meetings.map(m=>`<div class="bg-white rounded-2xl p-4"><p class="font-bold">${esc(m.title)}</p><p class="text-xs text-slate-500">${esc(m.datetime)} • By ${esc(m.by)}</p><p class="text-sm mt-2">${esc(m.agenda)}</p>${canSchedule()?`<button onclick="delMeeting('${m.id}')" class="text-red-500 text-xs mt-2 font-bold">Delete</button>`:''}</div>`).join('');document.getElementById('emptyMeetings').style.display=DB.meetings.length?'none':'block';
+document.getElementById('noticesList').innerHTML=DB.notices.map(n=>`<div class="bg-white rounded-2xl p-4 border-l-4 ${n.priority==='High'?'border-red-500':'border-blue-500'}"><p class="font-bold">${esc(n.title)} <span class="badge bg-blue-50 text-blue-700">${esc(n.priority)}</span></p><p class="text-xs text-slate-500">${esc(n.date)} • By ${esc(n.by)}</p><p class="text-sm mt-2">${esc(n.text)}</p><button onclick="delNotice('${n.id}')" class="text-red-500 text-xs mt-2 font-bold">Delete</button></div>`).join('');document.getElementById('emptyNotices').style.display=DB.notices.length?'none':'block';
+document.getElementById('recentNotices').innerHTML=DB.notices.slice(-3).reverse().map(n=>`<div class="bg-slate-50 rounded-xl p-3"><p class="font-bold text-sm">${esc(n.title)}</p><p class="text-xs text-slate-500">${esc(n.text).slice(0,80)}</p></div>`).join('');document.getElementById('emptyRecentNotices').style.display=DB.notices.length?'none':'block';
+document.getElementById('eventsList').innerHTML=DB.events.map(e=>`<div class="bg-white rounded-2xl p-4"><p class="font-bold">📅 ${esc(e.title)} • ${esc(e.date)}</p><p class="text-sm mt-1">${esc(e.desc)}</p><p class="text-xs text-slate-500">By ${esc(e.by)}</p><button onclick="delEvent('${e.id}')" class="text-red-500 text-xs mt-2 font-bold">Delete</button></div>`).join('');document.getElementById('emptyEvents').style.display=DB.events.length?'none':'block';
+document.getElementById('recentEvents').innerHTML=DB.events.slice(-3).reverse().map(e=>`<div class="bg-slate-50 rounded-xl p-3"><p class="font-bold text-sm">${esc(e.title)} • ${esc(e.date)}</p><p class="text-xs text-slate-500">${esc(e.desc).slice(0,80)}</p></div>`).join('');document.getElementById('emptyRecentEvents').style.display=DB.events.length?'none':'block';
+document.getElementById('booksList').innerHTML=DB.books.map(b=>`<div class="bg-white rounded-2xl p-4"><p class="font-bold">📖 ${esc(b.title)}</p><p class="text-xs text-slate-500">${esc(b.author)} • ${esc(b.status)}</p><p class="text-sm mt-1">Issued To: ${esc(b.issuedTo||'Available')}</p><div class="flex gap-2 mt-2"><button onclick="toggleBook('${b.id}')" class="bg-blue-600 text-white px-3 py-1 rounded-full text-xs font-bold">${b.status==='Available'?'Issue':'Return'}</button><button onclick="delBook('${b.id}')" class="text-red-500 text-xs font-bold">Delete</button></div></div>`).join('');document.getElementById('emptyBooks').style.display=DB.books.length?'none':'block';
+document.getElementById('inventoryList').innerHTML=DB.inventory.map(it=>`<div class="bg-white rounded-2xl p-4"><p class="font-bold">📦 ${esc(it.name)} • Qty ${it.qty} • ${esc(it.category)}</p><p class="text-xs text-slate-500">Condition: ${esc(it.condition)} • Rs ${it.price||0}</p><div class="flex gap-2 mt-2"><button onclick="adjustStock('${it.id}',1)" class="bg-emerald-600 text-white px-2 py-1 rounded-full text-xs">+1</button><button onclick="adjustStock('${it.id}',-1)" class="bg-amber-500 text-white px-2 py-1 rounded-full text-xs">-1</button><button onclick="delInventory('${it.id}')" class="text-red-500 text-xs font-bold">Delete</button></div></div>`).join('');document.getElementById('emptyInventory').style.display=DB.inventory.length?'none':'block';
+document.getElementById('transportList').innerHTML=DB.transport.map(t=>`<div class="bg-white rounded-2xl p-4"><p class="font-bold">🚌 ${esc(t.route)} • Driver ${esc(t.driver)} • Van ${esc(t.van)}</p><p class="text-sm mt-1">Fee Rs ${t.fee} • Time ${esc(t.time)} • Students ${esc(t.students||'')}</p><button onclick="delTransport('${t.id}')" class="text-red-500 text-xs mt-2 font-bold">Delete</button></div>`).join('');document.getElementById('emptyTransport').style.display=DB.transport.length?'none':'block';
+document.getElementById('complaintsList').innerHTML=DB.complaints.map(c=>`<div class="bg-white rounded-2xl p-4"><p class="font-bold">📩 ${esc(c.title)} • ${esc(c.by)} • <span class="badge ${c.status==='Solved'?'bg-emerald-100 text-emerald-700':'bg-amber-100 text-amber-700'}">${c.status}</span></p><p class="text-sm mt-1">${esc(c.text)}</p>${canApprove()?`<button onclick="solveComplaint('${c.id}')" class="bg-emerald-600 text-white px-3 py-1 rounded-full text-xs font-bold mt-2">Mark Solved</button>`:''}</div>`).join('');document.getElementById('emptyComplaints').style.display=DB.complaints.length?'none':'block';
+document.getElementById('chatBox').innerHTML=DB.chats.map(c=>`<div class="flex gap-2"><div class="w-8 h-8 bg-blue-100 text-blue-700 rounded-full flex items-center justify-center text-xs font-bold shrink-0">${esc(c.name[0])}</div><div><p class="text-xs font-bold">${esc(c.name)} <span class="bg-slate-100 px-1.5 py-0.5 rounded-full text-[10px]">${esc(c.role)}</span> <span class="text-slate-400">${esc(c.time)}</span></p><p class="text-sm bg-slate-50 rounded-2xl rounded-tl-none px-3 py-2 mt-1 inline-block">${esc(c.msg)}</p></div></div>`).join('');document.getElementById('emptyChat').style.display=DB.chats.length?'none':'block';
+if(isAdmin()){document.getElementById('staffList').innerHTML=DB.users.map(u=>`<div class="bg-white rounded-2xl p-4"><div class="flex justify-between"><p class="font-bold">${esc(u.name)} ${u.email===ADMIN_EMAIL?'<span class="text-[10px] bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full">OWNER</span>':''}</p><span class="text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded-full font-bold">${u.role}</span></div><p class="text-xs text-slate-500 mt-1">${esc(u.email)} • ${esc(u.subject)} • ${esc(u.phone||'')}</p><div class="flex gap-2 mt-3 flex-wrap"><select onchange="changeRole('${u.id}',this.value)" ${u.email===ADMIN_EMAIL?'disabled':''} class="border rounded-full px-2 py-1.5 text-xs"><option ${u.role==='Teacher'?'selected':''}>Teacher</option><option ${u.role==='Head Teacher'?'selected':''}>Head Teacher</option><option ${u.role==='Admin'?'selected':''}>Admin</option><option ${u.role==='Parent'?'selected':''}>Parent</option><option ${u.role==='Student'?'selected':''}>Student</option></select>${u.email!==ADMIN_EMAIL?`<button onclick="delUser('${u.id}')" class="text-red-500 text-xs font-bold">Delete</button>`:''}</div></div>`).join('')}
+drawChart();
+}
+// ACTIONS
+function setAtt(sid,st){let d=document.getElementById('attDate')?.value||todayStr();let ex=DB.attendance.find(a=>a.studentId===sid&&a.date===d);if(ex)ex.status=st;else DB.attendance.push({id:uid('att'),studentId:sid,status:st,date:d});save();renderAll()}
+function markAllPresent(){DB.students.forEach(s=>setAtt(s.id,'Present'));alert('All Present')}
+function delStudent(id){if(!confirm('Delete student?'))return;DB.students=DB.students.filter(s=>s.id!==id);DB.attendance=DB.attendance.filter(a=>a.studentId!==id);DB.fees=DB.fees.filter(f=>f.studentId!==id);DB.results=DB.results.filter(r=>r.studentId!==id);save();renderAll()}
+function viewStudent(id){let s=DB.students.find(x=>x.id===id);openGeneric('Student Profile',`<div class="space-y-2 text-sm"><p><b>${esc(s.name)}</b> • Roll ${esc(s.roll)} • Class ${esc(s.cls)}</p><p>Father: ${esc(s.father||'-')}</p><p>Phone: ${esc(s.phone||'-')}</p><p>Address: ${esc(s.address||'-')}</p><p>Admission: ${esc(s.admission||'-')}</p><p>Attendance: ${DB.attendance.filter(a=>a.studentId===id).length} records</p></div>`)}
+function editStudent(id){let s=DB.students.find(x=>x.id===id);openGeneric('Edit Student',`<div class="space-y-3"><input id="eName" value="${esc(s.name)}" class="w-full border rounded-xl px-3 py-2.5"><input id="eFather" value="${esc(s.father||'')}" class="w-full border rounded-xl px-3 py-2.5" placeholder="Father"><input id="ePhone" value="${esc(s.phone||'')}" class="w-full border rounded-xl px-3 py-2.5" placeholder="Phone"><input id="eAddr" value="${esc(s.address||'')}" class="w-full border rounded-xl px-3 py-2.5" placeholder="Address"><button onclick="saveEditStudent('${id}')" class="w-full bg-blue-600 text-white py-3 rounded-xl font-bold">Save</button></div>`)}
+function saveEditStudent(id){let s=DB.students.find(x=>x.id===id);s.name=document.getElementById('eName').value;s.father=document.getElementById('eFather').value;s.phone=document.getElementById('ePhone').value;s.address=document.getElementById('eAddr').value;save();closeGeneric();renderAll()}
+function approveReport(id){let r=DB.reports.find(x=>x.id===id);if(r){r.status='Approved';save();renderAll()}}
+function delReport(id){DB.reports=DB.reports.filter(x=>x.id!==id);save();renderAll()}
+function delHW(id){DB.homework=DB.homework.filter(x=>x.id!==id);save();renderAll()}
+function submitHW(id){let h=DB.homework.find(x=>x.id===id);let name=prompt('Your Name:');if(!name)return;let txt=prompt('Homework Answer / Link:');if(!txt)return;DB.hwSubs.push({id:uid('sub'),hwId:id,hwTitle:h.title,student:name,text:txt,date:todayStr(),status:'Submitted'});save();renderAll();alert('HW Submitted!')}
+function checkHW(id){let s=DB.hwSubs.find(x=>x.id===id);s.status='Checked';save();renderAll()}
+function delQuiz(id){DB.quizzes=DB.quizzes.filter(x=>x.id!==id);save();renderAll()}
+function attemptQuiz(id){let qz=DB.quizzes.find(x=>x.id===id);let score=0;let ans=[];qz.questions.forEach((qq,idx)=>{let a=prompt(`Q${idx+1}: ${qq.q}\nOptions: ${qq.options.join(' | ')}\nType answer:`);ans.push(a);if(a&&a.trim().toLowerCase()===qq.answer.toLowerCase())score++});let total=qz.questions.length;let marks=score*10;DB.quizAttempts.push({id:uid('attq'),quizId:id,quizTitle:qz.title,by:me().name,score:marks,total:total*10,date:todayStr()});save();renderAll();alert(`Quiz Done! Score ${marks}/${total*10} • Grade ${gradeFromMarks(marks/total*10)}`)}
+function delTT(id){DB.timetable=DB.timetable.filter(x=>x.id!==id);save();renderAll()}
+function delMeeting(id){DB.meetings=DB.meetings.filter(x=>x.id!==id);save();renderAll()}
+function delFee(id){DB.fees=DB.fees.filter(x=>x.id!==id);save();renderAll()}
+function delResult(id){DB.results=DB.results.filter(x=>x.id!==id);save();renderAll()}
+function delSalary(id){DB.salary=DB.salary.filter(x=>x.id!==id);save();renderAll()}
+function delNotice(id){DB.notices=DB.notices.filter(x=>x.id!==id);save();renderAll()}
+function delEvent(id){DB.events=DB.events.filter(x=>x.id!==id);save();renderAll()}
+function delBook(id){DB.books=DB.books.filter(x=>x.id!==id);save();renderAll()}
+function delInventory(id){DB.inventory=DB.inventory.filter(x=>x.id!==id);save();renderAll()}
+function delTransport(id){DB.transport=DB.transport.filter(x=>x.id!==id);save();renderAll()}
+function toggleFee(id){let f=DB.fees.find(x=>x.id===id);f.status=f.status==='Paid'?'Pending':'Paid';save();renderAll()}
+function toggleSalary(id){let s=DB.salary.find(x=>x.id===id);s.status=s.status==='Paid'?'Pending':'Paid';save();renderAll()}
+function toggleBook(id){let b=DB.books.find(x=>x.id===id);if(b.status==='Available'){let n=prompt('Issue to whom?');if(n){b.status='Issued';b.issuedTo=n}}else{b.status='Available';b.issuedTo=''}save();renderAll()}
+function adjustStock(id,d){let it=DB.inventory.find(x=>x.id===id);it.qty=Math.max(0,Number(it.qty)+d);save();renderAll()}
+function setLeave(id,st){let l=DB.leaves.find(x=>x.id===id);l.status=st;save();renderAll()}
+function solveComplaint(id){let c=DB.complaints.find(x=>x.id===id);c.status='Solved';save();renderAll()}
+function delUser(id){let u=DB.users.find(x=>x.id===id);if(u&&u.email===ADMIN_EMAIL)return alert('Cannot delete Owner');if(!confirm('Delete staff?'))return;DB.users=DB.users.filter(x=>x.id!==id);save();renderAll()}
+function changeRole(id,role){let u=DB.users.find(x=>x.id===id);if(u&&u.email===ADMIN_EMAIL)return alert('Cannot change Owner');u.role=role;save();renderAll();alert('Role updated to '+role)}
+function printReport(id){let r=DB.reports.find(x=>x.id===id);let w=window.open('','_blank');w.document.write(`<h2>${esc(r.title)}</h2><p>Class ${esc(r.cls)} | By ${esc(r.by)} | ${r.status}</p><p>${esc(r.details)}</p><p>GPS Dhok Jhatt - Made By Haris Awan</p>`);w.print()}
+function printReceipt(id){let f=DB.fees.find(x=>x.id===id);let s=DB.students.find(x=>x.id===f.studentId);let w=window.open('','_blank');w.document.write(`<h2>Fee Receipt</h2><p>Student: ${esc(s?s.name:'')} • Class ${esc(s?s.cls:'')}</p><p>Amount Rs ${f.amount} • Month ${esc(f.month)} • Status ${f.status}</p><p>GPS Dhok Jhatt</p>`);w.print()}
+function printResult(id){let r=DB.results.find(x=>x.id===id);let s=DB.students.find(x=>x.id===r.studentId);let w=window.open('','_blank');w.document.write(`<h2>Report Card</h2><p>${esc(s?s.name:'')} • Class ${esc(r.cls)}</p><p>${esc(r.subject)}: ${r.marks}/100 • Grade ${gradeFromMarks(r.marks)}</p><p>Made By Haris Awan</p>`);w.print()}
+function printCertificate(){let sid=document.getElementById('certStudent').value;if(!sid)return alert('Select student');let s=DB.students.find(x=>x.id===sid);let type=document.getElementById('certType').value;let w=window.open('','_blank');w.document.write(`<div style="text-align:center;border:3px double #2563eb;padding:40px;font-family:Arial"><h1>GOVT PRIMARY SCHOOL DHOK JHATT</h1><h2>${type}</h2><p>This is to certify that <b>${esc(s.name)}</b> S/O ${esc(s.father||'')} Roll No ${esc(s.roll)} Class ${esc(s.cls)} is a bonafide student of this school.</p><p>Character is good. Date: ${todayStr()}</p><br><p>__________________<br>Head Teacher / Admin Haris Awan</p></div>`);w.print()}
+function printIDCard(){let sid=document.getElementById('idStudent').value;if(!sid)return alert('Select student');let s=DB.students.find(x=>x.id===sid);let w=window.open('','_blank');w.document.write(`<div style="width:320px;border:2px solid #2563eb;border-radius:12px;padding:16px;text-align:center;font-family:Arial"><h3>GOVT PRIMARY SCHOOL<br>DHOK JHATT</h3><div style="width:70px;height:70px;background:#dbeafe;border-radius:50%;margin:10px auto;display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:bold">${esc(s.name[0])}</div><h3>${esc(s.name)}</h3><p>Roll: ${esc(s.roll)} • Class: ${esc(s.cls)} • Sec: ${esc(s.section||'A')}</p><p>Father: ${esc(s.father||'')}</p><p style="font-size:11px">Session 2026-2027 • Made By Haris Awan</p></div>`);w.print()}
+function sendChat(){let inp=document.getElementById('chatInput');if(!inp.value.trim())return;let u=me();DB.chats.push({id:uid('chat'),name:u.name,role:u.role,msg:inp.value.trim(),time:new Date().toLocaleString()});inp.value='';save();renderAll()}
+function exportStudentsCSV(){let csv='Roll,Name,Class,Father,Phone\n'+DB.students.map(s=>`${s.roll},${s.name},${s.cls},${s.father||''},${s.phone||''}`).join('\n');downloadCSV(csv,'students.csv')}
+function exportAttendanceCSV(){let csv='Roll,Name,Date,Status\n'+DB.attendance.map(a=>{let s=DB.students.find(x=>x.id===a.studentId);return `${s?s.roll:''},${s?s.name:''},${a.date},${a.status}`}).join('\n');downloadCSV(csv,'attendance.csv')}
+function downloadCSV(csv,name){let b=new Blob([csv],{type:'text/csv'});let a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=name;a.click()}
+// MODALS
+function openGeneric(t,h){document.getElementById('genericTitle').innerText=t;document.getElementById('genericBody').innerHTML=h;document.getElementById('genericModal').classList.add('open')}
+function closeGeneric(){document.getElementById('genericModal').classList.remove('open')}
+function openStudentModal(){openGeneric('Add New Student',`<div class="space-y-3"><div class="grid grid-cols-2 gap-2"><input id="sRoll" class="border rounded-xl px-3 py-2.5" placeholder="Roll No *"><select id="sClass" class="border rounded-xl px-3 py-2.5"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></div><input id="sName" class="w-full border rounded-xl px-3 py-2.5" placeholder="Full Name *"><input id="sFather" class="w-full border rounded-xl px-3 py-2.5" placeholder="Father Name"><div class="grid grid-cols-2 gap-2"><input id="sPhone" class="border rounded-xl px-3 py-2.5" placeholder="Phone"><input id="sSection" class="border rounded-xl px-3 py-2.5" placeholder="Section A"></div><input id="sAddr" class="w-full border rounded-xl px-3 py-2.5" placeholder="Address"><input id="sAdm" type="date" class="w-full border rounded-xl px-3 py-2.5"><button onclick="saveStudent()" class="w-full bg-blue-600 text-white py-3 rounded-xl font-bold">Add Student</button></div>`)}
+function saveStudent(){let r=document.getElementById('sRoll').value.trim(),n=document.getElementById('sName').value.trim(),c=document.getElementById('sClass').value;if(!r||!n)return alert('Fill Roll & Name');DB.students.push({id:uid('stu'),roll:r,name:n,cls:c,father:document.getElementById('sFather').value,phone:document.getElementById('sPhone').value,section:document.getElementById('sSection').value||'A',address:document.getElementById('sAddr').value,admission:document.getElementById('sAdm').value||todayStr()});save();closeGeneric();renderAll()}
+function openReportModal(){openGeneric('New Report',`<div class="space-y-3"><input id="rTitle" class="w-full border rounded-xl px-3 py-2.5" placeholder="Title"><select id="rClass" class="w-full border rounded-xl px-3 py-2.5"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select><textarea id="rDetails" class="w-full border rounded-xl px-3 py-2.5" rows="3" placeholder="Details & Grades"></textarea><button onclick="saveReport()" class="w-full bg-blue-600 text-white py-3 rounded-xl font-bold">Submit</button></div>`)}
+function saveReport(){let t=document.getElementById('rTitle').value.trim();if(!t)return alert('Title required');DB.reports.push({id:uid('rep'),title:t,cls:document.getElementById('rClass').value,details:document.getElementById('rDetails').value,by:me().name,status:'Pending',date:todayStr()});save();closeGeneric();renderAll()}
+function openHWModal(){openGeneric('Publish Worksheet',`<div class="space-y-3"><input id="hTitle" class="w-full border rounded-xl px-3 py-2.5" placeholder="Title"><select id="hClass" class="w-full border rounded-xl px-3 py-2.5"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select><input id="hDue" type="date" class="w-full border rounded-xl px-3 py-2.5"><textarea id="hInst" class="w-full border rounded-xl px-3 py-2.5" rows="3" placeholder="Instructions"></textarea><input id="hLink" class="w-full border rounded-xl px-3 py-2.5" placeholder="Link"><button onclick="saveHW()" class="w-full bg-blue-600 text-white py-3 rounded-xl font-bold">Publish</button></div>`)}
+function saveHW(){let t=document.getElementById('hTitle').value.trim();if(!t)return alert('Title required');DB.homework.push({id:uid('hw'),title:t,cls:document.getElementById('hClass').value,instructions:document.getElementById('hInst').value,link:document.getElementById('hLink').value,due:document.getElementById('hDue').value,by:me().name});save();closeGeneric();renderAll()}
+function openQuizModal(){openGeneric('Create Quiz - 3 Questions',`<div class="space-y-3"><input id="qTitle" class="w-full border rounded-xl px-3 py-2.5" placeholder="Quiz Title e.g. Maths Test 1"><select id="qClass" class="w-full border rounded-xl px-3 py-2.5"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select><input id="q1" class="w-full border rounded-xl px-3 py-2.5" placeholder="Q1: 2+2 = ?"><input id="q1opt" class="w-full border rounded-xl px-3 py-2.5" placeholder="Options comma: 3,4,5,6"><input id="q1ans" class="w-full border rounded-xl px-3 py-2.5" placeholder="Correct Answer: 4"><input id="q2" class="w-full border rounded-xl px-3 py-2.5" placeholder="Q2"><input id="q2opt" class="w-full border rounded-xl px-3 py-2.5" placeholder="Options comma"><input id="q2ans" class="w-full border rounded-xl px-3 py-2.5" placeholder="Correct Answer"><input id="q3" class="w-full border rounded-xl px-3 py-2.5" placeholder="Q3"><input id="q3opt" class="w-full border rounded-xl px-3 py-2.5" placeholder="Options comma"><input id="q3ans" class="w-full border rounded-xl px-3 py-2.5" placeholder="Correct Answer"><button onclick="saveQuiz()" class="w-full bg-blue-600 text-white py-3 rounded-xl font-bold">Create Quiz</button></div>`)}
+function saveQuiz(){let t=document.getElementById('qTitle').value.trim();if(!t)return alert('Title required');let qs=[];for(let i=1;i<=3;i++){let q=document.getElementById('q'+i).value;if(q)qs.push({q,options:document.getElementById('q'+i+'opt').value.split(',').map(s=>s.trim()),answer:document.getElementById('q'+i+'ans').value.trim()})}if(!qs.length)return alert('Add at least 1 question');DB.quizzes.push({id:uid('quiz'),title:t,cls:document.getElementById('qClass').value,desc:'Online Test',questions:qs,by:me().name});save();closeGeneric();renderAll()}
+function openFeeModal(){let opts=DB.students.map(s=>`<option value="${s.id}">${esc(s.name)} - Class ${s.cls}</option>`).join('');openGeneric('Add Fee',`<div class="space-y-3"><select id="fStudent" class="w-full border rounded-xl px-3 py-2.5">${opts||'<option value="">No Students</option>'}</select><input id="fAmount" type="number" class="w-full border rounded-xl px-3 py-2.5" placeholder="Amount Rs"><input id="fMonth" class="w-full border rounded-xl px-3 py-2.5" placeholder="Month"><select id="fStatus" class="w-full border rounded-xl px-3 py-2.5"><option>Pending</option><option>Paid</option></select><input id="fNote" class="w-full border rounded-xl px-3 py-2.5" placeholder="Note"><button onclick="saveFee()" class="w-full bg-blue-600 text-white py-3 rounded-xl font-bold">Save</button></div>`)}
+function saveFee(){let sid=document.getElementById('fStudent').value;if(!sid)return alert('Add student first');DB.fees.push({id:uid('fee'),studentId:sid,amount:document.getElementById('fAmount').value||0,month:document.getElementById('fMonth').value,status:document.getElementById('fStatus').value,note:document.getElementById('fNote').value,by:me().name});save();closeGeneric();renderAll()}
+function openResultModal(){let opts=DB.students.map(s=>`<option value="${s.id}">${esc(s.name)} - Class ${s.cls}</option>`).join('');openGeneric('Add Result',`<div class="space-y-3"><select id="resStudent" class="w-full border rounded-xl px-3 py-2.5">${opts}</select><input id="resSubj" class="w-full border rounded-xl px-3 py-2.5" placeholder="Subject"><input id="resMarks" type="number" max="100" class="w-full border rounded-xl px-3 py-2.5" placeholder="Marks /100"><input id="resCls" class="w-full border rounded-xl px-3 py-2.5" placeholder="Class"><textarea id="resRem" class="w-full border rounded-xl px-3 py-2.5" placeholder="Remarks"></textarea><button onclick="saveResult()" class="w-full bg-blue-600 text-white py-3 rounded-xl font-bold">Save</button></div>`)}
+function saveResult(){DB.results.push({id:uid('res'),studentId:document.getElementById('resStudent').value,subject:document.getElementById('resSubj').value,marks:document.getElementById('resMarks').value,cls:document.getElementById('resCls').value,remarks:document.getElementById('resRem').value,by:me().name});save();closeGeneric();renderAll()}
+function openSalaryModal(){let opts=DB.users.map(u=>`<option>${esc(u.name)} - ${u.role}</option>`).join('');openGeneric('Add Salary',`<div class="space-y-3"><select id="salTeacher" class="w-full border rounded-xl px-3 py-2.5">${opts}</select><input id="salAmt" type="number" class="w-full border rounded-xl px-3 py-2.5" placeholder="Amount Rs"><input id="salMonth" class="w-full border rounded-xl px-3 py-2.5" placeholder="Month e.g. Nov 2026"><select id="salStatus" class="w-full border rounded-xl px-3 py-2.5"><option>Pending</option><option>Paid</option></select><button onclick="saveSalary()" class="w-full bg-blue-600 text-white py-3 rounded-xl font-bold">Save Salary</button></div>`)}
+function saveSalary(){DB.salary.push({id:uid('sal'),teacher:document.getElementById('salTeacher').value,amount:document.getElementById('salAmt').value,month:document.getElementById('salMonth').value,status:document.getElementById('salStatus').value,by:me().name});save();closeGeneric();renderAll()}
+function openTimetableModal(editId){let e=DB.timetable.find(x=>x.id===editId);openGeneric(editId?'Edit Slot':'Add Slot',`<div class="space-y-3"><select id="tDay" class="w-full border rounded-xl px-3 py-2.5">${['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'].map(d=>`<option ${e&&e.day===d?'selected':''}>${d}</option>`).join('')}</select><select id="tClass" class="w-full border rounded-xl px-3 py-2.5"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select><input id="tSubj" value="${e?esc(e.subject):''}" class="w-full border rounded-xl px-3 py-2.5" placeholder="Subject"><input id="tTeacher" value="${e?esc(e.teacher||''):''}" class="w-full border rounded-xl px-3 py-2.5" placeholder="Teacher"><input id="tTime" value="${e?esc(e.time):''}" class="w-full border rounded-xl px-3 py-2.5" placeholder="09:00 - 09:45"><button onclick="saveTT('${editId||''}')" class="w-full bg-blue-600 text-white py-3 rounded-xl font-bold">Save</button></div>`);if(e)document.getElementById('tClass').value=e.cls}
+function editTT(id){openTimetableModal(id)}
+function saveTT(id){let d=document.getElementById('tDay').value,c=document.getElementById('tClass').value,s=document.getElementById('tSubj').value.trim(),t=document.getElementById('tTime').value.trim();if(!s||!t)return alert('Fill all');if(id){let e=DB.timetable.find(x=>x.id===id);e.day=d;e.cls=c;e.subject=s;e.time=t;e.teacher=document.getElementById('tTeacher').value}else DB.timetable.push({id:uid('tt'),day:d,cls:c,subject:s,time:t,teacher:document.getElementById('tTeacher').value,by:me().name});save();closeGeneric();renderAll()}
+function openLeaveModal(){openGeneric('Request Leave',`<div class="space-y-3"><select id="lType" class="w-full border rounded-xl px-3 py-2.5"><option>Casual Leave</option><option>Sick Leave</option><option>Emergency</option><option>Annual Leave</option></select><input id="lFrom" type="date" class="w-full border rounded-xl px-3 py-2.5"><input id="lTo" type="date" class="w-full border rounded-xl px-3 py-2.5"><textarea id="lReason" class="w-full border rounded-xl px-3 py-2.5" placeholder="Reason"></textarea><button onclick="saveLeave()" class="w-full bg-blue-600 text-white py-3 rounded-xl font-bold">Submit</button></div>`)}
+function saveLeave(){DB.leaves.push({id:uid('leave'),type:document.getElementById('lType').value,from:document.getElementById('lFrom').value,to:document.getElementById('lTo').value,reason:document.getElementById('lReason').value,by:me().name,status:'Pending'});save();closeGeneric();renderAll()}
+function openMeetingModal(){if(!canSchedule())return alert('Only Head & Admin');openGeneric('Schedule Meeting',`<div class="space-y-3"><input id="mTitle" class="w-full border rounded-xl px-3 py-2.5" placeholder="Title"><input id="mDT" type="datetime-local" class="w-full border rounded-xl px-3 py-2.5"><textarea id="mAgenda" class="w-full border rounded-xl px-3 py-2.5" rows="3" placeholder="Agenda"></textarea><button onclick="saveMeeting()" class="w-full bg-blue-600 text-white py-3 rounded-xl font-bold">Schedule</button></div>`)}
+function saveMeeting(){let t=document.getElementById('mTitle').value.trim();if(!t)return alert('Title required');DB.meetings.push({id:uid('meet'),title:t,datetime:document.getElementById('mDT').value,agenda:document.getElementById('mAgenda').value,by:me().name});save();closeGeneric();renderAll()}
+function openNoticeModal(){openGeneric('New Notice',`<div class="space-y-3"><input id="nTitle" class="w-full border rounded-xl px-3 py-2.5" placeholder="Title"><select id="nPri" class="w-full border rounded-xl px-3 py-2.5"><option>Normal</option><option>High</option></select><textarea id="nText" class="w-full border rounded-xl px-3 py-2.5" rows="3" placeholder="Text"></textarea><button onclick="saveNotice()" class="w-full bg-blue-600 text-white py-3 rounded-xl font-bold">Publish</button></div>`)}
+function saveNotice(){DB.notices.push({id:uid('notice'),title:document.getElementById('nTitle').value,priority:document.getElementById('nPri').value,text:document.getElementById('nText').value,by:me().name,date:todayStr()});save();closeGeneric();renderAll()}
+function openNotices(){goTab('notices')}
+function openEventModal(){openGeneric('Add Event',`<div class="space-y-3"><input id="evTitle" class="w-full border rounded-xl px-3 py-2.5" placeholder="Event Title e.g. PTM"><input id="evDate" type="date" class="w-full border rounded-xl px-3 py-2.5"><textarea id="evDesc" class="w-full border rounded-xl px-3 py-2.5" placeholder="Description"></textarea><button onclick="saveEvent()" class="w-full bg-blue-600 text-white py-3 rounded-xl font-bold">Save Event</button></div>`)}
+function saveEvent(){DB.events.push({id:uid('ev'),title:document.getElementById('evTitle').value,date:document.getElementById('evDate').value,desc:document.getElementById('evDesc').value,by:me().name});save();closeGeneric();renderAll()}
+function openBookModal(){openGeneric('Add Book',`<div class="space-y-3"><input id="bTitle" class="w-full border rounded-xl px-3 py-2.5" placeholder="Book Title"><input id="bAuthor" class="w-full border rounded-xl px-3 py-2.5" placeholder="Author"><button onclick="saveBook()" class="w-full bg-blue-600 text-white py-3 rounded-xl font-bold">Add</button></div>`)}
+function saveBook(){DB.books.push({id:uid('book'),title:document.getElementById('bTitle').value,author:document.getElementById('bAuthor').value,status:'Available',issuedTo:''});save();closeGeneric();renderAll()}
+function openInventoryModal(){openGeneric('Add Inventory',`<div class="space-y-3"><input id="invName" class="w-full border rounded-xl px-3 py-2.5" placeholder="Item e.g. Chairs"><input id="invQty" type="number" class="w-full border rounded-xl px-3 py-2.5" placeholder="Qty"><select id="invCat" class="w-full border rounded-xl px-3 py-2.5"><option>Furniture</option><option>Books</option><option>Stationery</option><option>Sports</option><option>Other</option></select><input id="invPrice" type="number" class="w-full border rounded-xl px-3 py-2.5" placeholder="Price Rs"><select id="invCond" class="w-full border rounded-xl px-3 py-2.5"><option>Good</option><option>Average</option><option>Needs Repair</option></select><button onclick="saveInventory()" class="w-full bg-blue-600 text-white py-3 rounded-xl font-bold">Add Item</button></div>`)}
+function saveInventory(){DB.inventory.push({id:uid('inv'),name:document.getElementById('invName').value,qty:document.getElementById('invQty').value||0,category:document.getElementById('invCat').value,price:document.getElementById('invPrice').value,condition:document.getElementById('invCond').value});save();closeGeneric();renderAll()}
+function openTransportModal(){openGeneric('Add Transport',`<div class="space-y-3"><input id="trRoute" class="w-full border rounded-xl px-3 py-2.5" placeholder="Route e.g. Dhok Jhatt - School"><input id="trDriver" class="w-full border rounded-xl px-3 py-2.5" placeholder="Driver Name"><input id="trVan" class="w-full border rounded-xl px-3 py-2.5" placeholder="Van No"><input id="trFee" type="number" class="w-full border rounded-xl px-3 py-2.5" placeholder="Monthly Fee Rs"><input id="trTime" class="w-full border rounded-xl px-3 py-2.5" placeholder="Time e.g. 7:30 AM"><input id="trStu" class="w-full border rounded-xl px-3 py-2.5" placeholder="Students Count"><button onclick="saveTransport()" class="w-full bg-blue-600 text-white py-3 rounded-xl font-bold">Save Route</button></div>`)}
+function saveTransport(){DB.transport.push({id:uid('tr'),route:document.getElementById('trRoute').value,driver:document.getElementById('trDriver').value,van:document.getElementById('trVan').value,fee:document.getElementById('trFee').value,time:document.getElementById('trTime').value,students:document.getElementById('trStu').value});save();closeGeneric();renderAll()}
+function openComplaintModal(){openGeneric('New Complaint',`<div class="space-y-3"><input id="cTitle" class="w-full border rounded-xl px-3 py-2.5" placeholder="Title"><textarea id="cText" class="w-full border rounded-xl px-3 py-2.5" rows="3" placeholder="Complaint / Suggestion"></textarea><button onclick="saveComplaint()" class="w-full bg-blue-600 text-white py-3 rounded-xl font-bold">Submit</button></div>`)}
+function saveComplaint(){DB.complaints.push({id:uid('comp'),title:document.getElementById('cTitle').value,text:document.getElementById('cText').value,by:me().name,status:'Pending',date:todayStr()});save();closeGeneric();renderAll()}
+function openAddStaffModal(){if(!isAdmin())return;openGeneric('Add Staff',`<div class="space-y-3"><input id="stName" class="w-full border rounded-xl px-3 py-2.5" placeholder="Full Name"><input id="stEmail" class="w-full border rounded-xl px-3 py-2.5" placeholder="Email"><input id="stPass" class="w-full border rounded-xl px-3 py-2.5" placeholder="Password"><input id="stSubj" class="w-full border rounded-xl px-3 py-2.5" placeholder="Subject"><select id="stRole" class="w-full border rounded-xl px-3 py-2.5"><option>Teacher</option><option>Head Teacher</option><option>Admin</option><option>Parent</option><option>Student</option></select><button onclick="saveStaff()" class="w-full bg-blue-600 text-white py-3 rounded-xl font-bold">Add Staff</button></div>`)}
+function saveStaff(){let n=document.getElementById('stName').value.trim(),e=document.getElementById('stEmail').value.trim().toLowerCase(),p=document.getElementById('stPass').value;if(!n||!e||!p)return alert('Fill all');if(DB.users.find(x=>x.email===e))return alert('Email exists');DB.users.push({id:uid('usr'),name:n,email:e,password:p,role:document.getElementById('stRole').value,subject:document.getElementById('stSubj').value,phone:''});save();closeGeneric();renderAll()}
+function openProfile(){let u=me();document.getElementById('pName').value=u.name;document.getElementById('pSubject').value=u.subject;document.getElementById('pPhone').value=u.phone||'';document.getElementById('pPass').value=u.password;document.getElementById('pEmail').value=u.email;document.getElementById('profileModal').classList.add('open')}
+function closeProfile(){document.getElementById('profileModal').classList.remove('open')}
+function saveProfile(){let u=me();u.name=document.getElementById('pName').value.trim()||u.name;u.subject=document.getElementById('pSubject').value;u.phone=document.getElementById('pPhone').value;u.password=document.getElementById('pPass').value||u.password;save();closeProfile();renderApp();alert('Profile saved')}
+function exportDB(){let blob=new Blob([JSON.stringify(DB,null,2)],{type:'application/json'});let a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='GPS_MEGA_BACKUP_'+new Date().toISOString().slice(0,10)+'.json';a.click()}
+function importDB(ev){let f=ev.target.files[0];if(!f)return;let r=new FileReader();r.onload=()=>{try{let d=JSON.parse(r.result);if(!d.users)throw new Error('Invalid');DB=d;let a=DB.users.find(u=>u.email===ADMIN_EMAIL);if(a){a.password=ADMIN_PASS} else {let s=seed();DB.users.unshift(s.users[0])}save();alert('Backup Restored!');location.reload()}catch(e){alert('Invalid backup')}};r.readAsText(f)}
+function hardReset(){if(!isAdmin())return alert('Admin only');if(!confirm('Hard Reset - Delete ALL except Admin?'))return;let s=seed();DB=s;save();location.reload()}
+document.getElementById('chatInput')?.addEventListener('keydown',e=>{if(e.key==='Enter')sendChat()});
+document.getElementById('attDate').value=todayStr();
+load();renderAll();
+if(DB.currentUser){renderApp()}else{document.getElementById('landing').classList.remove('hidden')}
+</script>
 </body>
 </html>
